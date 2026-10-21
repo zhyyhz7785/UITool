@@ -1,0 +1,9 @@
+node_modules/
+dist/
+target/
+.tmp/
+src-tauri/gen/
+template/node_modules/
+template/dist/
+template/src-tauri/gen/
+*.log

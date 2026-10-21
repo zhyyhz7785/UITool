@@ -1,0 +1,16 @@
+[package]
+name = "uitool"
+version = "0.1.0"
+edition = "2021"
+description = "UITool：Tauri 2 + React 前端模板设计器"
+
+[lib]
+name = "uitool_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"

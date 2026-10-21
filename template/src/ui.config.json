@@ -1,0 +1,128 @@
+{
+  "version": 1,
+  "app": {
+    "name": "hy-app",
+    "title": "Hy App",
+    "identifier": "com.hy.app",
+    "version": "0.1.0",
+    "description": "由 UITool 生成的界面工程",
+    "icon": "layout"
+  },
+  "theme": { "id": "hy-dark", "accent": null, "overrides": {} },
+  "density": "compact",
+  "layout": {
+    "titleBar": { "style": "custom", "menu": "inline", "commandCenter": true },
+    "activityBar": { "visible": true, "position": "side" },
+    "primarySideBar": { "visible": true, "position": "left", "width": 260 },
+    "auxiliaryBar": { "visible": false, "width": 280 },
+    "panel": { "visible": true, "position": "bottom", "size": 200 },
+    "editor": { "tabs": true, "breadcrumbs": true },
+    "statusBar": { "visible": true },
+    "toolbar": { "visible": false, "position": "top" }
+  },
+  "activity": [
+    { "id": "explorer", "title": "资源管理器", "icon": "files", "view": "explorer" },
+    { "id": "search", "title": "搜索", "icon": "search", "view": "search" },
+    { "id": "layers", "title": "图层", "icon": "layer", "view": "placeholder" },
+    { "id": "run", "title": "运行", "icon": "play", "view": "placeholder" }
+  ],
+  "auxiliary": [
+    { "id": "outline", "title": "大纲", "icon": "list-tree", "view": "outline" },
+    { "id": "properties", "title": "属性", "icon": "props", "view": "properties" }
+  ],
+  "panel": [
+    { "id": "problems", "title": "问题", "icon": "warn", "view": "problems" },
+    { "id": "output", "title": "输出", "icon": "terminal", "view": "output" },
+    { "id": "terminal", "title": "终端", "icon": "terminal", "view": "terminal" }
+  ],
+  "editors": [{ "id": "welcome", "title": "欢迎", "icon": "home", "view": "welcome" }],
+  "menus": [
+    {
+      "id": "file",
+      "title": "文件",
+      "items": [
+        { "command": "file.new" },
+        { "command": "file.open" },
+        { "separator": true },
+        { "command": "file.save" },
+        { "command": "file.saveAs" },
+        { "separator": true },
+        { "command": "file.export" },
+        { "separator": true },
+        { "command": "workbench.action.quit" }
+      ]
+    },
+    {
+      "id": "edit",
+      "title": "编辑",
+      "items": [
+        { "command": "edit.undo" },
+        { "command": "edit.redo" },
+        { "separator": true },
+        { "command": "edit.find" },
+        { "command": "edit.replace" }
+      ]
+    },
+    {
+      "id": "view",
+      "title": "视图",
+      "items": [
+        { "command": "workbench.action.showCommands" },
+        { "separator": true },
+        { "command": "workbench.action.toggleSidebarVisibility" },
+        { "command": "workbench.action.toggleAuxiliaryBar" },
+        { "command": "workbench.action.togglePanel" },
+        { "command": "workbench.action.toggleStatusbarVisibility" },
+        { "command": "workbench.action.toggleToolbar" },
+        { "command": "workbench.action.toggleToolbarPosition" },
+        { "separator": true },
+        { "command": "workbench.action.selectTheme" },
+        { "command": "workbench.action.toggleDensity" }
+      ]
+    },
+    {
+      "id": "run",
+      "title": "运行",
+      "items": [{ "command": "task.run" }]
+    },
+    {
+      "id": "help",
+      "title": "帮助",
+      "items": [
+        { "command": "workbench.action.showWelcome" },
+        { "command": "workbench.action.openSettings" },
+        { "separator": true },
+        { "command": "workbench.action.showAbout" }
+      ]
+    }
+  ],
+  "statusBar": {
+    "left": [
+      { "id": "core", "text": "内核", "icon": "sync", "kind": "accent", "tooltip": "内核连接", "command": "workbench.action.showAbout" },
+      { "id": "problems", "text": "0  0", "icon": "error", "tooltip": "问题", "command": "workbench.action.togglePanel" }
+    ],
+    "right": [
+      { "id": "cursor", "text": "行 1，列 1" },
+      { "id": "encoding", "text": "UTF-8" },
+      { "id": "theme", "text": "", "icon": "palette", "tooltip": "切换主题", "command": "workbench.action.selectTheme" },
+      { "id": "notifications", "text": "", "icon": "bell", "tooltip": "通知" }
+    ]
+  },
+  "toolbar": [
+    ["file.new", "file.open", "file.save"],
+    ["edit.undo", "edit.redo"],
+    ["task.run"]
+  ],
+  "commands": [
+    { "id": "file.new", "title": "新建", "category": "文件", "icon": "new", "keybinding": "Ctrl+N", "core": "file.new" },
+    { "id": "file.open", "title": "打开…", "category": "文件", "icon": "open", "keybinding": "Ctrl+O", "core": "file.open" },
+    { "id": "file.save", "title": "保存", "category": "文件", "icon": "save", "keybinding": "Ctrl+S", "core": "file.save" },
+    { "id": "file.saveAs", "title": "另存为…", "category": "文件", "icon": "saveas", "keybinding": "Ctrl+Shift+S", "core": "file.saveAs" },
+    { "id": "file.export", "title": "导出…", "category": "文件", "icon": "export", "core": "file.export" },
+    { "id": "edit.undo", "title": "撤销", "category": "编辑", "icon": "undo", "keybinding": "Ctrl+Z", "core": "edit.undo" },
+    { "id": "edit.redo", "title": "重做", "category": "编辑", "icon": "redo", "keybinding": "Ctrl+Y", "core": "edit.redo" },
+    { "id": "edit.find", "title": "查找", "category": "编辑", "icon": "find", "keybinding": "Ctrl+F", "core": "edit.find" },
+    { "id": "edit.replace", "title": "替换", "category": "编辑", "icon": "replace", "keybinding": "Ctrl+H", "core": "edit.replace" },
+    { "id": "task.run", "title": "运行示例任务", "category": "运行", "icon": "play", "keybinding": "F5", "core": "task.run", "params": { "name": "示例任务", "steps": 8 } }
+  ]
+}

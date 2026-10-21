@@ -1,0 +1,17 @@
+[package]
+name = "app-shell"
+version = "0.1.0"
+edition = "2021"
+description = "Tauri 外壳：只负责窗口和把界面请求转给内核，不写业务。"
+
+[lib]
+name = "app_shell_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde_json = "1"
+app-core = { path = "../core" }

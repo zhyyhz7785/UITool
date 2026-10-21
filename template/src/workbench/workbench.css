@@ -1,0 +1,624 @@
+/* 工作台外观。颜色只用 var(--vscode-*)，尺寸只用 hy 令牌（--h-* --fs-* --sp-* --r-*）。禁止写死色值。 */
+
+.wb-root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--vscode-base-window);
+  color: var(--vscode-foreground);
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+  line-height: 1.4;
+  user-select: none;
+  outline: none;
+  isolation: isolate;
+}
+.wb-root *,
+.wb-root *::before,
+.wb-root *::after { box-sizing: border-box; }
+.wb-root ::selection { background: var(--vscode-selection-background); }
+.wb-root * { scrollbar-width: thin; scrollbar-color: var(--vscode-scrollbarSlider-background) transparent; }
+.wb-root *::-webkit-scrollbar { width: var(--sb-size); height: var(--sb-size); }
+.wb-root *::-webkit-scrollbar-track,
+.wb-root *::-webkit-scrollbar-corner { background: transparent; }
+.wb-root *::-webkit-scrollbar-thumb { background: var(--vscode-scrollbarSlider-background); border: 2px solid transparent; border-radius: 5px; background-clip: padding-box; }
+.wb-root *::-webkit-scrollbar-thumb:hover { background-color: var(--vscode-scrollbarSlider-hoverBackground); }
+.wb-root button { font: inherit; color: inherit; }
+.wb-root button:focus-visible { outline: 1px solid var(--vscode-focusBorder); outline-offset: -1px; }
+.wb-icon { flex-shrink: 0; display: block; }
+.wb-sp { flex: 1; }
+.wb-empty { padding: var(--sp-4); color: var(--vscode-descriptionForeground); }
+
+/* ---------- 布局 ---------- */
+.wb-main { flex: 1; display: flex; min-height: 0; position: relative; }
+.wb-flexpart { flex-shrink: 0; display: flex; min-width: 0; min-height: 0; }
+.wb-flexpart > * { flex: 1; min-width: 0; min-height: 0; }
+.wb-center { flex: 1; display: flex; min-width: 0; min-height: 0; }
+.wb-col { flex-direction: column; }
+.wb-row { flex-direction: row; }
+
+/* ---------- 分割条 ---------- */
+.wb-sash { position: relative; flex: 0 0 0; z-index: 30; }
+.wb-sash-hit { position: absolute; touch-action: none; transition: background-color 0.1s; }
+.wb-sash-x .wb-sash-hit { top: 0; bottom: 0; left: calc(var(--sash-size) / -2); width: var(--sash-size); cursor: ew-resize; }
+.wb-sash-y .wb-sash-hit { left: 0; right: 0; top: calc(var(--sash-size) / -2); height: var(--sash-size); cursor: ns-resize; }
+.wb-sash-hit:hover { background: var(--vscode-sash-hoverBorder); transition-delay: 0.25s; }
+.wb-sash-hit.active { background: var(--vscode-sash-hoverBorder); transition-delay: 0s; }
+
+/* ---------- 通用控件 ---------- */
+.wb-iconbtn {
+  width: var(--h-ctl);
+  height: var(--h-ctl);
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.wb-iconbtn:hover { background: var(--vscode-toolbar-hoverBackground); opacity: 1; }
+.wb-iconbtn:active { background: var(--vscode-toolbar-activeBackground); }
+.wb-iconbtn.active { opacity: 1; }
+.wb-btn {
+  height: var(--h-ctl-lg);
+  padding: 0 var(--sp-4);
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  background: var(--vscode-button-secondaryBackground);
+  color: var(--vscode-button-secondaryForeground) !important;
+  cursor: pointer;
+}
+.wb-btn:hover { background: var(--vscode-button-secondaryHoverBackground); }
+.wb-btn.primary { background: var(--vscode-button-background); color: var(--vscode-button-foreground) !important; }
+.wb-btn.primary:hover { background: var(--vscode-button-hoverBackground); }
+.wb-kbd { display: inline-flex; gap: 2px; flex-shrink: 0; }
+.wb-kbd kbd,
+.wb-editor-empty kbd {
+  font-family: inherit;
+  font-size: var(--fs-cap);
+  line-height: 16px;
+  padding: 0 4px;
+  border-radius: var(--r-xs);
+  background: var(--vscode-keybindingLabel-background);
+  color: var(--vscode-keybindingLabel-foreground);
+  border: 1px solid var(--vscode-keybindingLabel-border);
+}
+.wb-input,
+.wb-select {
+  height: var(--h-ctl);
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--vscode-input-border);
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  font: inherit;
+  outline: none;
+  min-width: 0;
+}
+.wb-select { background: var(--vscode-dropdown-background); border-color: var(--vscode-dropdown-border); color: var(--vscode-dropdown-foreground); }
+.wb-input:focus,
+.wb-select:focus { border-color: var(--vscode-focusBorder); }
+.wb-input::placeholder { color: var(--vscode-input-placeholderForeground); }
+.wb-toggle { display: inline-flex; align-items: center; gap: var(--sp-2); cursor: pointer; position: relative; }
+.wb-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.wb-toggle-track {
+  width: 30px;
+  height: 16px;
+  border-radius: 8px;
+  background: var(--vscode-base-control);
+  border: 1px solid var(--vscode-checkbox-border);
+  position: relative;
+  transition: background var(--dur);
+}
+.wb-toggle-track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--vscode-descriptionForeground);
+  transition: transform var(--dur);
+}
+.wb-toggle input:checked + .wb-toggle-track { background: var(--vscode-button-background); border-color: var(--vscode-button-background); }
+.wb-toggle input:checked + .wb-toggle-track::after { transform: translateX(14px); background: var(--vscode-button-foreground); }
+.wb-toggle input:focus-visible + .wb-toggle-track { outline: 1px solid var(--vscode-focusBorder); outline-offset: 1px; }
+
+/* ---------- 标题栏 / 菜单 ---------- */
+.wb-titlebar {
+  height: var(--h-title);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 20;
+  background: var(--vscode-titleBar-activeBackground);
+  color: var(--vscode-titleBar-activeForeground);
+  border-bottom: 1px solid var(--vscode-titleBar-border);
+}
+.wb-titlebar-left,
+.wb-titlebar-right { flex: 1; display: flex; align-items: center; height: 100%; min-width: 0; }
+.wb-titlebar-right { justify-content: flex-end; gap: 2px; }
+.wb-titlebar-center { flex: 0 1 40%; display: flex; justify-content: center; gap: 4px; min-width: 0; height: 100%; align-items: center; }
+.wb-titlebar-center .wb-commandcenter { width: auto; flex: 1; min-width: 0; }
+.wb-titlebar-app { width: 36px; height: 100%; display: grid; place-items: center; flex-shrink: 0; color: var(--vscode-base-accent); }
+.wb-appmark { object-fit: contain; display: block; }
+.wb-titlebar-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--vscode-titleBar-activeForeground); }
+.wb-titlebar .wb-iconbtn { width: 26px; height: 22px; }
+.wb-commandcenter {
+  width: 100%;
+  max-width: 520px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-md);
+  border: 1px solid var(--vscode-commandCenter-border);
+  background: var(--vscode-commandCenter-background);
+  color: var(--vscode-commandCenter-foreground) !important;
+  cursor: pointer;
+  font-size: var(--fs-ui);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.wb-commandcenter:hover { background: var(--vscode-commandCenter-activeBackground); }
+.wb-winctl { display: flex; height: 100%; margin-left: var(--sp-2); }
+.wb-winctl button { width: 46px; height: 100%; border: 0; background: transparent; display: grid; place-items: center; cursor: pointer; }
+.wb-winctl button:hover { background: var(--vscode-toolbar-hoverBackground); }
+.wb-winctl button.close:hover { background: var(--vscode-errorForeground); color: var(--vscode-base-onAccent); }
+
+.wb-menubar { display: flex; height: 100%; align-items: center; min-width: 0; overflow: visible; }
+.wb-menubar.standalone {
+  height: var(--h-menu);
+  flex-shrink: 0;
+  padding: 0 var(--sp-1);
+  background: var(--vscode-titleBar-activeBackground);
+  color: var(--vscode-titleBar-activeForeground);
+  border-bottom: 1px solid var(--vscode-titleBar-border);
+  position: relative;
+  z-index: 20;
+}
+.wb-menubar-item { position: relative; height: 100%; display: flex; align-items: center; }
+.wb-menubar-btn { height: calc(100% - 6px); padding: 0 var(--sp-2); border: 0; border-radius: var(--r-sm); background: transparent; cursor: default; white-space: nowrap; }
+.wb-menubar-btn:hover,
+.wb-menubar-btn.open { background: var(--vscode-menubar-selectionBackground); color: var(--vscode-menubar-selectionForeground); }
+.wb-menu {
+  position: absolute;
+  top: calc(100% - 2px);
+  left: 0;
+  min-width: 240px;
+  padding: var(--sp-1);
+  background: var(--vscode-menu-background);
+  color: var(--vscode-menu-foreground);
+  border: 1px solid var(--vscode-menu-border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-2);
+  z-index: 100;
+}
+.wb-menu-item { display: flex; align-items: center; gap: 6px; width: 100%; height: var(--h-menu); padding: 0 var(--sp-2) 0 var(--sp-1); border: 0; border-radius: var(--r-sm); background: transparent; text-align: left; cursor: default; }
+.wb-menu-item:hover { background: var(--vscode-menu-selectionBackground); color: var(--vscode-menu-selectionForeground); }
+.wb-menu-icon { width: 18px; display: grid; place-items: center; opacity: 0.85; }
+.wb-menu-label { flex: 1; white-space: nowrap; }
+.wb-menu .wb-kbd kbd { background: none; border: 0; color: inherit; opacity: 0.7; padding: 0; }
+.wb-menu-sep { height: 1px; margin: var(--sp-1) 6px; background: var(--vscode-menu-separatorBackground); }
+.wb-menu-branch { position: relative; }
+.wb-menu-chevron { opacity: 0.7; margin-left: 8px; }
+.wb-menu-sub { top: 0; left: calc(100% - 4px); }
+.wb-menu.static, .wb-menu-sub.static { position: static; box-shadow: none; min-width: 220px; }
+.wb-menu-focus { padding: 12px; align-items: flex-start; background: var(--vscode-editor-background); }
+.wb-menu-focus-title { margin-bottom: 8px; font-size: 12px; color: var(--vscode-descriptionForeground); }
+.wb-swatch-row { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px 8px 8px 28px; }
+.wb-swatch { width: 14px; height: 14px; border-radius: 2px; border: 1px solid var(--vscode-menu-border); display: inline-block; }
+.wb-swatch.is-empty { background: linear-gradient(135deg, transparent 45%, var(--vscode-menu-foreground) 46% 54%, transparent 55%); }
+.wb-only { flex: 1; min-height: 0; min-width: 0; display: flex; flex-direction: column; }
+.wb-only > .wb-sidebar { flex: 1; width: auto; }
+.wb-pane-header.ghost .wb-itembar { opacity: 0; }
+.wb-pane-header.ghost:hover .wb-itembar,
+.wb-pane-header.ghost:focus-within .wb-itembar { opacity: 1; }
+
+/* ---------- 主工具栏（上侧、侧面可同时开，每处可多排）---------- */
+.wb-toolbar { display: flex; flex-shrink: 0; background: var(--vscode-toolbar-background); }
+.wb-toolbar-h { flex-direction: column; border-bottom: 1px solid var(--vscode-toolbar-border); }
+.wb-toolbar-v { flex-direction: row; border-right: 1px solid var(--vscode-toolbar-border); }
+.wb-toolbar-row { display: flex; min-width: 0; min-height: 0; }
+.wb-toolbar-h .wb-toolbar-row { height: var(--h-tool); }
+.wb-toolbar-v .wb-toolbar-row { width: var(--h-tool); }
+.wb-toolbar-h .wb-toolbar-row + .wb-toolbar-row { border-top: 1px solid var(--vscode-toolbar-border); }
+.wb-toolbar-v .wb-toolbar-row + .wb-toolbar-row { border-left: 1px solid var(--vscode-toolbar-border); }
+.wb-toolbar-labeled .wb-toolbar-row { height: auto; min-height: 44px; }
+.wb-item.labeled { flex-direction: column; height: auto; padding: 2px 6px; font-size: 10px; line-height: 1.2; }
+.wb-ribbon-tabs { display: flex; height: 26px; gap: 0; border-bottom: 1px solid var(--vscode-toolbar-border); }
+.wb-ribbon-tabs button { height: 100%; padding: 0 12px; border: 0; background: transparent; color: inherit; cursor: pointer; }
+.wb-ribbon-tabs button.on { color: var(--vscode-base-accent); box-shadow: inset 0 -2px 0 var(--vscode-base-accent); }
+.wb-toolbar-h .wb-ribbon-body { height: 64px; }
+.wb-toolbar-h .wb-ribbon-body.grouped { height: auto; min-height: 92px; overflow: visible; }
+.wb-ribbon-groups { display: flex; flex: 1; min-width: 0; align-items: stretch; overflow-x: auto; }
+.wb-ribbon-group { position: relative; display: flex; flex-direction: column; flex: 0 0 auto; padding: 0 3px; border-right: 1px solid var(--vscode-toolbar-border); }
+.wb-ribbon-btns { display: flex; flex-wrap: nowrap; align-items: flex-end; height: 72px; gap: 1px; }
+.wb-ribbon-stack { display: flex; flex-direction: column; justify-content: flex-end; gap: 1px; flex: 0 0 auto; }
+.wb-ribbon-split { display: flex; flex-direction: row; align-items: center; flex: 0 0 auto; }
+.wb-ribbon-slot { position: relative; display: flex; border: 0; background: transparent; color: inherit; cursor: pointer; font-size: 11px; line-height: 13px; }
+.wb-ribbon-slot.big { flex-direction: column; align-items: center; justify-content: flex-start; width: 54px; min-width: 54px; height: 68px; padding: 3px 3px 2px; gap: 2px; }
+.wb-ribbon-slot.small { flex-direction: row; align-items: center; height: 21px; min-height: 21px; max-width: 148px; padding: 0 4px; gap: 4px; }
+.wb-ribbon-slot:hover, .wb-ribbon-arrow:hover, .wb-ribbon-more:hover, .wb-ribbon-launch:hover { background: var(--vscode-toolbar-hoverBackground); }
+.wb-ribbon-glyph { display: grid; place-items: center; flex: 0 0 auto; }
+.wb-ribbon-slot.big .wb-ribbon-glyph { width: 24px; height: 24px; }
+.wb-ribbon-slot.small .wb-ribbon-glyph { width: 14px; height: 14px; }
+.wb-ribbon-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60px; }
+.wb-ribbon-slot.small .wb-ribbon-label { max-width: 120px; }
+.wb-ribbon-arrow { border: 0; background: transparent; color: var(--vscode-descriptionForeground); cursor: pointer; padding: 0; font-size: 10px; line-height: 10px; }
+.wb-ribbon-arrow.big { width: 14px; height: 21px; }
+.wb-ribbon-arrow:not(.big) { width: 12px; min-width: 12px; height: 21px; }
+.wb-ribbon-group-title { display: flex; align-items: center; height: 16px; gap: 2px; font-size: 11px; line-height: 16px; color: var(--vscode-descriptionForeground); }
+.wb-ribbon-group-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; }
+.wb-ribbon-more, .wb-ribbon-launch { height: 16px; min-width: 16px; padding: 0 4px; border: 0; background: transparent; color: var(--vscode-descriptionForeground); cursor: pointer; font-size: 10px; }
+.wb-ribbon-fly { position: fixed; z-index: 80; min-width: 140px; display: flex; flex-direction: column; padding: 4px 0; background: var(--vscode-menu-background); color: var(--vscode-menu-foreground); border: 1px solid var(--vscode-menu-border); box-shadow: var(--shadow-2); }
+.wb-ribbon-fly button { display: block; width: 100%; text-align: left; border: 0; background: transparent; color: inherit; cursor: pointer; padding: 3px 12px; font-size: 12px; }
+.wb-ribbon-fly button:hover { background: var(--vscode-menu-selectionBackground); color: var(--vscode-menu-selectionForeground); }
+.wb-title-search { height: 22px; width: 168px; margin-right: 8px; padding: 0 8px; border: 1px solid var(--vscode-input-border); border-radius: var(--r-sm); background: var(--vscode-input-background); color: var(--vscode-input-foreground); font-size: var(--fs-ui); }
+.wb-activity-letter { font-size: 12px; line-height: 1; }
+.wb-sheet { position: absolute; top: 0; right: 0; bottom: 0; width: min(400px, 92%); z-index: 160; display: flex; flex-direction: column; background: var(--vscode-base-raised); color: var(--vscode-foreground); border-left: 1px solid var(--vscode-widget-border); box-shadow: var(--shadow-3); }
+.wb-form { display: flex; flex-direction: column; gap: 8px; }
+.wb-form-note { margin: 0 0 12px; white-space: pre-wrap; color: var(--vscode-descriptionForeground); }
+.wb-form-row { display: grid; grid-template-columns: 120px 1fr; gap: 8px; align-items: center; }
+.wb-form-row.table { grid-template-columns: 1fr; }
+.wb-form-tabs, .wb-wizard-steps { display: flex; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
+.wb-form-tabs button, .wb-wizard-steps span { padding: 2px 8px; border-radius: var(--r-sm); border: 0; background: transparent; color: var(--vscode-descriptionForeground); }
+.wb-form-tabs button.on, .wb-wizard-steps span.on { background: var(--vscode-list-activeSelectionBackground); color: var(--vscode-list-activeSelectionForeground); }
+.wb-form-table th, .wb-form-table td { border: 1px solid var(--vscode-widget-border); padding: 3px 6px; text-align: left; font-weight: 400; }
+.wb-sheet h4 { margin: 8px 0 6px; font-size: var(--fs-ui); }
+.wb-menu-pop { position: absolute; z-index: 160; top: 48px; left: 48px; min-width: 180px; max-width: min(320px, 80%); display: flex; flex-direction: column; padding: 4px 0; background: var(--vscode-menu-background); color: var(--vscode-menu-foreground); border: 1px solid var(--vscode-menu-border); box-shadow: var(--shadow-2); }
+.wb-menu-pop button { display: block; width: 100%; text-align: left; border: 0; background: transparent; color: inherit; cursor: pointer; padding: 3px 12px; font: inherit; font-size: 12px; }
+.wb-menu-pop button:hover { background: var(--vscode-menu-selectionBackground); color: var(--vscode-menu-selectionForeground); }
+.wb-menu-title { padding: 4px 12px 2px; font-size: 11px; color: var(--vscode-descriptionForeground); }
+.wb-menu-note { margin: 0; padding: 0 12px 6px; }
+.wb-menu-sep { height: 1px; margin: 4px 0; background: var(--vscode-menu-separatorBackground, var(--vscode-widget-border)); }
+.wb-list-pop { position: absolute; z-index: 160; top: 18%; left: 50%; transform: translateX(-50%); width: min(420px, 92%); max-height: 60%; display: flex; flex-direction: column; background: var(--vscode-quickInput-background, var(--vscode-base-raised)); color: var(--vscode-foreground); border: 1px solid var(--vscode-widget-border); box-shadow: var(--shadow-3); }
+.wb-list-pop .wb-input { border: 0; border-bottom: 1px solid var(--vscode-widget-border); border-radius: 0; }
+.wb-list-items { overflow: auto; padding: 4px 0; }
+.wb-list-items button { display: block; width: 100%; text-align: left; border: 0; background: transparent; color: inherit; cursor: pointer; padding: 4px 12px; font: inherit; }
+.wb-list-items button:hover { background: var(--vscode-list-hoverBackground); }
+.wb-banner { position: absolute; z-index: 150; top: 0; left: 0; right: 0; display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--vscode-editorWidget-background, var(--vscode-base-raised)); color: var(--vscode-foreground); border-bottom: 1px solid var(--vscode-widget-border); }
+.wb-banner-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--vscode-descriptionForeground); }
+.wb-sys-note { margin: 0 0 8px; font-size: 11px; color: var(--vscode-descriptionForeground); }
+
+/* ---------- 活动栏 ---------- */
+.wb-activitybar {
+  width: var(--h-activity);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--vscode-activityBar-background);
+  border-right: 1px solid var(--vscode-activityBar-border);
+  overflow: hidden;
+}
+.wb-activitybar.right { border-right: 0; border-left: 1px solid var(--vscode-activityBar-border); }
+.wb-activitybar-items { display: flex; flex-direction: column; }
+.wb-activity-item {
+  position: relative;
+  width: 100%;
+  height: var(--h-activity);
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--vscode-activityBar-inactiveForeground) !important;
+  cursor: pointer;
+}
+.wb-activity-item:hover,
+.wb-activity-item.active { color: var(--vscode-activityBar-foreground) !important; }
+.wb-activity-item.active { background: var(--vscode-activityBar-activeBackground); }
+.wb-activity-item.active::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--vscode-activityBar-activeBorder); }
+.wb-activitybar.right .wb-activity-item.active::before { left: auto; right: 0; }
+.wb-activity-badge {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  font-size: 9px;
+  line-height: 16px;
+  text-align: center;
+  background: var(--vscode-activityBarBadge-background);
+  color: var(--vscode-activityBarBadge-foreground);
+}
+
+/* ---------- 侧栏 ---------- */
+.wb-sidebar { display: flex; flex-direction: column; min-width: 0; overflow: hidden; background: var(--vscode-sideBar-background); color: var(--vscode-sideBar-foreground); }
+.wb-sidebar.left { border-right: 1px solid var(--vscode-sideBar-border); }
+.wb-sidebar.right { border-left: 1px solid var(--vscode-sideBar-border); }
+.wb-sidebar-iconrow { display: flex; gap: 2px; padding: var(--sp-1) 6px; flex-shrink: 0; border-bottom: 1px solid var(--vscode-sideBarSectionHeader-border); }
+.wb-pane-header { height: var(--h-tab); display: flex; align-items: center; gap: 2px; padding: 0 var(--sp-2) 0 var(--sp-4); flex-shrink: 0; color: var(--vscode-sideBarTitle-foreground); }
+.wb-pane-title { display: flex; align-items: center; gap: 6px; font-size: var(--fs-cap); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; overflow: hidden; }
+.wb-pane-tabs { display: flex; gap: var(--sp-3); height: 100%; }
+.wb-pane-tab { position: relative; height: 100%; padding: 0; border: 0; background: transparent; color: var(--vscode-panelTitle-inactiveForeground) !important; font-size: var(--fs-cap) !important; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.wb-pane-tab.active { color: var(--vscode-panelTitle-activeForeground) !important; }
+.wb-pane-tab.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: 5px; height: 1px; background: var(--vscode-panelTitle-activeBorder); }
+.wb-pane-body { flex: 1; min-height: 0; overflow: auto; }
+.wb-sections { display: flex; flex-direction: column; overflow: hidden; }
+.wb-section-stack { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.wb-section-stack.reverse { flex-direction: column-reverse; }
+.wb-section-slot { display: flex; flex-direction: column; min-height: 0; position: relative; }
+.wb-viewsection { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.wb-viewsection-body { flex: 1; min-height: 0; overflow: auto; }
+.wb-section-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wb-viewsection .wb-section-head { gap: 4px; }
+
+.wb-section-head {
+  height: var(--h-row);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 var(--sp-1);
+  font-size: var(--fs-cap);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  background: var(--vscode-sideBarSectionHeader-background);
+  color: var(--vscode-sideBarSectionHeader-foreground);
+  border-top: 1px solid var(--vscode-sideBarSectionHeader-border);
+  cursor: pointer;
+}
+.wb-tree-row {
+  height: var(--h-row);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-right: var(--sp-2);
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  outline: none;
+}
+.wb-tree-row:hover { background: var(--vscode-list-hoverBackground); }
+.wb-tree-row.selected { background: var(--vscode-list-activeSelectionBackground); color: var(--vscode-list-activeSelectionForeground); }
+.wb-tree-row:focus-visible { border-color: var(--vscode-list-focusOutline); }
+.wb-tree-row .wb-icon { opacity: 0.85; }
+.wb-tree-label { overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- 编辑区 ---------- */
+.wb-editor { flex: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--vscode-editor-background); color: var(--vscode-editor-foreground); }
+.wb-tabs { height: var(--h-tab); display: flex; flex-shrink: 0; position: relative; background: var(--vscode-editorGroupHeader-tabsBackground); overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+.wb-tabs::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--vscode-editorGroupHeader-tabsBorder); pointer-events: none; }
+.wb-tab {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  min-width: 0;
+  max-width: 220px;
+  padding: 0 var(--sp-1) 0 var(--sp-3);
+  background: var(--vscode-tab-inactiveBackground);
+  color: var(--vscode-tab-inactiveForeground);
+  border-right: 1px solid var(--vscode-tab-border);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.wb-tab:hover { background-image: linear-gradient(var(--vscode-tab-hoverBackground), var(--vscode-tab-hoverBackground)); }
+.wb-tab.active { z-index: 2; background: var(--vscode-tab-activeBackground); color: var(--vscode-tab-activeForeground); }
+.wb-tab.active::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--vscode-tab-activeBorderTop); }
+.wb-tab-label { overflow: hidden; text-overflow: ellipsis; }
+.wb-tab-close { width: 20px; height: 20px; flex-shrink: 0; display: grid; place-items: center; padding: 0; border: 0; border-radius: var(--r-sm); background: transparent; cursor: pointer; visibility: hidden; }
+.wb-tab:hover .wb-tab-close,
+.wb-tab.active .wb-tab-close,
+.wb-tab.dirty .wb-tab-close { visibility: visible; }
+.wb-tab-close:hover { background: var(--vscode-toolbar-hoverBackground); }
+.wb-tabs-fill { flex: 1; }
+.wb-tabs-actions { display: flex; align-items: center; gap: 2px; padding: 0 6px; position: relative; z-index: 1; }
+.wb-breadcrumbs { height: 22px; display: flex; align-items: center; gap: 4px; padding: 0 var(--sp-3); flex-shrink: 0; background: var(--vscode-breadcrumb-background); color: var(--vscode-breadcrumb-foreground); }
+.wb-breadcrumbs .cur { color: var(--vscode-breadcrumb-focusForeground); }
+.wb-editor-body { flex: 1; min-height: 0; overflow: auto; position: relative; }
+.wb-editor-empty { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--sp-6); color: var(--vscode-disabledForeground); }
+.wb-editor-empty > .wb-icon { opacity: 0.3; }
+.wb-editor-empty-keys { display: grid; grid-template-columns: auto auto; gap: var(--sp-2) var(--sp-4); align-items: center; font-size: var(--fs-body); }
+.wb-editor-empty-keys span { text-align: right; }
+.wb-editor-empty-keys kbd { justify-self: start; }
+
+/* ---------- 面板 ---------- */
+.wb-panel { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--vscode-panel-background); }
+.wb-panel.bottom { border-top: 1px solid var(--vscode-panel-border); }
+.wb-panel.right { border-left: 1px solid var(--vscode-panel-border); }
+.wb-panel-header { height: var(--h-tab); display: flex; align-items: center; gap: 2px; padding: 0 var(--sp-2) 0 var(--sp-2); flex-shrink: 0; }
+.wb-panel-tabs { display: flex; height: 100%; gap: 2px; overflow: hidden; }
+.wb-panel-tab {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 var(--sp-2);
+  border: 0;
+  background: transparent;
+  color: var(--vscode-panelTitle-inactiveForeground) !important;
+  font-size: var(--fs-cap) !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.wb-panel-tab:hover,
+.wb-panel-tab.active { color: var(--vscode-panelTitle-activeForeground) !important; }
+.wb-panel-tab.active::after { content: ""; position: absolute; left: var(--sp-2); right: var(--sp-2); bottom: 5px; height: 1px; background: var(--vscode-panelTitle-activeBorder); }
+.wb-count { min-width: 16px; height: 16px; padding: 0 5px; border-radius: 8px; font-size: 10px; line-height: 16px; text-align: center; background: var(--vscode-badge-background); color: var(--vscode-badge-foreground); }
+.wb-panel-body { flex: 1; min-height: 0; overflow: auto; }
+
+/* ---------- 状态栏 ---------- */
+.wb-statusbar {
+  height: var(--h-status);
+  display: flex;
+  align-items: stretch;
+  flex-shrink: 0;
+  background: var(--vscode-statusBar-background);
+  color: var(--vscode-statusBar-foreground);
+  border-top: 1px solid var(--vscode-statusBar-border);
+  font-size: var(--fs-cap);
+}
+.wb-statusbar .wb-zone { display: flex; align-items: stretch; min-width: 0; }
+.wb-statusbar .wb-zone.center { flex: 1; justify-content: center; }
+.wb-statusbar .wb-zone.end { justify-content: flex-end; }
+.wb-statusbar .wb-item { height: 100%; border-radius: 0; padding: 0 var(--sp-2); }
+.wb-statusbar .wb-item:hover { background: var(--vscode-statusBarItem-hoverBackground); }
+.wb-statusbar .wb-item.accent { padding: 0 10px; background: var(--vscode-statusBarItem-remoteBackground); color: var(--vscode-statusBarItem-remoteForeground); }
+
+/* 按钮条：左中右 / 上中下 */
+.wb-zones { display: flex; flex: 1; min-width: 0; min-height: 0; align-items: center; }
+.wb-zones.v { flex-direction: column; height: 100%; }
+.wb-zones.h { flex-direction: row; width: 100%; }
+.wb-zone { display: flex; align-items: center; min-width: 0; min-height: 0; }
+.wb-zones .wb-zone.center { flex: 1; justify-content: center; }
+.wb-zones.v .wb-zone { flex-direction: column; }
+.wb-itembar { display: inline-flex; align-items: center; gap: 1px; }
+.wb-itembar.v { flex-direction: column; }
+.wb-item { display: inline-flex; align-items: center; justify-content: center; gap: 4px; height: 22px; min-width: 22px; padding: 0 4px; border: 0; border-radius: var(--r-sm); background: transparent; color: inherit; cursor: pointer; white-space: nowrap; position: relative; }
+.wb-ribbon-split.has-menu { position: relative; }
+.wb-menu-mark { position: absolute; right: 1px; bottom: 1px; width: 0; height: 0; border: 3px solid transparent; border-right-color: currentColor; border-bottom-color: currentColor; opacity: 0.65; pointer-events: none; }
+.wb-item-icon, .wb-item-text { display: inline-flex; align-items: center; position: relative; }
+.wb-item:hover { background: var(--vscode-toolbar-hoverBackground); }
+.wb-item.active { color: var(--vscode-toolbar-activeForeground, var(--vscode-base-accent)); background: var(--vscode-toolbar-hoverBackground); }
+.wb-item-sep { width: 1px; height: 16px; margin: 0 3px; background: var(--vscode-toolbar-border); align-self: center; }
+.wb-itembar.v .wb-item-sep { width: 16px; height: 1px; margin: 3px 0; }
+.wb-tabs-actions, .wb-breadcrumbs { display: flex; align-items: center; }
+.wb-breadcrumbs .wb-sp { flex: 1; }
+
+/* ---------- 浮层 ---------- */
+.wb-overlay-top { position: absolute; inset: 0; z-index: 200; display: flex; justify-content: center; align-items: flex-start; padding-top: calc(var(--h-title) + 6px); }
+.wb-quickpick {
+  width: min(600px, 92%);
+  max-height: 62%;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  background: var(--vscode-quickInput-background);
+  color: var(--vscode-quickInput-foreground);
+  border: 1px solid var(--vscode-widget-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-3);
+}
+.wb-quickpick-input {
+  height: 26px;
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--vscode-focusBorder);
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  font: inherit;
+  font-size: var(--fs-body);
+  outline: none;
+}
+.wb-quickpick-input::placeholder { color: var(--vscode-input-placeholderForeground); }
+.wb-quickpick-list { overflow: auto; margin-top: 6px; }
+.wb-quickpick-item { height: calc(var(--h-row) + 2px); display: flex; align-items: center; gap: 6px; padding: 0 var(--sp-2); border-radius: var(--r-sm); cursor: pointer; white-space: nowrap; }
+.wb-quickpick-item.focused { background: var(--vscode-quickInputList-focusBackground); color: var(--vscode-quickInputList-focusForeground); }
+.wb-quickpick-icon { width: 16px; display: grid; place-items: center; opacity: 0.85; }
+.wb-quickpick-label { overflow: hidden; text-overflow: ellipsis; }
+.wb-quickpick-desc { color: var(--vscode-descriptionForeground); font-size: var(--fs-cap); }
+.wb-quickpick-group { padding: 6px var(--sp-2) 2px; font-size: var(--fs-cap); color: var(--vscode-pickerGroup-foreground); border-top: 1px solid var(--vscode-pickerGroup-border); margin-top: 2px; }
+.wb-quickpick-empty { padding: var(--sp-2); color: var(--vscode-descriptionForeground); }
+
+.wb-scrim { position: absolute; inset: 0; z-index: 180; display: grid; place-items: center; background: var(--vscode-base-scrim); }
+.wb-dialog {
+  max-width: 92%;
+  max-height: 86%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--vscode-base-raised);
+  color: var(--vscode-foreground);
+  border: 1px solid var(--vscode-widget-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-3);
+}
+.wb-dialog-head { height: 36px; display: flex; align-items: center; padding: 0 6px 0 14px; flex-shrink: 0; font-size: var(--fs-body); font-weight: 600; border-bottom: 1px solid var(--vscode-base-border); }
+.wb-dialog-body { flex: 1; overflow: auto; padding: 14px; user-select: text; }
+.wb-dialog-foot { display: flex; justify-content: flex-end; gap: var(--sp-2); padding: 10px 14px; flex-shrink: 0; border-top: 1px solid var(--vscode-base-border); }
+
+.wb-settings { display: flex; gap: var(--sp-4); min-height: 340px; }
+.wb-settings-nav { width: 110px; display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
+.wb-settings-nav button { height: calc(var(--h-row) + 4px); padding: 0 var(--sp-2); border: 0; border-radius: var(--r-sm); background: transparent; text-align: left; cursor: pointer; }
+.wb-settings-nav button:hover { background: var(--vscode-list-hoverBackground); }
+.wb-settings-nav button.active { background: var(--vscode-list-activeSelectionBackground); color: var(--vscode-list-activeSelectionForeground); }
+.wb-settings-body { flex: 1; min-width: 0; }
+.wb-settings-body h4 { margin: 0 0 var(--sp-2); font-size: var(--fs-ui); font-weight: 600; }
+.wb-theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: var(--sp-2); margin-bottom: var(--sp-4); }
+.wb-theme-card { display: flex; flex-direction: column; gap: 6px; padding: 6px; border: 1px solid var(--vscode-base-border); border-radius: var(--r-md); background: transparent; text-align: left; cursor: pointer; }
+.wb-theme-card:hover { background: var(--vscode-list-hoverBackground); }
+.wb-theme-card.active { border-color: var(--vscode-focusBorder); box-shadow: 0 0 0 1px var(--vscode-focusBorder); }
+.wb-swatches { display: flex; height: 26px; border-radius: var(--r-sm); overflow: hidden; box-shadow: 0 0 0 1px var(--vscode-base-border); }
+.wb-swatches i { flex: 1; }
+.wb-accents { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-bottom: var(--sp-4); }
+.wb-accent { width: 22px; height: 22px; padding: 0; border-radius: 50%; border: 2px solid transparent; box-shadow: 0 0 0 1px var(--vscode-base-border); cursor: pointer; }
+.wb-accent.active { border-color: var(--vscode-foreground); }
+.wb-accent.none { background: linear-gradient(135deg, transparent 44%, var(--vscode-errorForeground) 44% 56%, transparent 56%); }
+.wb-settings-rows { display: flex; flex-direction: column; }
+.wb-settings-row { display: flex; align-items: center; min-height: 34px; border-bottom: 1px solid var(--vscode-base-border); }
+.wb-settings-label { width: 110px; flex-shrink: 0; }
+.wb-settings-ctl { display: flex; align-items: center; gap: var(--sp-3); }
+
+.wb-notices { position: absolute; right: var(--sp-3); bottom: calc(var(--h-status) + var(--sp-3)); z-index: 190; display: flex; flex-direction: column; gap: var(--sp-2); width: min(380px, 80%); }
+.wb-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 6px 10px var(--sp-3);
+  background: var(--vscode-notifications-background);
+  color: var(--vscode-notifications-foreground);
+  border: 1px solid var(--vscode-notifications-border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-2);
+  user-select: text;
+}
+.wb-notice-icon { margin-top: 1px; }
+.wb-notice.info .wb-notice-icon { color: var(--vscode-notificationsInfoIcon-foreground); }
+.wb-notice.success .wb-notice-icon { color: var(--vscode-notificationsSuccessIcon-foreground); }
+.wb-notice.warning .wb-notice-icon { color: var(--vscode-notificationsWarningIcon-foreground); }
+.wb-notice.error .wb-notice-icon { color: var(--vscode-notificationsErrorIcon-foreground); }
+.wb-notice-text { flex: 1; min-width: 0; line-height: 1.5; }
+.wb-notice-detail { color: var(--vscode-descriptionForeground); font-size: var(--fs-cap); }
+
+.wb-about { display: flex; gap: var(--sp-4); align-items: flex-start; }
+.wb-about > .wb-icon { color: var(--vscode-base-accent); }
+.wb-about-name { font-size: var(--fs-t3); font-weight: 600; margin-bottom: 6px; }
+.wb-about-line { color: var(--vscode-descriptionForeground); line-height: 1.7; }
+
+.wb-editor-body:has(.wb-sidepage) { display: flex; flex-direction: column; min-height: 280px; }
+.wb-sidepage { display: flex; flex-direction: column; flex: 1; min-height: 280px; overflow: auto; background: var(--vscode-editor-background); color: var(--vscode-editor-foreground); }
+.wb-sp-body { display: flex; flex: 1; min-height: 160px; }
+.wb-sp-col { width: 196px; flex: none; display: flex; flex-direction: column; min-height: 0; min-width: 0; border-right: 1px solid var(--vscode-panel-border); background: var(--vscode-sideBar-background); }
+.wb-sp-col.end { border-right: 0; border-left: 1px solid var(--vscode-panel-border); }
+.wb-sp-stage { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
+.wb-sp-btn { padding: 2px 6px; border-radius: 2px; background: var(--vscode-toolbar-hoverBackground); font-size: 12px; line-height: 18px; white-space: nowrap; }
+.wb-sp-ribbon, .wb-sp-swatches { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; padding: 4px 8px; border-bottom: 1px solid var(--vscode-panel-border); background: var(--vscode-editorWidget-background); }
+.wb-sp-group { display: flex; flex-direction: column; align-items: center; gap: 2px; max-width: 100%; }
+.wb-sp-tools { display: flex; flex-wrap: wrap; gap: 2px; justify-content: center; }
+.wb-sp-glabel { font-size: 10px; line-height: 14px; color: var(--vscode-descriptionForeground); }
+.wb-sp-tabs { display: flex; align-items: center; gap: 2px; padding: 0 6px; border-bottom: 1px solid var(--vscode-panel-border); background: var(--vscode-editorWidget-background); }
+.wb-sp-tabs.in-col { flex-wrap: wrap; background: transparent; }
+.wb-sp-tabs button { border: 0; border-bottom: 2px solid transparent; background: transparent; color: inherit; padding: 6px 8px; font: inherit; cursor: pointer; }
+.wb-sp-tabs button.on { border-bottom-color: var(--vscode-focusBorder); }
+.wb-sp-tabs-end { margin-left: auto; display: flex; flex-wrap: wrap; gap: 2px; padding: 4px 0; }
+.wb-sp-search { padding: 6px 8px; border-bottom: 1px solid var(--vscode-panel-border); }
+.wb-sp-search input { width: 100%; }
+.wb-sp-list, .wb-sp-aside { display: flex; flex-direction: column; min-height: 0; overflow: auto; }
+.wb-sp-list h3, .wb-sp-aside h3 { margin: 0; padding: 6px 8px 2px; font-size: 11px; font-weight: 600; color: var(--vscode-descriptionForeground); }
+.wb-sp-row { padding: 4px 8px; border-bottom: 1px solid var(--vscode-panel-border); font-size: 12px; line-height: 18px; }
+.wb-sp-canvas { position: relative; flex: 1; min-height: 140px; background: var(--vscode-editor-background); }
+.wb-sp-corners { position: absolute; top: 8px; right: 8px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; max-width: 70%; }
+.wb-sp-sheet-wrap { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 140px; padding: 16px; }
+.wb-sp-sheet { width: min(420px, 78%); height: min(280px, 80%); display: flex; align-items: flex-start; justify-content: center; padding-top: 12px; border: 1px solid var(--vscode-panel-border); background: var(--vscode-editorWidget-background); color: var(--vscode-descriptionForeground); font-size: 12px; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18); }
+.wb-sp-grid { flex: 1; display: grid; grid-template-columns: repeat(8, 1fr); grid-auto-rows: 22px; min-height: 140px; }
+.wb-sp-grid i { border-right: 1px solid var(--vscode-panel-border); border-bottom: 1px solid var(--vscode-panel-border); }
+.wb-sp-status { display: flex; flex-wrap: wrap; gap: 4px; padding: 3px 8px; border-top: 1px solid var(--vscode-panel-border); background: var(--vscode-statusBar-background); color: var(--vscode-statusBar-foreground); }

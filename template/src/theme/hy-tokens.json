@@ -1,0 +1,77 @@
+{
+  "version": "2.0.0",
+  "source": "90-整理仓/40-主题令牌/tokens.json",
+  "shared": {
+    "font-ui": "\"Segoe UI Variable Text\",\"Segoe UI\",\"Microsoft YaHei UI\",\"PingFang SC\",system-ui,sans-serif",
+    "font-mono": "\"Cascadia Mono\",\"JetBrains Mono\",Consolas,\"SF Mono\",monospace",
+    "sp-1": "4px",
+    "sp-2": "8px",
+    "sp-3": "12px",
+    "sp-4": "16px",
+    "sp-5": "20px",
+    "sp-6": "24px",
+    "sp-8": "32px",
+    "r-xs": "2px",
+    "r-sm": "4px",
+    "r-md": "6px",
+    "r-lg": "8px",
+    "r-xl": "10px",
+    "sash-size": "4px",
+    "sb-size": "10px",
+    "dur": "120ms"
+  },
+  "density": {
+    "compact": {
+      "fs-cap": "11px",
+      "fs-ui": "12px",
+      "fs-body": "13px",
+      "fs-t3": "15px",
+      "fs-t2": "17px",
+      "fs-t1": "22px",
+      "fs-lt": "26px",
+      "h-row": "22px",
+      "h-ctl": "24px",
+      "h-ctl-lg": "28px",
+      "h-pri": "28px",
+      "h-menu": "24px",
+      "h-tab": "30px",
+      "h-tool": "28px",
+      "h-title": "28px",
+      "h-status": "22px",
+      "h-activity": "40px",
+      "h-cmdline": "86px"
+    },
+    "comfortable": {
+      "fs-cap": "12px",
+      "fs-ui": "13px",
+      "fs-body": "14px",
+      "fs-t3": "16px",
+      "fs-t2": "18px",
+      "fs-t1": "24px",
+      "fs-lt": "28px",
+      "h-row": "26px",
+      "h-ctl": "28px",
+      "h-ctl-lg": "32px",
+      "h-pri": "32px",
+      "h-menu": "28px",
+      "h-tab": "34px",
+      "h-tool": "32px",
+      "h-title": "28px",
+      "h-status": "24px",
+      "h-activity": "48px",
+      "h-cmdline": "86px"
+    }
+  },
+  "shadows": {
+    "dark": {
+      "shadow-1": "0 1px 2px rgba(0,0,0,.4),0 0 0 .5px rgba(255,255,255,.04)",
+      "shadow-2": "0 4px 14px rgba(0,0,0,.45),0 0 0 .5px rgba(255,255,255,.06)",
+      "shadow-3": "0 14px 36px rgba(0,0,0,.6),0 0 0 .5px rgba(255,255,255,.08)"
+    },
+    "light": {
+      "shadow-1": "0 1px 2px rgba(0,0,0,.06),0 0 0 .5px rgba(0,0,0,.04)",
+      "shadow-2": "0 4px 12px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.06)",
+      "shadow-3": "0 12px 32px rgba(0,0,0,.22),0 0 0 .5px rgba(0,0,0,.08)"
+    }
+  }
+}

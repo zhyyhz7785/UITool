@@ -1,0 +1,709 @@
+{
+  "file.import.dwg": {
+    "name": "import",
+    "src": "hy"
+  },
+  "hw.cmdbar": {
+    "name": "terminal",
+    "src": "hy"
+  },
+  "hw.toolbarpos": {
+    "name": "rows2",
+    "src": "hy"
+  },
+  "app.options": {
+    "name": "settings",
+    "src": "hy"
+  },
+  "cad.appload": {
+    "name": "plug",
+    "src": "hy"
+  },
+  "cad.area": {
+    "name": "area",
+    "src": "hy"
+  },
+  "cad.array": {
+    "name": "array",
+    "src": "hy"
+  },
+  "cad.block": {
+    "name": "import",
+    "src": "hy"
+  },
+  "cad.circle": {
+    "name": "circle",
+    "src": "hy"
+  },
+  "cad.circle.ttt": {
+    "name": "circle",
+    "src": "hy"
+  },
+  "cad.arc": {
+    "name": "arc",
+    "src": "hy"
+  },
+  "cad.arc.sce": {
+    "name": "arc",
+    "src": "hy"
+  },
+  "cad.arc.sca": {
+    "name": "arc",
+    "src": "hy"
+  },
+  "cad.arc.scl": {
+    "name": "arc",
+    "src": "hy"
+  },
+  "cad.arc.sea": {
+    "name": "arc",
+    "src": "hy"
+  },
+  "cad.arc.sed": {
+    "name": "arc",
+    "src": "hy"
+  },
+  "cad.arc.ser": {
+    "name": "arc",
+    "src": "hy"
+  },
+  "cad.arc.cse": {
+    "name": "arc",
+    "src": "hy"
+  },
+  "cad.arc.csa": {
+    "name": "arc",
+    "src": "hy"
+  },
+  "cad.arc.csl": {
+    "name": "arc",
+    "src": "hy"
+  },
+  "cad.arc.con": {
+    "name": "arc",
+    "src": "hy"
+  },
+  "cad.polygon": {
+    "name": "polygon",
+    "src": "hy"
+  },
+  "cad.ellipse": {
+    "name": "ellipse",
+    "src": "hy"
+  },
+  "cad.spline": {
+    "name": "spline",
+    "src": "hy"
+  },
+  "cad.point": {
+    "name": "point",
+    "src": "hy"
+  },
+  "cad.pointm": {
+    "name": "point",
+    "src": "hy"
+  },
+  "cad.divide": {
+    "name": "point",
+    "src": "hy"
+  },
+  "cad.measure": {
+    "name": "point",
+    "src": "hy"
+  },
+  "cad.ray": {
+    "name": "line",
+    "src": "hy"
+  },
+  "cad.xline": {
+    "name": "line",
+    "src": "hy"
+  },
+  "cad.donut": {
+    "name": "circle",
+    "src": "hy"
+  },
+  "cad.copy": {
+    "name": "copy",
+    "src": "hy"
+  },
+  "cad.cui": {
+    "name": "wrench",
+    "src": "hy"
+  },
+  "cad.dc": {
+    "name": "library",
+    "src": "hy"
+  },
+  "cad.deselect": {
+    "name": "none",
+    "src": "hy"
+  },
+  "cad.dimali": {
+    "name": "dimali",
+    "src": "hy"
+  },
+  "cad.dimang": {
+    "name": "dimang",
+    "src": "hy"
+  },
+  "cad.dimlin": {
+    "name": "dimlin",
+    "src": "hy"
+  },
+  "cad.dimstyle": {
+    "name": "dimstyle",
+    "src": "hy"
+  },
+  "cad.dist": {
+    "name": "dist",
+    "src": "hy"
+  },
+  "cad.dyn": {
+    "name": "dyn",
+    "src": "hy"
+  },
+  "cad.erase": {
+    "name": "delete",
+    "src": "hy"
+  },
+  "cad.explode": {
+    "name": "explode",
+    "src": "hy"
+  },
+  "cad.extend": {
+    "name": "extend",
+    "src": "hy"
+  },
+  "cad.fillet": {
+    "name": "fillet",
+    "src": "hy"
+  },
+  "cad.grid": {
+    "name": "grid",
+    "src": "hy"
+  },
+  "cad.hatch": {
+    "name": "hatch",
+    "src": "hy"
+  },
+  "cad.hide": {
+    "name": "hidden",
+    "src": "hy"
+  },
+  "cad.image": {
+    "name": "image",
+    "src": "hy"
+  },
+  "cad.isolate": {
+    "name": "solo",
+    "src": "hy"
+  },
+  "cad.layer": {
+    "name": "layer",
+    "src": "hy"
+  },
+  "cad.leader": {
+    "name": "leader",
+    "src": "hy"
+  },
+  "cad.line": {
+    "name": "line",
+    "src": "hy"
+  },
+  "cad.linetype": {
+    "name": "pline",
+    "src": "hy"
+  },
+  "cad.lw": {
+    "name": "pline",
+    "src": "hy"
+  },
+  "cad.matchprop": {
+    "name": "matchprop",
+    "src": "hy"
+  },
+  "cad.mirror": {
+    "name": "mirror",
+    "src": "hy"
+  },
+  "cad.move": {
+    "name": "move",
+    "src": "hy"
+  },
+  "cad.netload": {
+    "name": "plug",
+    "src": "hy"
+  },
+  "cad.offset": {
+    "name": "offset",
+    "src": "hy"
+  },
+  "cad.ortho": {
+    "name": "ortho",
+    "src": "hy"
+  },
+  "cad.osnap": {
+    "name": "snap",
+    "src": "hy"
+  },
+  "cad.otrack": {
+    "name": "otrack",
+    "src": "hy"
+  },
+  "cad.palettes": {
+    "name": "grid2",
+    "src": "hy"
+  },
+  "cad.pan": {
+    "name": "pan",
+    "src": "hy"
+  },
+  "cad.pline": {
+    "name": "pline",
+    "src": "hy"
+  },
+  "cad.polar": {
+    "name": "polar",
+    "src": "hy"
+  },
+  "cad.props": {
+    "name": "props",
+    "src": "hy"
+  },
+  "cad.qselect": {
+    "name": "filter",
+    "src": "hy"
+  },
+  "cad.rect": {
+    "name": "rect",
+    "src": "hy"
+  },
+  "cad.regen": {
+    "name": "refresh",
+    "src": "hy"
+  },
+  "cad.rotate": {
+    "name": "rotate",
+    "src": "hy"
+  },
+  "cad.scale": {
+    "name": "scale",
+    "src": "hy"
+  },
+  "cad.selall": {
+    "name": "all",
+    "src": "hy"
+  },
+  "cad.text": {
+    "name": "text",
+    "src": "hy"
+  },
+  "cad.textstyle": {
+    "name": "text",
+    "src": "hy"
+  },
+  "cad.trim": {
+    "name": "trim",
+    "src": "hy"
+  },
+  "cad.unisolate": {
+    "name": "visible",
+    "src": "hy"
+  },
+  "cad.units": {
+    "name": "ruler2",
+    "src": "hy"
+  },
+  "cad.wscur": {
+    "name": "app",
+    "src": "hy"
+  },
+  "cad.xref": {
+    "name": "link",
+    "src": "hy"
+  },
+  "cad.zoomext": {
+    "name": "extents",
+    "src": "hy"
+  },
+  "cad.zoomin": {
+    "name": "zoomin",
+    "src": "hy"
+  },
+  "cad.zoomout": {
+    "name": "zoomout",
+    "src": "hy"
+  },
+  "cad.zoomsel": {
+    "name": "zoomsel",
+    "src": "hy"
+  },
+  "cad.zoomwin": {
+    "name": "zoomwin",
+    "src": "hy"
+  },
+  "edit.cut": {
+    "name": "cut",
+    "src": "hy"
+  },
+  "edit.find": {
+    "name": "find",
+    "src": "hy"
+  },
+  "file.close": {
+    "name": "close",
+    "src": "hy"
+  },
+  "file.export": {
+    "name": "export",
+    "src": "hy"
+  },
+  "file.new": {
+    "name": "new",
+    "src": "hy"
+  },
+  "file.open": {
+    "name": "open",
+    "src": "hy"
+  },
+  "file.plot": {
+    "name": "print",
+    "src": "hy"
+  },
+  "file.props": {
+    "name": "info",
+    "src": "hy"
+  },
+  "file.save": {
+    "name": "save",
+    "src": "hy"
+  },
+  "file.saveas": {
+    "name": "saveas",
+    "src": "hy"
+  },
+  "help.help": {
+    "name": "help",
+    "src": "hy"
+  },
+  "help.hy": {
+    "name": "book",
+    "src": "hy"
+  },
+  "help.whatsnew": {
+    "name": "sparkle",
+    "src": "hy"
+  },
+  "hy.addload": {
+    "name": "pload",
+    "src": "hy"
+  },
+  "hy.beam": {
+    "name": "member",
+    "src": "hy"
+  },
+  "hy.bmd": {
+    "name": "bmd",
+    "src": "hy"
+  },
+  "hy.check": {
+    "name": "success",
+    "src": "hy"
+  },
+  "hy.combo": {
+    "name": "loadcase",
+    "src": "hy"
+  },
+  "hy.deform": {
+    "name": "deform",
+    "src": "hy"
+  },
+  "hy.envelope": {
+    "name": "envelope",
+    "src": "hy"
+  },
+  "hy.export": {
+    "name": "export",
+    "src": "hy"
+  },
+  "hy.insert": {
+    "name": "import",
+    "src": "hy"
+  },
+  "hy.moment": {
+    "name": "moment",
+    "src": "hy"
+  },
+  "hy.nfd": {
+    "name": "nfd",
+    "src": "hy"
+  },
+  "hy.pick": {
+    "name": "pivot",
+    "src": "hy"
+  },
+  "hy.pload": {
+    "name": "pload",
+    "src": "hy"
+  },
+  "hy.reaction": {
+    "name": "reaction",
+    "src": "hy"
+  },
+  "hy.report": {
+    "name": "report",
+    "src": "hy"
+  },
+  "hy.settle": {
+    "name": "settle",
+    "src": "hy"
+  },
+  "hy.settle.fit": {
+    "name": "graph",
+    "src": "hy"
+  },
+  "hy.settle.import": {
+    "name": "import",
+    "src": "hy"
+  },
+  "hy.settle.report": {
+    "name": "report",
+    "src": "hy"
+  },
+  "hy.sfd": {
+    "name": "sfd",
+    "src": "hy"
+  },
+  "hy.solve": {
+    "name": "solve",
+    "src": "hy"
+  },
+  "hy.sup.fixed": {
+    "name": "fixed",
+    "src": "hy"
+  },
+  "hy.sup.pin": {
+    "name": "pinsup",
+    "src": "hy"
+  },
+  "hy.sup.roller": {
+    "name": "roller",
+    "src": "hy"
+  },
+  "hy.sup.spring": {
+    "name": "spring",
+    "src": "hy"
+  },
+  "hy.udl": {
+    "name": "udl",
+    "src": "hy"
+  },
+  "ui.about": {
+    "name": "info",
+    "src": "hy"
+  },
+  "ui.density.comfortable": {
+    "name": "proportions",
+    "src": "hy"
+  },
+  "ui.density.compact": {
+    "name": "list",
+    "src": "hy"
+  },
+  "ui.density.toggle": {
+    "name": "proportions",
+    "src": "hy"
+  },
+  "ui.feedback": {
+    "name": "tip",
+    "src": "hy"
+  },
+  "ui.fullscreen": {
+    "name": "fullscreen",
+    "src": "hy"
+  },
+  "ui.info": {
+    "name": "info",
+    "src": "hy"
+  },
+  "ui.keys": {
+    "name": "keyboard",
+    "src": "hy"
+  },
+  "ui.notes": {
+    "name": "bell",
+    "src": "hy"
+  },
+  "ui.palette": {
+    "name": "search",
+    "src": "hy"
+  },
+  "ui.palset.auto": {
+    "name": "pin",
+    "src": "hy"
+  },
+  "ui.palset.hide": {
+    "name": "close",
+    "src": "hy"
+  },
+  "ui.redo": {
+    "name": "redo",
+    "src": "hy"
+  },
+  "ui.resetlayout": {
+    "name": "refresh",
+    "src": "hy"
+  },
+  "ui.theme.dark": {
+    "name": "moon",
+    "src": "hy"
+  },
+  "ui.theme.light": {
+    "name": "light",
+    "src": "hy"
+  },
+  "ui.theme.toggle": {
+    "name": "contrast",
+    "src": "hy"
+  },
+  "ui.undo": {
+    "name": "undo",
+    "src": "hy"
+  },
+  "view.bottom": {
+    "name": "bottom",
+    "src": "hy"
+  },
+  "view.left": {
+    "name": "sideleft",
+    "src": "hy"
+  },
+  "view.right": {
+    "name": "sideright",
+    "src": "hy"
+  },
+  "edit.copy": {
+    "name": "copy",
+    "src": "hy"
+  },
+  "edit.paste": {
+    "name": "paste",
+    "src": "hy"
+  },
+  "edit.pastespec": {
+    "name": "pastespec",
+    "src": "hy"
+  },
+  "ui.skin.acad-b": {
+    "name": "contrast",
+    "src": "hy"
+  },
+  "ui.skin.hy-e": {
+    "name": "moon",
+    "src": "hy"
+  },
+  "cad.select.invert": {
+    "name": "invert",
+    "src": "hy",
+    "body": "<path d=\"M7 8h9\"/><path d=\"M13 5l3 3-3 3\"/><path d=\"M17 16H8\"/><path d=\"M11 13l-3 3 3 3\"/>"
+  },
+  "cad.select.box": {
+    "name": "boxsel",
+    "src": "hy",
+    "body": "<rect x=\"5\" y=\"5\" width=\"14\" height=\"14\" rx=\"1\" fill=\"none\" stroke-dasharray=\"3 2\"/>"
+  },
+  "cad.select.circle": {
+    "name": "circlesel",
+    "src": "hy",
+    "body": "<circle cx=\"12\" cy=\"12\" r=\"7\" fill=\"none\" stroke-dasharray=\"3 2\"/>"
+  },
+  "cad.select.cycle": {
+    "name": "cycle",
+    "src": "hy",
+    "body": "<path d=\"M19 12a7 7 0 1 1-2.2-5.1\"/><path d=\"M17 3v5h-5\"/>"
+  },
+  "view.cursor": {
+    "name": "pivot",
+    "src": "hy"
+  },
+  "view.cursor.selected": {
+    "name": "cursel",
+    "src": "hy",
+    "body": "<path d=\"M12 3v5M12 16v5M3 12h5M16 12h5\"/><rect x=\"9.5\" y=\"9.5\" width=\"5\" height=\"5\" fill=\"none\"/>"
+  },
+  "view.cursor.to": {
+    "name": "cursorto",
+    "src": "hy",
+    "body": "<path d=\"M4 12h5M15 12h5M12 4v5M12 15v5\"/><path d=\"M15 7l4-4\"/><path d=\"M15 3h4v4\"/>"
+  },
+  "view.cursor.origin": {
+    "name": "home",
+    "src": "hy"
+  },
+  "edit.mode": {
+    "name": "mode",
+    "src": "hy",
+    "body": "<rect x=\"4\" y=\"8\" width=\"11\" height=\"11\" fill=\"none\"/><circle cx=\"17\" cy=\"6\" r=\"2\" fill=\"currentColor\"/>"
+  },
+  "edit.rename": {
+    "name": "rename",
+    "src": "hy"
+  },
+  "cad.to-layer": {
+    "name": "tolayer",
+    "src": "hy",
+    "body": "<path d=\"M4 8h9M4 12h9M4 16h9\"/><path d=\"M14 12h6\"/><path d=\"M17 9l3 3-3 3\"/>"
+  },
+  "edit.join": {
+    "name": "join",
+    "src": "hy"
+  },
+  "cad.chamfer": {
+    "name": "chamfer",
+    "src": "hy"
+  },
+  "cad.break": {
+    "name": "break",
+    "src": "hy"
+  },
+  "cad.stretch": {
+    "name": "stretch",
+    "src": "hy"
+  },
+  "edit.undo.history": {
+    "name": "recent",
+    "src": "hy"
+  },
+  "view.toolshelf": {
+    "name": "sideleft",
+    "src": "hy"
+  },
+  "view.sidebar": {
+    "name": "sideright",
+    "src": "hy"
+  },
+  "view.add": {
+    "name": "plus",
+    "src": "hy"
+  },
+  "edit.adjust": {
+    "name": "sliders",
+    "src": "hy"
+  },
+  "edit.select.vert": {
+    "name": "vert",
+    "src": "hy",
+    "body": "<circle cx=\"6\" cy=\"16\" r=\"1.6\" fill=\"currentColor\"/><circle cx=\"12\" cy=\"7\" r=\"1.6\" fill=\"currentColor\"/><circle cx=\"18\" cy=\"16\" r=\"1.6\" fill=\"currentColor\"/>"
+  },
+  "edit.select.edge": {
+    "name": "edge",
+    "src": "hy",
+    "body": "<path d=\"M5 17L19 7\"/><circle cx=\"5\" cy=\"17\" r=\"1.6\" fill=\"currentColor\"/><circle cx=\"19\" cy=\"7\" r=\"1.6\" fill=\"currentColor\"/>"
+  },
+  "edit.select.face": {
+    "name": "face",
+    "src": "hy",
+    "body": "<path d=\"M12 4 L20 19 H4 Z\" fill=\"none\"/>"
+  }
+}

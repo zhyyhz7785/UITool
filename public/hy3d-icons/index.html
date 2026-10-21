@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>hy3d 图标候选</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { margin: 0; font: 13px/1.5 "Segoe UI", "Microsoft YaHei", sans-serif; background: #1e1e1e; color: #e8e8e8; }
+    main { max-width: 920px; margin: 0 auto; padding: 28px 20px 48px; }
+    h1 { font-size: 18px; font-weight: 600; margin: 0 0 8px; }
+    .lead { color: #a8a8a8; margin: 0 0 18px; }
+    .ref { display: flex; gap: 12px; align-items: center; margin-bottom: 22px; }
+    .ref img { width: 64px; height: 64px; }
+    h2 { font-size: 12px; font-weight: 600; color: #9d9d9d; margin: 22px 0 8px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+    button.card { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid #3e3e42; border-radius: 8px; background: #252526; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+    button.card.on { border-color: #4c9bff; background: #2a3340; }
+    button.card img.shot { width: 100%; height: auto; }
+    .name { font-weight: 600; }
+    .note { color: #a8a8a8; font-size: 12px; }
+    .minis { display: flex; gap: 8px; align-items: end; }
+    .chip { display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; }
+    .chip.dark { background: #111; padding: 6px; }
+    .chip.light { background: #f3f3f3; padding: 6px; }
+    .pick { margin-top: 18px; color: #4c9bff; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>hy3d 图标候选</h1>
+    <p class="lead">点一枚就记下。还没有换进 hy3d，选定后把编号发回来。</p>
+    <div class="ref">
+      <img src="00-hymd.png" alt="" />
+      <div>左边是现在的 HyMd：亮蓝圆角方块，白色立体字。前四枚用同一块蓝玻璃，后两枚换成 hy3d 的深色底。</div>
+    </div>
+    <div id="board"></div>
+    <p class="pick" id="pick"></p>
+  </main>
+  <script>
+    const KEY = "uitool.hy3d-icon";
+    const items = [
+      ["07", "07-hy-cube-above.png", "Hy 在方块上面", "hy3d · Hy 上立方", "白字 Hy 压在方块上。顶面是界面蓝，两侧浅灰，明暗和视口小方块一样。"],
+      ["09", "09-hy-cube-corner.png", "Hy 在方块上面", "hy3d · Hy 大方块", "同一套三面颜色，方块再大一圈，白字 Hy 小一号，仍压在上面。"],
+      ["08", "08-hy-3-above.png", "Hy 字，标记在上面", "hy3d · Hy 上3", "Hy 在下，数字 3 居中叠在上面。"],
+      ["10", "10-hy-3-corner.png", "Hy 字，标记在上面", "hy3d · Hy 角3", "Hy 在下，数字 3 放在右上角。"],
+      ["01", "01-letter-cube.png", "和 HyMd 同一块蓝玻璃", "hy3d · 3方", "大号 3，右上角一个小方块。摆法和 HyMd 的 M、加号一样。"],
+      ["02", "02-letters-3d.png", "和 HyMd 同一块蓝玻璃", "hy3d · 3D", "两个字铺在同一块蓝玻璃上。"],
+      ["03", "03-white-cube.png", "和 HyMd 同一块蓝玻璃", "hy3d · 方块", "只有一个白色等轴方块。"],
+      ["04", "04-letter-h.png", "和 HyMd 同一块蓝玻璃", "hy3d · H3", "大号 H，右上角小 3。"],
+      ["05", "05-dark-cube.png", "hy3d 深色底", "hy3d · 蓝顶", "深色圆角方块，顶面是界面里的强调蓝。和 HyMd 并排时底色不同。"],
+      ["06", "06-dark-axes.png", "hy3d 深色底", "hy3d · 三轴", "红、绿、蓝三条轴，颜色和视口坐标轴一致。"]
+    ];
+    const board = document.getElementById("board");
+    const pickEl = document.getElementById("pick");
+    let pick = localStorage.getItem(KEY) || "";
+    function render() {
+      board.innerHTML = "";
+      let group = "";
+      items.forEach(([id, file, g, name, note]) => {
+        if (g !== group) {
+          group = g;
+          const h = document.createElement("h2");
+          h.textContent = g;
+          board.appendChild(h);
+          const grid = document.createElement("div");
+          grid.className = "grid";
+          grid.dataset.group = g;
+          board.appendChild(grid);
+        }
+        const grid = board.querySelector('[data-group="' + g + '"]');
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "card" + (pick === id ? " on" : "");
+        btn.innerHTML = '<img class="shot" src="' + file + '" alt="" /><div class="name">' + id + " " + name + '</div><div class="note">' + note + '</div><div class="minis"><span class="chip dark"><img src="' + file + '" width="32" height="32" alt=""></span><span class="chip light"><img src="' + file + '" width="16" height="16" alt=""></span></div>';
+        btn.onclick = () => { pick = id; localStorage.setItem(KEY, id); render(); };
+        grid.appendChild(btn);
+      });
+      const cur = items.find((it) => it[0] === pick);
+      pickEl.textContent = cur ? "当前选定 " + cur[0] + " " + cur[3] + "。跟我说这个编号，我再换上。" : "";
+    }
+    render();
+  </script>
+</body>
+</html>
