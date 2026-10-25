@@ -2,7 +2,7 @@ import type { CommandDef } from "@tpl/workbench/types";
 import { cmd } from "../kit";
 
 /**
- * HyMd 工作台命令，id / 快捷键 / 分类与 HyMd `src/app/commandIds.snapshot.json` 一致（94 条）。
+ * HyMd 工作台命令，id / 快捷键 / 分类与 HyMd `src/app/commandIds.snapshot.json` 一致（96 条）。
  * 多出的 `hymd.refs.style` 只给模板里的「参考文献样式」弹窗用：HyMd 本体在文献窗里切换样式，没有这条命令。
  * `core` 与命令 id 相同，导出的工程里点下去会交给内核；模板内核尚未实现这些方法。
  */
@@ -98,6 +98,8 @@ const rows: Row[] = [
   ["explorer.openToSide", "在侧边打开", "查看", "sideright"],
 
   ["hymd.graph.open", "打开作图工作台", "HyMd", "line"],
+  ["hymd.graph.keyboard", "键盘: 切换数学键盘", "HyMd", "line", "Alt+K"],
+  ["hymd.vocab.open", "打开英语词汇", "HyMd", "text"],
   ["hymd.export.docx", "HyMd: 导出 Word (docx)", "HyMd", "export"],
   ["hymd.export.pptx", "HyMd: 导出 PowerPoint (pptx)", "HyMd", "export"],
   ["hymd.export.pdf", "HyMd: 导出 PDF", "HyMd", "pdfout"],
@@ -329,6 +331,8 @@ export const hymdMenus: { id: string; title: string; items: HymdMenuEntry[] }[] 
     title: "HyMd",
     items: [
       "hymd.graph.open",
+      "hymd.graph.keyboard",
+      "hymd.vocab.open",
       "sep",
       "hymd.export.docx",
       "hymd.export.pptx",
