@@ -1,7 +1,7 @@
 import { buildConfig, workTypes } from "../presets";
 import { design } from "../store";
 import { HY3D, HY3D_HAND, HYMD, jsonText, readText, writeText } from "./io";
-import { menuSpec, menusFrom, overlayScheme, referencedIds, SCHEMES as HY3D_SCHEMES, specFromScheme, stampActive } from "hy3d-spec";
+import { applyHy3dSpecs, commitHy3dDesign, handDocument, loadHy3dBundle, stampActive } from "hy3d-spec";
 import { hymdMenuSpec, hymdMenusFrom, hymdSidePages, overlayHymd, SCHEMES as HYMD_SCHEMES, specFromHymd, stampExplorerGhost } from "hymd-spec";
 
 const KEY = "uitool.link.from";
@@ -21,55 +21,35 @@ function parse<T>(text: string): T {
   return JSON.parse(text) as T;
 }
 
-/** 读 hy3d 五份规格，盖到 CAD 二维制图的三套方案上。 */
+const readHy3dUi = (rel: string) => readText(`${HY3D}/ui/${rel}`);
+
+/** 读 hy3d 的功能区、分析工作台和菜单，盖到 CAD 二维制图上。不要求 Blender 文件。 */
 export async function readHy3d() {
   const cad = workTypes.find((t) => t.id === "cad2d");
   if (!cad) throw new Error("没有 CAD 二维制图");
-  const dir = `${HY3D}/ui/design`;
-  const config = buildConfig("cad2d", "cad2d-best", {
-    name: "hy3d-cad",
-    title: "hy3d 二维制图",
-    identifier: "com.hy.hy3d",
-    version: "0.1.0",
-    description: cad.summary,
-    icon: "layout"
-  });
-  const menuMain = menusFrom(parse(`${await readText(`${dir}/menus.json`)}`));
-  const menuBlender = menusFrom(parse(await readText(`${dir}/menus.blender.json`)));
-  for (const s of HY3D_SCHEMES) {
-    const scheme = config.schemes?.find((x) => x.id === s.scheme);
-    if (!scheme) throw new Error("没有方案 " + s.scheme);
-    const spec = parse(await readText(`${dir}/${s.file}`));
-    scheme.ui = overlayScheme(scheme.ui, spec, config.commands) as typeof scheme.ui;
-    scheme.menus = s.menus === "blender" ? menuBlender : menuMain;
-  }
-  config.sidePages = [];
-  design.replace({ config: stampActive(config), customThemes: [] });
+  const bundle = await loadHy3dBundle(readHy3dUi);
+  const config = applyHy3dSpecs(
+    buildConfig("cad2d", "cad2d-best", {
+      name: "hy3d-cad",
+      title: "hy3d 二维制图",
+      identifier: "com.hy.hy3d",
+      version: "0.1.0",
+      description: cad.summary,
+      icon: "layout"
+    }),
+    bundle
+  );
+  design.replace({ config, customThemes: [] });
   design.select(null);
   remember("hy3d");
 }
 
-/** 把当前 CAD 设计写回 hy3d，并更新手改文件。命令对不上就中止。 */
+/** 把当前 CAD 设计写回 hy3d 的三份规格，并更新手改文件。命令对不上就中止，不写半份。 */
 export async function writeHy3d() {
   const doc = design.get().doc;
   const config = doc.config;
-  if (config.workType !== "cad2d") throw new Error("当前不是 hy3d 的二维制图，没有写入。");
-  const known = new Set((parse(await readText(`${HY3D}/ui/commands.json`)) as { commands: { id: string }[] }).commands.map((c) => c.id));
-  const specs = HY3D_SCHEMES.map((s) => {
-    const scheme = config.schemes?.find((x) => x.id === s.scheme);
-    if (!scheme?.ui) throw new Error("没有方案 " + s.scheme);
-    const menus = scheme.menus ?? (config.scheme === scheme.id ? config.menus : []);
-    return { ...s, spec: specFromScheme(scheme, s.skin), menus: menuSpec(menus) };
-  });
-  const mainMenus = specs.find((s) => s.scheme === "cad2d-best")!.menus;
-  const blenderMenus = specs.find((s) => s.scheme === "cad2d-good")!.menus;
-  const missing = [...referencedIds(specs.map((s) => s.spec), [mainMenus, blenderMenus])].filter((id) => !known.has(id));
-  if (missing.length) throw new Error("缺少 hy3d 命令：" + missing.join(", "));
-  const dir = `${HY3D}/ui/design`;
-  for (const s of specs) await writeText(`${dir}/${s.file}`, jsonText(s.spec));
-  await writeText(`${dir}/menus.json`, jsonText(mainMenus));
-  await writeText(`${dir}/menus.blender.json`, jsonText(blenderMenus));
-  await writeText(HY3D_HAND, jsonText({ kind: "uitool-design", version: 1, config, customThemes: doc.customThemes }));
+  await commitHy3dDesign(config, readHy3dUi, (rel, text) => writeText(`${HY3D}/ui/${rel}`, text));
+  await writeText(HY3D_HAND, jsonText(handDocument(config, doc.customThemes)));
   remember("hy3d");
 }
 

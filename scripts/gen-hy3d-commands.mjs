@@ -1,13 +1,13 @@
-// 从 hy3d ui/commands.json 生成 UITool 的命令表。改命令先改 JSON，再跑本脚本。
+// 从 hy3d ui/commands.json 的 include 清单生成 UITool 的命令表。改命令先改 JSON，再跑本脚本。
+// HY3D_COMMANDS 指向 ui/commands.json。HY3D_COMMANDS_OUT 只给核对用，缺省仍写 cad.hy3dCommands.ts。
 import fs from "node:fs";
+import path from "node:path";
+import { collectCommands, isShortcut } from "./hy3d-spec.mjs";
 
 const src = process.env.HY3D_COMMANDS ?? "E:/Code/hy3d/ui/commands.json";
-const out = new URL("../src/designer/presets/work/cad.hy3dCommands.ts", import.meta.url);
-const cs = JSON.parse(fs.readFileSync(src, "utf8")).commands;
-
-function isKey(k) {
-  return !!k && (/^(Ctrl|Alt|Shift|F\d|Del)/.test(k) || k.includes("+"));
-}
+const out = process.env.HY3D_COMMANDS_OUT ? path.resolve(process.env.HY3D_COMMANDS_OUT) : new URL("../src/designer/presets/work/cad.hy3dCommands.ts", import.meta.url);
+const doc = JSON.parse(fs.readFileSync(src, "utf8"));
+const cs = await collectCommands(doc, (rel) => JSON.parse(fs.readFileSync(path.join(path.dirname(src), rel), "utf8")));
 
 const menuOrder = ["文件", "编辑", "视图", "插入", "绘图", "标注", "修改", "草图", "格式", "图层", "工具", "HY 结构", "外观", "窗口", "帮助"];
 const menuIds = ["file", "edit", "view", "insert", "draw", "ann", "modify", "sketch", "format", "layer", "tool", "hy", "look", "window", "help"];
@@ -56,7 +56,7 @@ lines.push("export const hy3dCommands: Hy3dCmd[] = [");
 for (const c of cs) {
   const toolIcon = { invert: "lu:arrow-right-left", boxsel: "lu:box-select", circlesel: "lu:circle-dashed", cycle: "lu:iteration-ccw", cursel: "lu:crosshair", cursorto: "lu:crosshair", mode: "lu:box", vert: "lu:dot", edge: "lu:minus", face: "lu:triangle", tolayer: "lu:layers" };
   const icon = toolIcon[c.icon] || c.icon || (c.id === "hw.cmdbar" ? "terminal" : "layout");
-  const key = isKey(c.key) ? c.key : "";
+  const key = isShortcut(c.key) ? c.key : "";
   lines.push(
     `  { id: ${JSON.stringify(c.id)}, title: ${JSON.stringify(c.label)}, category: ${JSON.stringify(c.cat)}, icon: ${JSON.stringify(icon)}${key ? `, keybinding: ${JSON.stringify(key)}` : ""} },`
   );
