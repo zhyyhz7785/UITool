@@ -1,6 +1,22 @@
 export const STAMP: string;
-export const SCHEMES: { scheme: string; skin: string; file: string; menus: "main" | "blender" }[];
+export const SCHEMES: { scheme: string; skin: string; file: string; menus: "main" }[];
+export const MENU_FILE: string;
 export const STATUS_TOGGLES: { id: string; short: string }[];
+export function isShortcut(key: unknown): boolean;
+export function collectCommands(doc: unknown, read: (rel: string) => unknown | Promise<unknown>): Promise<{ id: string; label?: string; title?: string; cat?: string; category?: string; key?: string; keybinding?: string; icon?: string; place?: string[] }[]>;
+export function designerCommand(raw: { id?: string; label?: string; title?: string; cat?: string; category?: string; key?: string; keybinding?: string; icon?: string }): { id: string; title: string; category: string; icon: string; core: string; keybinding?: string };
+export function designerCommands(list: { id?: string; label?: string; title?: string; cat?: string; category?: string; key?: string; keybinding?: string; icon?: string }[]): { id: string; title: string; category: string; icon: string; core: string; keybinding?: string }[];
+export function handDocument(config: unknown, customThemes?: unknown): { kind: "uitool-design"; version: 1; config: unknown; customThemes: unknown };
+export type Hy3dBundle = {
+  ribbon: unknown;
+  workbench: unknown;
+  menus: unknown;
+  commands: { id: string; title: string; category: string; icon: string; core: string; keybinding?: string }[];
+};
+export function loadHy3dBundle(readUiText: (rel: string) => string | Promise<string>): Promise<Hy3dBundle>;
+export function applyHy3dSpecs<T>(config: T, parts: Hy3dBundle): T;
+export function hy3dWritePlan(config: { workType?: string; scheme?: string; schemes?: { id: string; ui?: unknown; menus?: unknown }[]; menus?: unknown }): { specs: { file: string; spec: unknown }[]; menus: { $comment: string; menus: { id: string; title?: string; items: string[] }[] } };
+export function commitHy3dDesign(config: { workType?: string; scheme?: string; schemes?: unknown; menus?: unknown }, readUiText: (rel: string) => string | Promise<string>, writeUiText: (rel: string, text: string) => unknown): Promise<void>;
 export function resolveFace(panel: { id?: string; title?: string; ids?: string[]; commands?: string[]; face?: { id?: string; command?: string; size?: string; menu?: string[]; text?: string }[] }): { id: string; size: "big" | "small"; menu?: string[]; text?: string }[];
 export function groupFromPanel(panel: { id: string; title?: string; ids?: string[]; face?: { id?: string; size?: string; menu?: string[]; text?: string }[]; launcher?: string }): {
   id: string;
