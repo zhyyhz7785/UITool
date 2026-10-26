@@ -16,6 +16,7 @@ import { ActivityBar } from "./parts/ActivityBar";
 import { EditorArea } from "./parts/EditorArea";
 import { MenuBar, MenuFocus } from "./parts/MenuBar";
 import { Panel } from "./parts/Panel";
+import { bindOverlayScroll } from "./overlayScroll";
 import { Sash } from "./parts/Sash";
 import { SideBar } from "./parts/SideBar";
 import { StatusBar } from "./parts/StatusBar";
@@ -239,6 +240,12 @@ export function Workbench({ config, defaultConfig, onConfigChange, themes = buil
     target.addEventListener("keydown", onKey);
     return () => target.removeEventListener("keydown", onKey);
   }, [keymap, mode]);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    return bindOverlayScroll(root);
+  }, []);
 
   useEffect(() => {
     if (mode === "app") void appWindow.setTitle(cfg.app.title);
