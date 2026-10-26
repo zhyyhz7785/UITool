@@ -1,6 +1,8 @@
 /* 工作台外观。颜色只用 var(--vscode-*)，尺寸只用 hy 令牌（--h-* --fs-* --sp-* --r-*）。禁止写死色值。 */
 
 .wb-root {
+  --sb-track: var(--sp-3);
+  --sb-thumb: var(--sb-size);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -20,12 +22,18 @@
 .wb-root *::before,
 .wb-root *::after { box-sizing: border-box; }
 .wb-root ::selection { background: var(--vscode-selection-background); }
-.wb-root * { scrollbar-width: thin; scrollbar-color: var(--vscode-scrollbarSlider-background) transparent; }
-.wb-root *::-webkit-scrollbar { width: var(--sb-size); height: var(--sb-size); }
-.wb-root *::-webkit-scrollbar-track,
-.wb-root *::-webkit-scrollbar-corner { background: transparent; }
-.wb-root *::-webkit-scrollbar-thumb { background: var(--vscode-scrollbarSlider-background); border: 2px solid transparent; border-radius: 5px; background-clip: padding-box; }
-.wb-root *::-webkit-scrollbar-thumb:hover { background-color: var(--vscode-scrollbarSlider-hoverBackground); }
+/* 滚动条不占槽、不画轨迹。WebKit 给滚动条设宽度就会挤开内容，所以原生条宽为 0，滑块由指针层另画。 */
+.wb-root * { scrollbar-width: none; }
+.wb-root *::-webkit-scrollbar { width: 0; height: 0; background: transparent; }
+.wb-sb-thumb {
+  position: absolute;
+  z-index: 400;
+  border-radius: 999px;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--wb-sb-fg, var(--vscode-foreground)) 40%, transparent);
+  opacity: 0;
+}
+.wb-sb-thumb.on { opacity: 1; }
 .wb-root button { font: inherit; color: inherit; }
 .wb-root button:focus-visible { outline: 1px solid var(--vscode-focusBorder); outline-offset: -1px; }
 .wb-icon { flex-shrink: 0; display: block; }
@@ -40,13 +48,30 @@
 .wb-col { flex-direction: column; }
 .wb-row { flex-direction: row; }
 
-/* ---------- 分割条 ---------- */
-.wb-sash { position: relative; flex: 0 0 0; z-index: 30; }
-.wb-sash-hit { position: absolute; touch-action: none; transition: background-color 0.1s; }
-.wb-sash-x .wb-sash-hit { top: 0; bottom: 0; left: calc(var(--sash-size) / -2); width: var(--sash-size); cursor: ew-resize; }
-.wb-sash-y .wb-sash-hit { left: 0; right: 0; top: calc(var(--sash-size) / -2); height: var(--sash-size); cursor: ns-resize; }
-.wb-sash-hit:hover { background: var(--vscode-sash-hoverBorder); transition-delay: 0.25s; }
-.wb-sash-hit.active { background: var(--vscode-sash-hoverBorder); transition-delay: 0s; }
+/* ---------- 分割条：布局 1px，热区更宽但保持透明，悬停 / 拖动只给这 1px 上强调色 ---------- */
+.wb-sash {
+  position: relative;
+  flex: 0 0 1px;
+  align-self: stretch;
+  min-width: 0;
+  min-height: 0;
+  z-index: 30;
+  background: var(--vscode-base-border);
+  transition: background-color 0.1s;
+}
+.wb-sash-x { width: 1px; }
+.wb-sash-y { height: 1px; }
+.wb-sash-hit { position: absolute; touch-action: none; background: transparent; }
+.wb-sash-x .wb-sash-hit { top: 0; bottom: 0; left: calc(50% - var(--sash-size) / 2); width: var(--sash-size); cursor: ew-resize; }
+.wb-sash-y .wb-sash-hit { left: 0; right: 0; top: calc(50% - var(--sash-size) / 2); height: var(--sash-size); cursor: ns-resize; }
+.wb-sash:hover { background: var(--vscode-base-accent); transition-delay: 0.25s; }
+.wb-sash:has(.wb-sash-hit.active) { background: var(--vscode-base-accent); transition-delay: 0s; }
+/* 旁边已有 1px 边时让给分割条，避免叠成粗线 */
+.wb-flexpart:has(> .wb-sidebar.left):has(+ .wb-sash) > .wb-sidebar.left { border-right-width: 0; }
+.wb-sash + .wb-flexpart > .wb-sidebar.right { border-left-width: 0; }
+.wb-sash + .wb-flexpart > .wb-panel.bottom { border-top-width: 0; }
+.wb-sash + .wb-flexpart > .wb-panel.right { border-left-width: 0; }
+.wb-section-slot > .wb-sash + .wb-viewsection > .wb-section-head { border-top-width: 0; }
 
 /* ---------- 通用控件 ---------- */
 .wb-iconbtn {
@@ -390,7 +415,9 @@
 
 /* ---------- 编辑区 ---------- */
 .wb-editor { flex: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--vscode-editor-background); color: var(--vscode-editor-foreground); }
+/* 页签条故意不显示滚动条，横向溢出仍可用滚轮。 */
 .wb-tabs { height: var(--h-tab); display: flex; flex-shrink: 0; position: relative; background: var(--vscode-editorGroupHeader-tabsBackground); overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+.wb-tabs::-webkit-scrollbar { width: 0; height: 0; display: none; }
 .wb-tabs::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--vscode-editorGroupHeader-tabsBorder); pointer-events: none; }
 .wb-tab {
   position: relative;
