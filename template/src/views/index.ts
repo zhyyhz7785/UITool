@@ -5,6 +5,7 @@ import { CanvasView, DocumentView, MonitorView, ResultTable, SheetView, Timeline
 import { CommandLineView, LayersView } from "./Cad";
 import { Output } from "./Output";
 import { OcrView } from "./Ocr";
+import { PhotoView } from "./Photo";
 import { BacklinksView, BookmarksView, DocMetaView, GitGraphView, LocalGraphView, PaperView, RefsView, ScmView, SettingsView, TagsView, ThemeView } from "./Writing";
 import "./views.css";
 
@@ -44,5 +45,6 @@ export const views: ViewRegistry = {
   settings: SettingsView,
   gitGraph: GitGraphView,
   theme: ThemeView,
-  ocr: OcrView
+  ocr: OcrView,
+  photo: PhotoView
 };

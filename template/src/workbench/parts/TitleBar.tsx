@@ -58,19 +58,21 @@ export function TitleBar() {
           <ItemBar items={T.center ?? []} zone="title-center" area="titlebar" />
         </div>
         <div className="wb-titlebar-right">
+          {isApp && <div className="wb-titlebar-drag" {...drag} />}
           {T.search && (
             <input
               className="wb-title-search"
               type="search"
               placeholder="搜索命令…"
               aria-label="搜索命令"
+              data-tauri-drag-region={isApp ? "false" : undefined}
               onKeyDown={(e) => {
                 if (e.key === "Enter") void wb.execute("workbench.action.showCommands");
               }}
             />
           )}
           <ItemBar items={T.right} zone="title-right" area="titlebar" />
-          <div className="wb-winctl" data-zone="winctl">
+          <div className="wb-winctl" data-zone="winctl" data-tauri-drag-region={isApp ? "false" : undefined}>
             {win?.min !== false && (
               <button type="button" data-item="min" title="最小化" onClick={() => void windowAction(wb, appWindow.minimize)}>
                 <span data-sub="icon">

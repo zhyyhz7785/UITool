@@ -10,7 +10,8 @@ const NAMES: Record<string, string> = {
   terminal: "终端",
   welcome: "欢迎页",
   text: "文本编辑器",
-  placeholder: "占位"
+  placeholder: "占位",
+  photo: "图片编辑"
 };
 
 /** 模板里已登记的视图，供各部件选择。 */

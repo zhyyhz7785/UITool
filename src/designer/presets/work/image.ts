@@ -1,134 +1,209 @@
-import { baseLayout, box, chip, cmd, dialog, editor, look, menu, okCancel, row, section, stack, tab, viewMenu, zones, type WorkTypeDef } from "../kit";
+import { CMD } from "@tpl/views/photoSession";
+import { baseLayout, cmd, dialog, editor, look, menu, okCancel, viewMenu, zones, type WorkTypeDef } from "../kit";
 
 const commands = [
-  cmd("file.open", "打开…", "文件", "open", { keybinding: "Ctrl+O", core: "file.open" }),
-  cmd("file.save", "保存", "文件", "save", { keybinding: "Ctrl+S", core: "file.save" }),
-  cmd("edit.undo", "撤销", "编辑", "undo", { keybinding: "Ctrl+Z", core: "edit.undo" }),
-  cmd("edit.redo", "重做", "编辑", "redo", { keybinding: "Ctrl+Y", core: "edit.redo" }),
-  cmd("tool.select", "选择", "工具", "pointer"),
-  cmd("tool.brush", "画笔", "工具", "brush"),
-  cmd("tool.crop", "裁剪", "工具", "crop"),
-  cmd("tool.text", "文字", "工具", "mtext"),
-  cmd("tool.rect", "矩形", "工具", "rect"),
-  cmd("image.new", "新建画布", "文件", "new", { keybinding: "Ctrl+N" }),
-  cmd("image.size", "图像大小", "图像", "crop"),
-  cmd("image.export", "导出为", "文件", "export"),
-  { ...cmd("image.ocr", "识别文字", "图像", "search", { core: "ocr.open" }), params: { source: "image", path: "附图.jpg" } }
+  cmd(CMD.open, "添加图片", "文件", "open", { keybinding: "Ctrl+O" }),
+  cmd(CMD.save, "保存", "文件", "save", { keybinding: "Ctrl+S" }),
+  cmd(CMD.saveCopy, "另存副本", "文件", "saveas"),
+  cmd(CMD.copyClip, "复制到剪贴板", "文件", "copy"),
+  cmd(CMD.batch, "批量导出到文件夹…", "文件", "export", { keybinding: "Ctrl+Shift+E" }),
+  cmd(CMD.undo, "撤销", "编辑", "undo", { keybinding: "Ctrl+Z" }),
+  cmd(CMD.redo, "重做", "编辑", "redo", { keybinding: "Ctrl+Y" }),
+  cmd(CMD.selectAll, "全选 / 取消全选", "队列", "list", { keybinding: "Ctrl+Shift+A" }),
+  cmd(CMD.applySel, "应用到选中", "队列", "sync", { keybinding: "Ctrl+Shift+S" }),
+  cmd(CMD.applyAll, "应用到全部", "队列", "sync", { keybinding: "Ctrl+Shift+L" }),
+  cmd(CMD.copyParams, "复制参数", "队列", "copy", { keybinding: "Ctrl+Shift+C" }),
+  cmd(CMD.pasteParams, "粘贴参数", "队列", "paste", { keybinding: "Ctrl+Shift+V" }),
+  cmd(CMD.params, "参数范围与预设", "队列", "adjust", { keybinding: "Ctrl+Shift+P" }),
+  cmd(CMD.replaceMd, "替换文稿中的图片引用", "队列", "mtext"),
+  cmd(CMD.clearOthers, "清空队列中其他图片", "队列", "delete"),
+  cmd(CMD.toggleQueue, "收起 / 展开队列", "队列", "sideleft", { keybinding: "Ctrl+B" }),
+  cmd(CMD.modeCrop, "裁剪", "图像", "crop"),
+  cmd(CMD.modeAdjust, "调整", "图像", "contrast"),
+  cmd(CMD.modeFilter, "滤镜", "图像", "filter"),
+  cmd(CMD.modeMarkup, "标记", "图像", "brush"),
+  cmd(CMD.modeErase, "擦除", "图像", "eraser"),
+  cmd(CMD.modeBg, "背景", "图像", "image"),
+  cmd(CMD.modeScan, "扫描件", "图像", "search"),
+  cmd(CMD.modeExport, "导出", "图像", "export"),
+  cmd(CMD.rotL, "向左旋转 90°", "裁剪", "rotate"),
+  cmd(CMD.rotR, "向右旋转 90°", "裁剪", "rotate"),
+  cmd(CMD.flipH, "水平翻转", "裁剪", "rotate"),
+  cmd(CMD.flipV, "垂直翻转", "裁剪", "rotate"),
+  cmd(CMD.swap, "横竖互换", "裁剪", "sync"),
+  cmd(CMD.cropDone, "完成裁剪", "裁剪", "save"),
+  cmd(CMD.cropCancel, "取消裁剪", "裁剪", "close"),
+  cmd(CMD.help, "快捷键", "帮助", "help")
 ];
 
 const menus = [
-  menu("file", "文件", ["image.new", "file.open", "file.save", "sep", "image.export"]),
-  menu("edit", "编辑", ["edit.undo", "edit.redo"]),
-  menu("image", "图像", ["image.size", "image.ocr"]),
-  menu("tool", "工具", ["tool.select", "tool.brush", "tool.crop", "tool.text", "tool.rect"]),
+  menu("file", "文件", [CMD.open, CMD.save, CMD.saveCopy, CMD.copyClip, "sep", CMD.batch]),
+  menu("edit", "编辑", [CMD.undo, CMD.redo]),
+  menu("image", "图像", [CMD.modeCrop, CMD.modeAdjust, CMD.modeFilter, CMD.modeMarkup, CMD.modeErase, CMD.modeBg, CMD.modeScan, CMD.modeExport]),
+  menu("queue", "队列", [CMD.selectAll, CMD.applySel, CMD.applyAll, CMD.copyParams, CMD.pasteParams, CMD.params, CMD.replaceMd, CMD.clearOthers, CMD.toggleQueue]),
+  menu("crop", "裁剪", [CMD.rotL, CMD.rotR, CMD.flipH, CMD.flipV, CMD.swap, "sep", CMD.cropDone, CMD.cropCancel]),
+  menu("help", "帮助", [CMD.help]),
   viewMenu
 ];
 
+const part = (id: string, label: string, value: boolean) => ({ id, label, type: "toggle" as const, group: "范围", value });
+
 const dialogs = [
   dialog({
-    id: "new",
-    title: "新建画布",
-    command: "image.new",
-    groups: ["尺寸", "背景"],
+    id: "batch",
+    title: "批量导出到文件夹",
+    command: CMD.batch,
+    source: "原型 v6 批量导出",
+    body: "格式、画质、尺寸、水印和压缩沿用右侧「导出」里的设置。",
+    groups: ["位置", "命名", "覆盖"],
     fields: [
-      { id: "w", label: "宽度", type: "number", group: "尺寸", value: 1920 },
-      { id: "h", label: "高度", type: "number", group: "尺寸", value: 1080 },
-      { id: "unit", label: "单位", type: "select", group: "尺寸", value: "px", options: [{ value: "px", label: "像素" }, { value: "mm", label: "毫米" }] },
-      { id: "bg", label: "背景", type: "color", group: "背景", value: "#ffffff" },
-      { id: "transparent", label: "透明", type: "toggle", group: "背景", value: false }
+      { id: "dir", label: "文件夹", type: "text", group: "位置", value: "D:\\HyMd\\导出" },
+      {
+        id: "naming",
+        label: "命名规则",
+        type: "select",
+        group: "命名",
+        value: "suffix",
+        options: [
+          { value: "suffix", label: "保留原名 + 后缀" },
+          { value: "seq", label: "序号" },
+          { value: "date", label: "日期时间" }
+        ]
+      },
+      { id: "suffix", label: "后缀 / 序号前缀", type: "text", group: "命名", value: "_edit" },
+      { id: "overwrite", label: "覆盖原图", type: "toggle", group: "覆盖", value: false },
+      { id: "backup", label: "覆盖前先备份为 .bak", type: "toggle", group: "覆盖", value: true }
     ],
-    actions: okCancel("创建")
+    actions: okCancel("开始导出")
   }),
   dialog({
-    id: "size",
-    title: "图像大小",
-    command: "image.size",
+    id: "params",
+    title: "参数范围与预设",
+    command: CMD.params,
+    source: "原型 v6 参数范围",
+    body: "复制、粘贴、预设和应用只带勾选的部分。",
+    groups: ["范围", "预设"],
     fields: [
-      { id: "w", label: "宽度", type: "number", value: 1920 },
-      { id: "h", label: "高度", type: "number", value: 1080 },
-      { id: "resample", label: "重定像素", type: "toggle", value: true }
+      part("crop", "裁剪比例", false),
+      part("color", "调色", true),
+      part("detail", "细节", true),
+      part("portrait", "人像", true),
+      part("filter", "滤镜", true),
+      part("scan", "扫描", true),
+      part("marks", "标记", false),
+      part("export", "导出与压缩", false),
+      {
+        id: "preset",
+        label: "预设",
+        type: "select",
+        group: "预设",
+        value: "scan-bw",
+        options: [
+          { value: "scan-bw", label: "扫描件黑白" },
+          { value: "web", label: "公众号配图" }
+        ]
+      },
+      { id: "name", label: "预设名", type: "text", group: "预设", placeholder: "如 扫描件黑白" }
     ],
-    actions: okCancel("确定")
+    actions: okCancel("套用")
   }),
   dialog({
-    id: "export",
-    title: "导出为",
-    command: "image.export",
-    groups: ["文件", "质量"],
+    id: "help",
+    title: "快捷键",
+    command: CMD.help,
+    source: "原型 v6 快捷键",
+    body: "图片编辑里的键位。",
     fields: [
-      { id: "format", label: "格式", type: "select", group: "文件", value: "png", options: [{ value: "png", label: "PNG" }, { value: "jpg", label: "JPEG" }, { value: "webp", label: "WebP" }] },
-      { id: "path", label: "位置", type: "text", group: "文件" },
-      { id: "quality", label: "质量", type: "number", group: "质量", value: 90 }
+      {
+        id: "keys",
+        label: "键位",
+        type: "table",
+        columns: ["快捷键", "作用"],
+        rows: [
+          ["Ctrl+Z / Ctrl+Y", "撤销 / 重做"],
+          ["Ctrl+滚轮", "以指针为中心缩放"],
+          ["按住空格拖动", "平移画布"],
+          ["Ctrl+0 / Ctrl+1", "适应窗口 / 1:1"],
+          ["Ctrl+S", "按导出设置保存当前图片"],
+          ["Ctrl+O", "添加图片到队列"],
+          ["Ctrl+B", "收起或展开队列"],
+          ["Ctrl+Shift+A", "全选 / 取消全选"],
+          ["Ctrl+Shift+S", "应用到选中"],
+          ["Ctrl+Shift+L", "应用到全部"],
+          ["Ctrl+Shift+E", "批量导出到文件夹"],
+          ["Ctrl+Shift+C / V", "复制 / 粘贴参数"],
+          ["Ctrl+Shift+P", "参数范围与预设"],
+          ["裁剪 Enter / Esc", "完成 / 取消"],
+          ["悬停 + 滚轮", "按步长改数值；Shift×10，Alt×0.1"],
+          ["标记 F8", "正交，线与箭头吸附角度"],
+          ["?", "打开或关闭本表"]
+        ]
+      }
     ],
-    actions: okCancel("导出")
+    actions: [{ id: "ok", label: "知道了", primary: true }]
   })
 ];
 
-const tools = ["tool.select", "tool.brush", "tool.crop", "tool.text", "tool.rect"];
-
-function photoshop() {
+function frame(bar: "top" | "side" | "stack") {
   const layout = baseLayout();
+  layout.titleBar.right = [];
   layout.primarySideBar.visible = false;
-  layout.toolbars.side = { visible: true, position: "left", style: "icon", rows: [row("tools", "工具", tools)] };
-  layout.toolbars.top = { visible: true, style: "labeled", rows: [row("opt", "选项", ["tool.brush", "tool.rect", "tool.text"])] };
-  return {
-    ...look("hy-dark"),
-    layout,
-    activity: [box("files", "文件", "files", "explorer")],
-    auxiliary: [stack("right", "面板", "layer", [section("layers", "图层", "layer", "outline", "top"), section("props", "属性", "props", "properties", "bottom")])],
-    panel: [tab("log", "输出", "terminal", "output")],
-    editors: [editor("art", "画布", "image", "canvas"), editor("ocr", "识别", "search", "ocr")],
-    statusBar: zones([chip("zoom", "100%")])
-  };
-}
-
-function figma() {
-  const layout = baseLayout();
-  layout.dialogStyle = "sheet";
-  layout.activityBar.visible = false;
-  layout.toolbars.top = { visible: true, style: "icon", rows: [row("tools", "工具", tools)] };
-  return {
-    ...look("hy-white", "comfortable"),
-    layout,
-    activity: [stack("left", "图层", "layer", [section("layers", "图层", "layer", "outline", "top"), section("files", "文件", "files", "explorer", "bottom")])],
-    auxiliary: [box("inspect", "检查器", "props", "properties")],
-    panel: [tab("log", "输出", "terminal", "output")],
-    editors: [editor("art", "画布", "image", "canvas"), editor("ocr", "识别", "search", "ocr")],
-    statusBar: zones([chip("zoom", "100%")])
-  };
-}
-
-function corel() {
-  const layout = baseLayout();
-  layout.primarySideBar.visible = false;
-  layout.toolbars.top = {
-    visible: true,
-    style: "labeled",
-    rows: [row("std", "标准", ["image.new", "file.open", "file.save", "edit.undo", "edit.redo"]), row("prop", "属性", tools)]
-  };
-  layout.toolbars.side = { visible: true, position: "left", style: "icon", rows: [row("box", "工具箱", tools)] };
+  layout.auxiliaryBar.visible = false;
+  layout.panel.visible = false;
+  layout.statusBar.visible = false;
+  layout.editor.tabs = true;
+  layout.editor.breadcrumbs = false;
+  layout.dialogStyle = "modal";
   return {
     ...look("hy-light"),
     layout,
-    activity: [stack("left", "对象", "layer", [section("layers", "对象", "layer", "outline"), section("files", "文件", "files", "explorer", "bottom")])],
-    auxiliary: [box("docker", "泊坞窗", "props", "properties")],
-    panel: [tab("log", "输出", "terminal", "output")],
-    editors: [editor("art", "页面", "image", "canvas"), editor("ocr", "识别", "search", "ocr")],
-    statusBar: zones([chip("page", "页面 1")])
+    activity: [],
+    auxiliary: [],
+    panel: [],
+    editors: [{ ...editor("art", "附图.png", "image", "photo"), data: { bar } }],
+    statusBar: zones()
   };
 }
 
+/** HyMd 图片编辑面。信息架构照原型 v6，外观用主题变量和 28 / 24 / 22 按钮。 */
 export const image: WorkTypeDef = {
   id: "image",
-  name: "图像 / 平面",
-  summary: "画布、图层和导出。三套方案共用新建、尺寸和导出对话框。",
-  views: ["canvas", "explorer", "ocr", "outline", "output", "properties"],
+  name: "图像编辑",
+  summary: "HyMd 图片编辑：顶栏八个模式、左队列、右参数、裁剪底栏。三套只改模式条放哪。",
+  views: ["photo"],
   commands,
   menus,
   dialogs,
   schemes: [
-    { id: "image-best", tier: "best", name: "工具栏加图层面板", desc: "左工具、上选项栏、右图层和属性。", source: "Photoshop", reason: "工具在边缘，图层一直可见", score: { efficiency: 54, aesthetic: 20, learn: 14 }, ui: photoshop() },
-    { id: "image-good", tier: "good", name: "浅色三栏检查器", desc: "左图层、右检查器，弹窗用抽屉。", source: "Figma", reason: "换工具得到顶栏", score: { efficiency: 47, aesthetic: 22, learn: 12 }, ui: figma() },
-    { id: "image-basic", tier: "basic", name: "两排文字工具栏", desc: "上侧两排带文字，右侧泊坞窗，图层树收起。", source: "CorelDRAW", reason: "两排工具把画布压窄", score: { efficiency: 40, aesthetic: 14, learn: 12 }, ui: corel() }
+    {
+      id: "image-best",
+      tier: "best",
+      name: "顶栏八模式",
+      desc: "模式横排在顶栏。裁剪时藏起右栏、露出底栏。这一套迁入 HyMd。",
+      source: "原型 v6",
+      reason: "八个模式一次看见，画布保持最宽",
+      score: { efficiency: 56, aesthetic: 22, learn: 14 },
+      ui: frame("top")
+    },
+    {
+      id: "image-good",
+      tier: "good",
+      name: "侧栏模式",
+      desc: "模式和队列工具改成左侧竖条，画布变窄。",
+      source: "原型 v6 侧栏",
+      reason: "竖条占掉一列，模式名称要折行",
+      score: { efficiency: 48, aesthetic: 20, learn: 13 },
+      ui: frame("side")
+    },
+    {
+      id: "image-basic",
+      tier: "basic",
+      name: "右栏换模式",
+      desc: "没有独立模式条。八个模式堆在右栏顶部，队列默认收起。",
+      source: "原型 v6 的弱化排布",
+      reason: "换模式要先看右栏，队列默认不在",
+      score: { efficiency: 40, aesthetic: 16, learn: 11 },
+      ui: frame("stack")
+    }
   ]
 };

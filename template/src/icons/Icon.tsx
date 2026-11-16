@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import type { IconArea, IconConfig, IconStyleId } from "../workbench/types";
 import { builtinIcons } from "./builtin";
+import hy3dData from "./hy3d.json";
 import iconData from "./icons.json";
 import variantData from "./icon-variants.json";
 
@@ -20,10 +21,13 @@ export interface IconEntry {
   s: string;
 }
 
-/** 工具图标（12-工具图标 的推荐项）在前，内置补充在后。 */
-export const icons: Record<string, IconEntry> = { ...builtinIcons, ...(iconData.icons as Record<string, IconEntry>) };
+const hy3dIcons = (hy3dData as { icons: Record<string, IconEntry> }).icons;
+
+/** 工具图标（12-工具图标 的推荐项）在前，内置补充在后。HY3d 用 h3- 前缀，不盖住同名推荐项。 */
+export const icons: Record<string, IconEntry> = { ...builtinIcons, ...(iconData.icons as Record<string, IconEntry>), ...hy3dIcons };
 export const iconCategories: { id: string; name: string; icons: string[] }[] = [
   ...iconData.categories,
+  { id: "HY3d", name: "HY3d", icons: Object.keys(hy3dIcons) },
   { id: "壳层补充", name: "壳层补充", icons: Object.keys(builtinIcons) }
 ];
 

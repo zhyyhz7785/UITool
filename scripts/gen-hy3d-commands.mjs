@@ -22,7 +22,10 @@ for (const c of cs) {
   }
 }
 const look = menus.get("外观");
-for (const id of ["ui.skin.acad-b", "ui.skin.hy-e"]) if (!look.includes(id)) look.push(id);
+for (const id of ["ui.skin.acad-b", "ui.skin.hy-e"]) {
+  const at = look.indexOf(id);
+  if (at >= 0) look.splice(at, 1);
+}
 
 const ribbonOrder = [
   "默认/文件",

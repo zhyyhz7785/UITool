@@ -1,4 +1,5 @@
 import { views as templateViews } from "@tpl/views";
+import { photoHandlers } from "@tpl/views/photoSession";
 import type { WorkbenchApi } from "@tpl/workbench/context";
 import { Workbench } from "@tpl/workbench/Workbench";
 import type { PartId } from "@tpl/workbench/types";
@@ -211,7 +212,7 @@ export function PreviewView() {
             }}
             onMouseLeave={() => setStack([])}
           >
-            <Workbench mode="embedded" config={doc.config} onConfigChange={(c) => design.setConfig(() => c)} themes={themes} views={templateViews} scale={scale} apiRef={apiRef} onlyPart={focus?.kind === "part" ? focus.part : null} onlyMenu={focus?.kind === "menu" ? focus.id : null} />
+            <Workbench mode="embedded" config={doc.config} onConfigChange={(c) => design.setConfig(() => c)} themes={themes} views={templateViews} handlers={doc.config.workType === "image" ? photoHandlers : undefined} scale={scale} apiRef={apiRef} onlyPart={focus?.kind === "part" ? focus.part : null} onlyMenu={focus?.kind === "menu" ? focus.id : null} />
           </div>
           <style>{css}</style>
         </div>
