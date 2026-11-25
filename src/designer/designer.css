@@ -15,8 +15,10 @@
 .ut-split { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .ut-split-top, .ut-split-bottom { min-height: 0; overflow: auto; padding: var(--sp-2) var(--sp-3); }
 .ut-split-bottom { flex: 1; }
-.ut-split-bar { height: 5px; flex: none; cursor: row-resize; background: var(--vscode-base-border); }
-.ut-split-bar:hover { background: var(--vscode-focusBorder); }
+.ut-split-bar { position: relative; z-index: 2; height: 1px; flex: none; cursor: row-resize; background: var(--vscode-base-border); transition: background-color 0.1s; }
+.ut-split-bar::before { content: ""; position: absolute; left: 0; right: 0; top: calc(50% - var(--sash-size) / 2); height: var(--sash-size); background: transparent; }
+.ut-split-bar:hover { background: var(--vscode-base-accent); transition-delay: 0.25s; }
+.ut-split-bar.active { background: var(--vscode-base-accent); transition-delay: 0s; }
 .ut-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 var(--sp-2); }
 .ut-chip { border: 1px solid var(--vscode-base-border); background: transparent; color: inherit; border-radius: var(--r-sm); padding: 2px 8px; cursor: grab; font: inherit; font-size: var(--fs-cap); }
 .ut-chip.on { border-color: var(--vscode-focusBorder); background: var(--vscode-list-inactiveSelectionBackground); }

@@ -13,7 +13,7 @@ interface SashProps {
   onCommit: (v: number) => void;
 }
 
-/** 分割条：不占布局宽度，命中区 var(--sash-size)，悬停 / 拖动时显示 sash.hoverBorder。 */
+/** 分割条：布局占 1px，热区 var(--sash-size) 透明，悬停 / 拖动只把这 1px 换成强调色。 */
 export function Sash({ axis, sign, value, min, max, scale = 1, onChange, onCommit }: SashProps) {
   const drag = useRef<{ start: number; base: number; last: number } | null>(null);
   const clamp = (v: number) => Math.round(Math.max(min, Math.min(max, v)));

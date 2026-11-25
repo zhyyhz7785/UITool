@@ -17,9 +17,11 @@ export function Split({ top, bottom }: { top: ReactNode; bottom: ReactNode }) {
     const n = Number(localStorage.getItem(SPLIT_KEY));
     return Number.isFinite(n) && n >= 72 ? n : 168;
   });
-  const drag = (e: React.PointerEvent) => {
-    const parent = (e.currentTarget as HTMLElement).parentElement;
+  const drag = (e: React.PointerEvent<HTMLDivElement>) => {
+    const bar = e.currentTarget;
+    const parent = bar.parentElement;
     if (!parent) return;
+    bar.classList.add("active");
     const top0 = parent.getBoundingClientRect().top;
     const move = (ev: PointerEvent) => {
       const next = Math.max(72, Math.min(Math.max(96, parent.clientHeight - 96), ev.clientY - top0));
@@ -27,6 +29,7 @@ export function Split({ top, bottom }: { top: ReactNode; bottom: ReactNode }) {
       localStorage.setItem(SPLIT_KEY, String(Math.round(next)));
     };
     const up = () => {
+      bar.classList.remove("active");
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
     };
