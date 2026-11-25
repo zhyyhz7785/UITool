@@ -1,38 +1,54 @@
 import { isTauri } from "@tpl/core/tauri";
 import { invoke } from "@tauri-apps/api/core";
+import { assertReadable, assertWritable, rememberPaths, textHash, type ProductPaths } from "./paths";
 
-/** 允许读写的根。手改文件在设计规范仓库，不在 hy3d 里面。 */
-const ROOTS = ["E:/Code/hy3d", "E:/Code/HyMdTauri2", "E:/Code/UI设计规范/13-软件模板/01-AutoCAD侧"];
+const seen = new Map<string, string>();
 
-export const HY3D = "E:/Code/hy3d";
-export const HYMD = "E:/Code/HyMdTauri2";
-export const HY3D_HAND = "E:/Code/UI设计规范/13-软件模板/01-AutoCAD侧/Hy3d制图.uitool.json";
-
-function allowed(file: string) {
-  const n = file.replace(/\\/g, "/");
-  if (n.split("/").includes("..")) return false;
-  return ROOTS.some((root) => n === root || n.toLowerCase().startsWith(root.toLowerCase() + "/"));
+function keyOf(file: string) {
+  return file.replace(/\\/g, "/");
 }
 
-async function callFs(op: "read" | "write", path: string, text?: string): Promise<string> {
-  if (!allowed(path)) throw new Error("路径不在允许的仓库里");
-  if (isTauri()) {
-    if (op === "read") return invoke<string>("read_file", { path });
-    const data = Array.from(new TextEncoder().encode(text ?? ""));
-    await invoke("write_file", { path, data });
-    return "";
-  }
+async function post(body: unknown): Promise<{ text?: string; error?: string; products?: ProductPaths[] }> {
   const res = await fetch("/__uitool/fs", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ op, path, text })
+    body: JSON.stringify(body)
   });
-  const body = (await res.json()) as { text?: string; error?: string };
-  if (!res.ok) throw new Error(body.error || "读写失败");
-  return body.text ?? "";
+  const data = (await res.json()) as { text?: string; error?: string; products?: ProductPaths[] };
+  if (!res.ok) throw new Error(data.error || "读写失败");
+  return data;
 }
 
-export const readText = (path: string) => callFs("read", path);
-export const writeText = (path: string, text: string) => callFs("write", path, text);
+export async function publishPaths(products: ProductPaths[]) {
+  rememberPaths(products);
+  if (isTauri()) {
+    await invoke("set_path_policy", { products: JSON.stringify(products) });
+    return;
+  }
+  await post({ op: "set-policy", products });
+}
+
+export async function readText(file: string): Promise<string> {
+  assertReadable(file);
+  const text = isTauri() ? await invoke<string>("read_file", { path: file }) : (await post({ op: "read", path: file })).text ?? "";
+  seen.set(keyOf(file), textHash(text));
+  return text;
+}
+
+export async function writeText(file: string, text: string) {
+  assertWritable(file);
+  const expect = seen.get(keyOf(file));
+  if (isTauri()) {
+    const data = Array.from(new TextEncoder().encode(text));
+    await invoke("write_product", { path: file, data, expect });
+  } else {
+    await post({ op: "write", path: file, text, expect });
+  }
+  seen.set(keyOf(file), textHash(text));
+}
 
 export const jsonText = (data: unknown) => JSON.stringify(data, null, 2) + "\n";
+
+export function rememberedHash(file: string) {
+  return seen.get(keyOf(file));
+}

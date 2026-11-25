@@ -1,24 +1,19 @@
-import type { AppMeta, CommandDef, DialogAction, DialogDef, EditorItem, ItemZones, LayoutConfig, Menu, PaneTab, SchemeUi, SideContainer, ToolItem, ToolRow, ViewSection } from "@tpl/workbench/types";
-
-export type SchemeTier = "best" | "good" | "basic";
-
-export interface SchemeScore {
-  efficiency: number;
-  aesthetic: number;
-  learn: number;
-}
+import type { AppMeta, CommandDef, DialogAction, DialogDef, EditorItem, ItemZones, LayoutConfig, Menu, PaneTab, SchemeChrome, SchemeUi, SideContainer, ToolItem, ToolRow, ViewSection } from "@tpl/workbench/types";
 
 export interface SchemeDef {
   id: string;
-  tier: SchemeTier;
   name: string;
   desc: string;
   source: string;
-  reason: string;
-  score: SchemeScore;
+  /** 产品里的皮肤 id。没有对应真实皮肤时不填。 */
+  skin?: string;
+  /** 新建设计的卡片里不列出。规格仍随设计带走，旧文件照样打开。 */
+  listed?: boolean;
   ui: SchemeUi;
-  /** 这一档自己的顶栏菜单。不填就用工作类型共用的那套。 */
+  /** 这一套自己的顶栏菜单。不填就用工作类型共用的那套。 */
   menus?: Menu[];
+  /** 产品壳层自己的状态，例如 HY Ribbon 的常显。不另造一套命令。 */
+  chrome?: SchemeChrome;
 }
 
 export interface WorkTypeDef {
@@ -137,27 +132,20 @@ export function viewIds(ui: SchemeUi): string[] {
   return [...ids].sort();
 }
 
-export function scoreTotal(s: SchemeScore): number {
-  return s.efficiency + s.aesthetic + s.learn;
-}
-
 export function assertWorkType(t: WorkTypeDef) {
-  const tiers = [...t.schemes.map((s) => s.tier)].sort().join(",");
-  if (tiers !== "basic,best,good") throw new Error(`${t.id} 档位不全：${tiers}`);
-  const totals = Object.fromEntries(t.schemes.map((s) => [s.tier, scoreTotal(s.score)]));
-  if (!(totals.best > totals.good && totals.good > totals.basic)) throw new Error(`${t.id} 分数顺序不对 ${JSON.stringify(totals)}`);
+  if (!t.schemes.length) throw new Error(`${t.id} 没有皮肤`);
+  const ids = new Set(t.schemes.map((s) => s.id));
+  if (ids.size !== t.schemes.length) throw new Error(`${t.id} 皮肤 id 重复`);
   const want = [...t.views].sort().join(",");
   for (const s of t.schemes) {
-    const sc = s.score;
-    if (sc.efficiency > 60 || sc.aesthetic > 25 || sc.learn > 15 || sc.efficiency < 0) throw new Error(`${t.id}/${s.id} 分数超出范围`);
     const got = viewIds(s.ui).join(",");
     if (got !== want) throw new Error(`${t.id}/${s.id} 视图不一致\n有 ${got}\n要 ${want}`);
   }
   const menuCmds = new Set(t.menus.flatMap((m) => m.items.map((i) => i.command).filter((x): x is string => !!x)));
   for (const c of t.commands) if (!menuCmds.has(c.id)) throw new Error(`${t.id} 菜单没有命令 ${c.id}`);
-  const ids = new Set(t.commands.map((c) => c.id));
-  if (ids.size !== t.commands.length) throw new Error(`${t.id} 命令 id 重复`);
-  for (const d of t.dialogs) if (!ids.has(d.command)) throw new Error(`${t.id} 弹窗 ${d.id} 的命令不存在`);
+  const commandIds = new Set(t.commands.map((c) => c.id));
+  if (commandIds.size !== t.commands.length) throw new Error(`${t.id} 命令 id 重复`);
+  for (const d of t.dialogs) if (!commandIds.has(d.command)) throw new Error(`${t.id} 弹窗 ${d.id} 的命令不存在`);
 }
 
 export function appMeta(id: string, title: string, description: string): AppMeta {

@@ -1,6 +1,4 @@
-import type { LayoutConfig, SchemeUi, UiConfig, UiScheme } from "./types";
-
-export const TIER_NAME: Record<UiScheme["tier"], string> = { best: "最优", good: "次优", basic: "一般" };
+import type { LayoutConfig, SchemeUi, UiConfig } from "./types";
 
 const clone = <T,>(v: T): T => JSON.parse(JSON.stringify(v));
 

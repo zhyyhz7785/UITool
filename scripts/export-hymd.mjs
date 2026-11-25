@@ -7,7 +7,9 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const designDir = path.resolve(root, "../13-软件模板/02-HyMd侧");
-const hymd = process.env.HYMD_ROOT ?? "E:/Code/HyMdTauri2";
+import { hymdReadRoot, hymdWriteRoot } from "./path-policy.mjs";
+
+const hymd = process.env.HYMD_ROOT ? path.resolve(process.env.HYMD_ROOT) : hymdReadRoot();
 const date = process.env.DESIGN_DATE ?? "20261017";
 
 /** 方案 → HyMd 皮肤、推荐配色（HyMd 配色 id）、设计文件名。 */
@@ -52,9 +54,15 @@ try {
 
   const app = { name: "hymd-writing", title: "HyMd 文档写作", identifier: "com.hy.hymd-writing", version: "0.1.0", description: writing.summary, icon: "layout" };
   const stamp = "由 UITool/scripts/export-hymd.mjs 从「文档写作」预设生成，勿手改";
+  let writeAt = "";
+  try {
+    writeAt = hymdWriteRoot();
+  } catch (error) {
+    console.log(error instanceof Error ? error.message : String(error));
+  }
   const marker = path.join(hymd, "src/skins/design/vscode.json");
-  let skipHymd = false;
-  if (process.env.PRESET_EXPORT !== "1" && fs.existsSync(marker)) {
+  let skipHymd = !writeAt;
+  if (!skipHymd && process.env.PRESET_EXPORT !== "1" && fs.existsSync(marker)) {
     try {
       skipHymd = String(JSON.parse(fs.readFileSync(marker, "utf8")).$comment || "").includes("设计器连接写回");
     } catch {
@@ -65,12 +73,14 @@ try {
   const container = (c) => ({ id: c.id, title: { zh: c.title, en: EN[c.id] ?? c.title }, header: c.header === "icon" ? "icon" : "text", views: c.sections.map((s) => s.view) });
   const cmdsOf = (items) => items.filter((i) => i.command).map((i) => i.command);
 
-  fs.mkdirSync(path.join(hymd, "src/skins/design"), { recursive: true });
-  fs.mkdirSync(path.join(hymd, "src/parts/design"), { recursive: true });
+  if (!skipHymd) {
+    fs.mkdirSync(path.join(writeAt, "src/skins/design"), { recursive: true });
+    fs.mkdirSync(path.join(writeAt, "src/parts/design"), { recursive: true });
+  }
 
   for (const s of SCHEMES) {
     const config = presets.buildConfig("writing", s.scheme, app);
-    fs.writeFileSync(path.join(designDir, s.file), JSON.stringify({ kind: "uitool-design", version: 1, config, customThemes: [] }, null, 2) + "\n");
+    if (fs.existsSync(designDir)) fs.writeFileSync(path.join(designDir, s.file), JSON.stringify({ kind: "uitool-design", version: 1, config, customThemes: [] }, null, 2) + "\n");
     if (skipHymd) {
       console.log(`${s.file}  →  （未写 HyMd）`);
       continue;
@@ -102,7 +112,7 @@ try {
       panel: def.ui.panel.map((p) => p.view),
       ribbon: ribbonOn ? { start: cmdsOf(side.rows[0].start), end: cmdsOf(side.rows[0].end) } : null
     };
-    fs.writeFileSync(path.join(hymd, "src/skins/design", `${s.skin}.json`), JSON.stringify(spec, null, 2) + "\n");
+    fs.writeFileSync(path.join(writeAt, "src/skins/design", `${s.skin}.json`), JSON.stringify(spec, null, 2) + "\n");
     console.log(`${s.file}  →  skins/design/${s.skin}.json  commands=${config.commands.length}`);
   }
 
@@ -113,7 +123,7 @@ try {
       items: m.items.map((x) => (x === "sep" ? "—" : typeof x === "string" ? x : `@${x.sub}`))
     }))
   };
-  if (!skipHymd) fs.writeFileSync(path.join(hymd, "src/parts/design/menus.json"), JSON.stringify(menus, null, 2) + "\n");
+  if (!skipHymd) fs.writeFileSync(path.join(writeAt, "src/parts/design/menus.json"), JSON.stringify(menus, null, 2) + "\n");
   console.log(`${skipHymd ? "未写菜单。" : "parts/design/menus.json  "}菜单 ${menus.menus.length} 组；HyMd 快照 ${snapshot.length} 条，模板共 ${writing.commands.length} 条`);
 } finally {
   await server.close();

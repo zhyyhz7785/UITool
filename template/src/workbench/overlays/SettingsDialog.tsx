@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { themeSwatches } from "../../theme/resolve";
 import { accentChoices } from "../../theme/themes";
 import { useWorkbench } from "../context";
-import { switchScheme, TIER_NAME } from "../schemes";
+import { switchScheme } from "../schemes";
 import type { LayoutConfig } from "../types";
 import { Button, Select, Toggle } from "../ui";
 import { Dialog } from "./Dialog";
@@ -94,7 +94,7 @@ export function SettingsDialog() {
                 <Row label="界面方案">
                   <Select
                     value={c.scheme ?? c.schemes![0].id}
-                    options={c.schemes!.map((s) => ({ value: s.id, label: `${s.name}（${TIER_NAME[s.tier]}）` }))}
+                    options={c.schemes!.map((s) => ({ value: s.id, label: s.name }))}
                     onChange={(id) => wb.updateConfig((x) => switchScheme(x, id, "session"))}
                   />
                 </Row>

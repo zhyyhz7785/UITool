@@ -252,8 +252,8 @@ function plain() {
 
 export const writing: WorkTypeDef = {
   id: "writing",
-  name: "文档写作",
-  summary: "照 HyMd 实际界面：94 条工作台命令 + 30 条正文插入命令，7 组菜单，视图与 HyMd 一一对应。设计导出后 HyMd 按它渲染。",
+  name: "HyMdTauri",
+  summary: "完整文档工作台，照 HyMd 实际界面。视图与三套真实皮肤一一对应。",
   views,
   commands: hymdCommands,
   menus,
@@ -261,32 +261,26 @@ export const writing: WorkTypeDef = {
   schemes: [
     {
       id: "writing-best",
-      tier: "best",
+      skin: "obsidian",
       name: "三栏研究台",
       desc: "左功能区 + 左停靠（文件、搜索、书签、源代码管理、论文）；右停靠图标页签（反向链接、大纲、文献、局部图谱、标签、属性、主题）。",
-      source: "13-软件模板/02-HyMd侧/C-Obsidian式多窗格研究台.html（文献页 p-refs、Zotero、view.refs）→ HyMd 皮肤 obsidian",
-      reason: "文献、大纲和反向链接同时在右侧",
-      score: { efficiency: 52, aesthetic: 22, learn: 13 },
+      source: "HyMd 皮肤 obsidian",
       ui: research()
     },
     {
       id: "writing-good",
-      tier: "good",
+      skin: "vscode",
       name: "VSCode 式工作台",
       desc: "活动栏竖条切资源管理器、搜索、源代码管理、论文；右侧文献 + 文档属性，另有关联、主题；底栏五个页签。",
-      source: "13-软件模板/02-HyMd侧/A-VSCode式工作台.html（文献库 p-refs、文献详情 p-refcard、GB/T 7714）→ HyMd 皮肤 vscode",
-      reason: "文献详情要开右侧栏，其余视图在底栏页签",
-      score: { efficiency: 46, aesthetic: 18, learn: 12 },
+      source: "HyMd 皮肤 vscode",
       ui: vscode()
     },
     {
       id: "writing-basic",
-      tier: "basic",
+      skin: "notion",
       name: "简洁文档",
       desc: "白底，无活动栏。左侧栏顶部图标页签，正文居中，右侧检查器分目录、文献、信息、关联、主题；底栏默认收起。",
-      source: "13-软件模板/02-HyMd侧/B-Apple-Notion式简洁文档.html（检查器文献页 p-refs、Zotero、DOI）→ HyMd 皮肤 notion",
-      reason: "文献收在检查器里，默认不铺开工作台",
-      score: { efficiency: 34, aesthetic: 23, learn: 14 },
+      source: "HyMd 皮肤 notion",
       ui: plain()
     }
   ]

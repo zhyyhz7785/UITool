@@ -11,6 +11,7 @@ import { FormDialog } from "./overlays/FormDialog";
 import { Notifications } from "./overlays/Notifications";
 import { QuickPick } from "./overlays/QuickPick";
 import { SettingsDialog } from "./overlays/SettingsDialog";
+import { safeTokens } from "./safeTokens";
 import { resetSchemeLayout } from "./schemes";
 import { ActivityBar } from "./parts/ActivityBar";
 import { EditorArea } from "./parts/EditorArea";
@@ -372,7 +373,7 @@ export function Workbench({ config, defaultConfig, onConfigChange, themes = buil
       <div
         ref={rootRef}
         className={"wb-root" + (className ? " " + className : "")}
-        style={{ ...(vars as CSSProperties), ...style }}
+        style={{ ...(vars as CSSProperties), ...safeTokens(cfg.tokens), ...style }}
         data-density={cfg.density}
         data-theme-type={theme.type}
         data-toolbar-pos={toolbarPos}

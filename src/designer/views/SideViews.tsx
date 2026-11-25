@@ -3,7 +3,7 @@ import { importVSCodeTheme, resolveColors, themeSwatches, type ThemeData } from 
 import { accentChoices, findTheme } from "@tpl/theme/themes";
 import { useWorkbench } from "@tpl/workbench/context";
 import { ICON_AREAS, ICON_STYLES, type IconStyleId, type ToolItem, type UiConfig } from "@tpl/workbench/types";
-import { switchScheme, TIER_NAME } from "@tpl/workbench/schemes";
+import { switchScheme } from "@tpl/workbench/schemes";
 import { Button, IconButton } from "@tpl/workbench/ui";
 import { useMemo, useState } from "react";
 import { exportProject, openDesign, saveDesign } from "../actions";
@@ -11,7 +11,7 @@ import { ColorInput, Field, filterIcons, IconPicker, Section, Segmented, TextFie
 import { packageName, projectSummary, validateDoc } from "../export";
 import { PART_NAMES, PART_ORDER, PartColors, PartLayout } from "../partSettings";
 import { openTextFile, copyText } from "../platform";
-import { buildConfig, workTypes } from "../presets";
+import { buildConfig, KNOWN_WORK_TYPES, workTypes } from "../presets";
 import { migrateConfig } from "@tpl/workbench/migrate";
 import { allThemes, clone, design, useDesign, type DesignDoc } from "../store";
 
@@ -38,19 +38,19 @@ export function PresetsView() {
     setSnaps(s);
     localStorage.setItem(SNAP_KEY, JSON.stringify(s));
   };
+  const archived = !!cfg.workType && !KNOWN_WORK_TYPES.has(cfg.workType);
   return (
     <div className="ut-view">
-      <Section title="按工作类型">
-        <div className="ut-note">点一套就是生成：这一套成为主方案，可以接着改；同类型另外两套自动附上。导出的程序里用「视图 → 界面方案」切换，命令和按钮不变。</div>
-        <div className="ut-note">改 hy3d 或 HyMd：用左侧「连接」读取，在预览里改，再替换原设计。点下面的卡片会用预设换掉当前设计。</div>
+      {archived && <div className="ut-note">这份设计来自已归档的预设「{cfg.workType}」。按文件里的布局打开，没有换成其他模板。</div>}
+      <Section title="新建设计">
+        <div className="ut-note">三个产品共用这一套设计器。点一张卡片会换成该产品的皮肤，同产品的其他皮肤附在下面，可以切换。不会改你已经保存的设计文件。</div>
         {workTypes.map((type) => (
           <div key={type.id}>
             <div className="ut-group-title">{type.name}</div>
             <div className="ut-cards">
-              {type.schemes.map((s) => {
+              {type.schemes.filter((s) => s.listed !== false).map((s) => {
                 const preview = buildConfig(type.id, s.id);
                 const t = findTheme(allThemes(design.get().doc), preview.theme.id);
-                const total = s.score.efficiency + s.score.aesthetic + s.score.learn;
                 return (
                   <button
                     key={s.id}
@@ -59,14 +59,12 @@ export function PresetsView() {
                     onClick={() => {
                       design.setConfig(() => buildConfig(type.id, s.id, design.get().doc.config.app));
                       design.select(null);
-                      wb.notify("success", `已生成「${type.name} · ${s.name}」`, "另外两套已附上");
+                      wb.notify("success", `已生成「${type.name} · ${s.name}」`);
                     }}
                   >
                     <MiniLayout config={preview} theme={t} />
-                    <div className={"ut-tier " + s.tier}>{TIER_NAME[s.tier]} · {total}</div>
                     <div className="ut-card-title">{s.name}</div>
                     <div className="ut-card-desc">{s.desc}</div>
-                    <div className="ut-card-src">{s.source}</div>
                   </button>
                 );
               })}
@@ -74,13 +72,31 @@ export function PresetsView() {
           </div>
         ))}
       </Section>
+      <Section title="打开已有设计">
+        <div className="ut-note">打开 .uitool.json 或工程里的 ui.config.json。旧预设只要文件里带着自己的布局，就按原样打开。有未保存修改时不会覆盖。</div>
+        <div className="ut-row">
+          <Button onClick={() => void openDesign(wb)}>打开设计…</Button>
+          <Button
+            onClick={() => {
+              design.revertUnsaved();
+              wb.notify("info", "已放弃未保存修改");
+            }}
+          >
+            放弃未保存修改
+          </Button>
+        </div>
+      </Section>
+      <Section title="连接真实软件">
+        <div className="ut-note">读取 HY3D 或 HyMdTauri 的现有界面，或连接本机正在运行的开发窗口。</div>
+        <Button onClick={() => wb.showActivity("link")}>打开连接</Button>
+      </Section>
       <Section title="界面方案">
-        {(cfg.schemes?.length ?? 0) === 0 && <div className="ut-note">还没有方案。从上面选一个工作类型。</div>}
+        {(cfg.schemes?.length ?? 0) === 0 && <div className="ut-note">还没有皮肤。从上面选一个产品。</div>}
         {cfg.schemes?.map((s) => (
           <div key={s.id} className="ut-snap">
-            <span className={"ut-tier " + s.tier}>{TIER_NAME[s.tier]}</span>
             <span className="ut-grow">
               {s.name}
+              {s.skin ? ` · ${s.skin}` : ""}
               {s.tuned ? " · 主方案" : ""}
             </span>
             {cfg.scheme !== s.id && (
@@ -587,11 +603,11 @@ export function GuideView() {
     <div className="ut-guide">
       <h3>用法</h3>
       <ol>
-        <li>左侧「预设」按工作类型选一套。点中的成为主方案，同类型另外两套自动附上，导出后可在「视图 → 界面方案」切换。</li>
+        <li>左侧「预设」里选 HyMdTauri、HY3D 或通用模板。点中的成为主方案，同产品的其他皮肤附在设计里，用「视图 → 界面方案」切换。</li>
         <li>在中间预览里点一个区域，右侧「属性」改它的显隐、位置、尺寸、条目和颜色；分割条可直接拖。</li>
         <li>「主题与配色」选主题、换强调色、逐键覆盖颜色，或导入 VSCode 主题 JSON。</li>
         <li>「部件内容」编辑菜单、工具栏、状态栏、命令；命令填「内核方法」就转给 Rust 内核。</li>
-        <li>「文件 → 导出工程 zip」导出。解压后 npm install → npm run tauri dev。读 hy3d / HyMd 用左侧「连接」。</li>
+        <li>「文件 → 导出工程 zip」导出。解压后 npm install → npm run tauri dev。读真实软件前，在「连接」里填写主仓和工作树。</li>
       </ol>
       <h3>分离约定</h3>
       <p>界面只通过 core.call / core.on 调内核；内核是独立 Rust crate（core/），不依赖 Tauri。设计结果只有 src/ui.config.json。</p>

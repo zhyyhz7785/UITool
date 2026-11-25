@@ -1,9 +1,13 @@
-// 按 scripts/hy3d-icons.json 把图标名写进 commands.json，缺的符号补进 icons.svg。
+// 按 scripts/hy3d-icons.json 把图标名写进 commands.json，缺的符号补进 icons.svg。只写授权工作树。
 import fs from "node:fs";
+import path from "node:path";
+import { canWriteProduct, hy3dWriteRoot } from "./path-policy.mjs";
 
 const mapPath = new URL("./hy3d-icons.json", import.meta.url);
-const cmdPath = process.env.HY3D_COMMANDS ?? "E:/Code/hy3d/ui/commands.json";
-const svgPath = process.env.HY3D_ICONS ?? "E:/Code/hy3d/ui/icons.svg";
+const root = hy3dWriteRoot();
+const cmdPath = process.env.HY3D_COMMANDS ? path.resolve(process.env.HY3D_COMMANDS) : path.join(root, "ui", "commands.json");
+const svgPath = process.env.HY3D_ICONS ? path.resolve(process.env.HY3D_ICONS) : path.join(root, "ui", "icons.svg");
+if (!canWriteProduct(cmdPath) || !canWriteProduct(svgPath)) throw new Error("图标生成只能写入已授权的 hy3d 开发工作树");
 const map = JSON.parse(fs.readFileSync(mapPath, "utf8"));
 const doc = JSON.parse(fs.readFileSync(cmdPath, "utf8"));
 const ids = doc.commands.map((c) => c.id);

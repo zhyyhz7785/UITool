@@ -9,11 +9,12 @@ import { ChipList, Field, IconPicker, ListEditor, Section, Segmented, TextField,
 import { AppIconEditor, ContainerHeadEditor, ItemDetail, MultiPanel, Split, WinEditor, ZoneChips } from "./editDetail";
 import { describe } from "./merge";
 import { PART_NAMES, PartColors, PartLayout } from "./partSettings";
+import { ProductTokenFields } from "./ProductTokenFields";
 import { design, useDesign, type Selection } from "./store";
 import { viewOptions } from "./viewOptions";
 import { containersOf, findMenu, findSection, locateSlot, mapContainer, mapSection, nid, orderById, setContainers, setZoneItems, siblingZones, zoneItems } from "./zones";
 
-const TABS = ["布局", "内容", "颜色", "图标"] as const;
+const TABS = ["布局", "内容", "颜色", "图标", "变量"] as const;
 
 const KIND_OPTIONS: { value: DialogKind; label: string }[] = [
   { value: "form", label: "表单" },
@@ -270,6 +271,7 @@ export function PropertiesView() {
         {tab === "内容" && <Content selected={selected} />}
         {tab === "颜色" && <PartColors part={part} />}
         {tab === "图标" && <AreaStyle part={part} />}
+        {tab === "变量" && <ProductTokenFields />}
       </div>
     </div>
   );
