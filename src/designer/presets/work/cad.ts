@@ -1,13 +1,11 @@
-import { groupFromPanel, STATUS_TOGGLES } from "hy3d-spec";
+import { groupFromPanel } from "hy3d-spec";
 import { baseLayout, box, chip, cmd, dialog, editor, look, menu, okCancel, row, section, stack, tab, zones, type WorkTypeDef } from "../kit";
-import { BENCH_DEF, BENCH_TOP, BLENDER_MENUS, BLENDER_TABS, hy3dCommands, hy3dMenus } from "./cad.hy3dCommands";
+import { hy3dBenchRows, hy3dCommands, hy3dMenus, hy3dQuick, hy3dStatus, hy3dTabs } from "./cad.hy3dCommands";
 
-/** 命令 id、快捷键、菜单、功能区都来自 hy3d `ui/commands.json`。 */
+/** 命令 id、快捷键、菜单、功能区都来自 hy3d 当前的 ui/design 和 ui/commands。 */
 const commands = hy3dCommands.map((c) =>
   cmd(c.id, c.title, c.category, c.icon, c.keybinding ? { keybinding: c.keybinding, core: c.id } : { core: c.id })
 );
-
-const blenderMenus = BLENDER_MENUS.map((m) => menu(m.id, m.title, m.items));
 
 const menus = hy3dMenus.map((m) =>
   menu(
@@ -64,7 +62,7 @@ function panelTabs() {
   return [tab("cmd", "命令栏", "terminal", "commandline"), tab("log", "输出", "term", "output")];
 }
 
-/** B · Ribbon。八个选项卡。面上按钮、下拉和大按钮跟 hy3d 同一张表。 */
+/** 功能区。页签、面上按钮、下拉和大按钮跟 hy3d ribbon.json 同一份。文字编辑器页隐藏。 */
 function ribbonUi() {
   const layout = baseLayout();
   layout.dialogStyle = "sheet";
@@ -72,26 +70,25 @@ function ribbonUi() {
   layout.titleBar.menu = "ownrow";
   layout.titleBar.commandCenter = false;
   layout.titleBar.search = true;
-  layout.titleBar.left = [
-    { id: "q-ui.undo", command: "ui.undo", text: "撤销" },
-    { id: "q-ui.redo", command: "ui.redo", text: "重做" },
-    { id: "q-edit.adjust", command: "edit.adjust", text: "调整上一步" }
-  ];
+  layout.titleBar.left = hy3dQuick.map((id) => {
+    const command = hy3dCommands.find((c) => c.id === id);
+    return { id: "q-" + id, command: id, text: command?.title || id };
+  });
   layout.titleBar.right = [];
   layout.toolbars.top = {
     visible: true,
     style: "ribbon",
-    rows: BLENDER_TABS.map((t) => {
+    rows: hy3dTabs.map((t) => {
       const groups = t.panels.map((p) => groupFromPanel(p));
       const start = groups.flatMap((g) => g.commands.filter(Boolean).map((command) => ({ id: `${t.id}-${g.id}-${command}`, command })));
-      return { id: t.id, title: t.title, start, center: [], end: [], groups };
+      return { id: t.id, title: t.title, start, center: [], end: [], groups, ...(t.hidden ? { hidden: true } : {}) };
     })
   };
   layout.auxiliaryBar.visible = false;
   layout.panel = { ...layout.panel, visible: true, size: 120 };
   const statusBar = zones(
     [chip("coord", "0.0000, 0.0000, 0.0000")],
-    [...STATUS_TOGGLES.map((t) => ({ id: "st-" + t.id, command: t.id, text: t.short })), chip("scale", "1:1")]
+    [...hy3dStatus.map((t) => ({ id: "st-" + t.id, command: t.id, text: t.short })), chip("scale", "1:1")]
   );
   statusBar.center = [chip("model", "模型"), chip("layout", "布局")];
   return {
@@ -105,23 +102,25 @@ function ribbonUi() {
   };
 }
 
-/** 默认选项卡的各面板排成一条竖条，面板之间加分隔。 */
-function defaultShelf() {
-  const home = BLENDER_TABS.find((t) => t.title === "默认");
+const visibleTabs = hy3dTabs.filter((t) => !t.hidden);
+
+/** 「常用」页的各面板排成一条竖条，面板之间加分隔。 */
+function homeShelf() {
+  const home = visibleTabs.find((t) => t.title === "常用");
   const start: { id: string; command?: string; separator?: boolean }[] = [];
   (home?.panels ?? []).forEach((panel, pi) => {
     if (pi) start.push({ id: "sep-" + pi, separator: true });
     panel.ids.forEach((command) => start.push({ id: "t-" + command, command }));
   });
-  return { id: "tools", title: "默认", start, center: [], end: [] };
+  return { id: "tools", title: "常用", start, center: [], end: [] };
 }
 
-/** A · Blender。页签是命令目录的八个选项卡，左侧竖条是当前选项卡的面板。 */
+/** Blender。hy3d 已没有这套规格。左侧竖条是「常用」页，菜单与功能区相同。 */
 function shelfUi() {
   const layout = baseLayout();
   layout.activityBar.visible = false;
   layout.toolbars.top.visible = false;
-  layout.toolbars.side = { visible: true, position: "left", style: "icon", rows: [defaultShelf()] };
+  layout.toolbars.side = { visible: true, position: "left", style: "icon", rows: [homeShelf()] };
   layout.panel = { ...layout.panel, visible: false, size: 96 };
   layout.primarySideBar.width = 200;
   layout.auxiliaryBar.width = 260;
@@ -134,7 +133,7 @@ function shelfUi() {
     ],
     auxiliary: [box("props", "属性", "props", "properties")],
     panel: panelTabs(),
-    editors: BLENDER_TABS.map((t) => editor(t.id, t.title, "persp", "viewport2d")),
+    editors: visibleTabs.map((t) => editor(t.id, t.title, "persp", "viewport2d")),
     statusBar: zones(
       [chip("coord", "X 0.00  Y 0.00")],
       [chip("snap", "捕捉", "snap"), chip("grid", "栅格", "grid"), chip("ortho", "正交", "ortho")]
@@ -142,14 +141,14 @@ function shelfUi() {
   };
 }
 
-/** C · 分析工作台。两行工具，左工作树和图层，右特性，底输出。视口只有一块。 */
+/** 分析工作台。工具排来自 hy3d workbench.json。左工作树和图层，右特性，底输出。视口只有一块。 */
 function benchUi() {
   const layout = baseLayout();
   layout.activityBar.visible = false;
   layout.toolbars.top = {
     visible: true,
     style: "icon",
-    rows: [row("file", "文件", BENCH_TOP), row("def", "定义", BENCH_DEF)]
+    rows: hy3dBenchRows.map((r) => row(r.id, r.title, r.commands))
   };
   layout.panel = { ...layout.panel, visible: true, size: 160 };
   return {
@@ -174,8 +173,8 @@ export const cad: WorkTypeDef = {
   menus,
   dialogs,
   schemes: [
-    { id: "cad2d-best", tier: "best", name: "功能区", desc: "页签：默认、插入、视图、管理、输出、文件、结构、帮助。每页是目录里的面板，左侧图层、特性和大纲，底命令栏。", source: "01-AutoCAD侧/B-Ribbon-AutoCAD原生风格.html", reason: "命令按页放好，找得最快", score: { efficiency: 52, aesthetic: 20, learn: 14 }, ui: ribbonUi(), menus },
-    { id: "cad2d-good", tier: "good", name: "Blender", desc: "页签按命令目录：默认、插入、视图、管理、输出、文件、结构、帮助。左侧竖条是当前选项卡的面板。", source: "01-AutoCAD侧/A-独立窗口-Blender式深色.html", reason: "视口更大，命令和规划的选项卡对齐", score: { efficiency: 46, aesthetic: 18, learn: 13 }, ui: shelfUi(), menus: blenderMenus },
-    { id: "cad2d-basic", tier: "basic", name: "分析工作台", desc: "两行工具，左工作树和图层，右特性，底输出。只有一块视口。", source: "01-AutoCAD侧/C-工程分析工作台-SAP2000式.html", reason: "分析信息挤在一起，画图时视口最小", score: { efficiency: 38, aesthetic: 15, learn: 12 }, ui: benchUi(), menus }
+    { id: "cad2d-best", tier: "best", name: "功能区", desc: "页签：常用、插入、注释、视图、管理、输出、HY结构、HY沉降。文字编辑器页隐藏。左侧图层、特性和大纲，底命令栏。", source: "01-AutoCAD侧/B-Ribbon-AutoCAD原生风格.html", reason: "命令按页放好，找得最快", score: { efficiency: 52, aesthetic: 20, learn: 14 }, ui: ribbonUi(), menus },
+    { id: "cad2d-good", tier: "good", name: "Blender", desc: "hy3d 不再提供这套规格。左侧竖条是「常用」页的面板，菜单与功能区相同。", source: "01-AutoCAD侧/A-独立窗口-Blender式深色.html", reason: "视口更大，常用命令留在左侧", score: { efficiency: 46, aesthetic: 18, learn: 13 }, ui: shelfUi(), menus },
+    { id: "cad2d-basic", tier: "basic", name: "分析工作台", desc: "工具排来自 hy3d 的分析工作台。左工作树和图层，右特性，底输出。只有一块视口。", source: "01-AutoCAD侧/C-工程分析工作台-SAP2000式.html", reason: "分析信息挤在一起，画图时视口最小", score: { efficiency: 38, aesthetic: 15, learn: 12 }, ui: benchUi(), menus }
   ]
 };

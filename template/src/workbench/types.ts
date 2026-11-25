@@ -225,6 +225,8 @@ export interface ToolRow extends ItemZones {
   id: string;
   title?: string;
   groups?: ToolGroup[];
+  /** 上下文页。页签条不显示，写回规格时仍带 hidden。 */
+  hidden?: boolean;
 }
 
 export type ToolbarStyle = "icon" | "labeled" | "ribbon";

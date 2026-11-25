@@ -17,6 +17,24 @@ export function isShortcut(key) {
   return !!key && (/^(Ctrl|Alt|Shift|F\d|Del)/.test(key) || String(key).includes("+"));
 }
 
+/** keymap.json 的 layers.window。同一命令多条时留第一条真正的快捷键。 */
+export function windowKeysFrom(keymap) {
+  const map = new Map();
+  for (const row of keymap?.layers?.window || []) {
+    if (!row?.id || map.has(row.id) || !isShortcut(row.key)) continue;
+    map.set(row.id, row.key);
+  }
+  return map;
+}
+
+/** 命令自己的 key 是快捷键就用它，否则用窗口层快捷键。单字母命令名返回空串。 */
+export function commandKeybinding(raw, windowKeys) {
+  const own = raw?.key ?? raw?.keybinding;
+  if (isShortcut(own)) return own;
+  const alt = windowKeys?.get?.(raw?.id);
+  return isShortcut(alt) ? alt : "";
+}
+
 function includePath(rel) {
   let n = String(rel ?? "").replace(/\\/g, "/").trim();
   while (n.startsWith("./")) n = n.slice(2);
@@ -53,8 +71,8 @@ export async function collectCommands(doc, read) {
   return out;
 }
 
-/** hy3d 命令 → 设计器命令。label→title，cat→category，key→keybinding，保留 id、icon，并带上预设要用的 core。 */
-export function designerCommand(raw) {
+/** hy3d 命令 → 设计器命令。label→title，cat→category，key→keybinding，保留 id、icon，并带上预设要用的 core。windowKeys 补窗口层快捷键。 */
+export function designerCommand(raw, windowKeys) {
   if (!raw || !raw.id) throw new Error("hy3d 命令缺少 id");
   const command = {
     id: raw.id,
@@ -63,13 +81,13 @@ export function designerCommand(raw) {
     icon: typeof raw.icon === "string" && raw.icon ? raw.icon : raw.id === "hw.cmdbar" ? "terminal" : "layout",
     core: raw.id
   };
-  const key = raw.key ?? raw.keybinding;
-  if (typeof key === "string" && isShortcut(key)) command.keybinding = key;
+  const key = commandKeybinding(raw, windowKeys);
+  if (key) command.keybinding = key;
   return command;
 }
 
-export function designerCommands(list) {
-  return (list || []).map(designerCommand);
+export function designerCommands(list, windowKeys) {
+  return (list || []).map((raw) => designerCommand(raw, windowKeys));
 }
 
 export function handDocument(config, customThemes) {
@@ -109,10 +127,11 @@ const RIBBON_FACE = {
 /** 面板名旁边的启动箭头。 */
 const LAUNCHERS = { 绘图: "cad.hatch", 图层: "cad.layer", 标注: "cad.dimstyle", 荷载: "hy.combo" };
 
-/** hy3d 状态栏实际画出的顺序和短名。 */
+/** hy3d 状态栏实际画出的顺序和短名。规格没写 statusToggles 时才用这张表。 */
 export const STATUS_TOGGLES = [
   { id: "cad.osnap", short: "捕捉" },
   { id: "cad.grid", short: "栅格" },
+  { id: "cad.snapmode", short: "栅格捕捉" },
   { id: "cad.ortho", short: "正交" },
   { id: "cad.polar", short: "极轴" },
   { id: "cad.otrack", short: "追踪" },
@@ -177,7 +196,7 @@ export function groupFromPanel(panel) {
       ...(slot.text ? { text: slot.text } : {})
     }))
   };
-  const launcher = LAUNCHERS[group.title];
+  const launcher = (typeof panel.launcher === "string" && panel.launcher) || LAUNCHERS[group.title];
   if (launcher) group.launcher = launcher;
   return group;
 }
@@ -238,7 +257,9 @@ function rowsFromTabs(tabs, withSlots) {
       return { id: group.id, title: group.title, commands: group.commands };
     });
     const start = groups.flatMap((g) => g.commands.filter(Boolean).map((command) => ({ id: `${t.id}-${g.id}-${command}`, command })));
-    return { id: t.id, title: t.title || t.id, start, center: [], end: [], groups };
+    const row = { id: t.id, title: t.title || t.id, start, center: [], end: [], groups };
+    if (t.hidden) row.hidden = true;
+    return row;
   });
 }
 
@@ -394,7 +415,9 @@ function rowToTab(row) {
         return panel;
       })
     : [{ id: row.id, title: row.title || row.id, ids: commandsOfRow(row) }];
-  return { id: row.id, title: row.title || row.id, panels };
+  const tab = { id: row.id, title: row.title || row.id, panels };
+  if (row.hidden) tab.hidden = true;
+  return tab;
 }
 
 /** 方案 → hy3d 规格。ribbon-top 写 tabs、quick、statusToggles；workbench 只写工具排和停靠，不写 tabs。 */
@@ -451,6 +474,7 @@ export function menuSpec(menus) {
   return {
     $comment: STAMP,
     menus: (menus || [])
+      .filter((m) => m.id !== "uitool-unplaced")
       .map((m) => ({
         id: m.id,
         title: m.title,
@@ -513,7 +537,7 @@ export async function loadHy3dBundle(readUiText) {
   const ribbon = await json("design/ribbon.json");
   const workbench = await json("design/workbench.json");
   const menus = await json(`design/${MENU_FILE}`);
-  const commands = designerCommands(await collectCommands(await json("commands.json"), json));
+  const commands = designerCommands(await collectCommands(await json("commands.json"), json), windowKeysFrom(await json("keymap.json")));
   return { ribbon, workbench, menus, commands };
 }
 

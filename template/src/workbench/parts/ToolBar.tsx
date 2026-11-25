@@ -16,16 +16,17 @@ export function ToolBar({ which }: { which: "top" | "side" }) {
   const bar = wb.config.layout.toolbars[which];
   const orientation = which === "top" ? "h" : "v";
   const style = bar.style ?? "icon";
-  const [tab, setTab] = useState(bar.rows[0]?.id ?? "");
-  if (!bar.visible || !bar.rows.length) return null;
+  const rows = bar.rows.filter((row) => !row.hidden);
+  const [tab, setTab] = useState(rows[0]?.id ?? "");
+  if (!bar.visible || !rows.length) return null;
 
   if (style === "ribbon" && orientation === "h") {
-    const active = bar.rows.find((r) => r.id === tab) ?? bar.rows[0];
+    const active = rows.find((r) => r.id === tab) ?? rows[0];
     return (
       <IconScope area="toolbar">
         <div className="wb-toolbar wb-toolbar-h wb-ribbon" data-part="toolbar" data-toolbar={which} role="toolbar">
           <div className="wb-ribbon-tabs">
-            {bar.rows.map((row) => (
+            {rows.map((row) => (
               <button key={row.id} type="button" className={row.id === active.id ? "on" : ""} data-row={`tb:${which}:${row.id}`} onClick={() => setTab(row.id)}>
                 {row.title || row.id}
               </button>
@@ -41,7 +42,7 @@ export function ToolBar({ which }: { which: "top" | "side" }) {
   return (
     <IconScope area="toolbar">
       <div className={"wb-toolbar wb-toolbar-" + orientation + (labeled ? " wb-toolbar-labeled" : "")} data-part="toolbar" data-toolbar={which} role="toolbar">
-        {bar.rows.map((row) => (
+        {rows.map((row) => (
           <div key={row.id} className="wb-toolbar-row" data-zone={`tb:${which}:${row.id}`} data-row={`tb:${which}:${row.id}`}>
             <ZoneBar zones={row} orientation={orientation} zonePrefix={`tb:${which}:${row.id}`} area="toolbar" showLabel={labeled} />
           </div>

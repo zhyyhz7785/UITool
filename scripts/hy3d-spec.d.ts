@@ -4,8 +4,10 @@ export const MENU_FILE: string;
 export const STATUS_TOGGLES: { id: string; short: string }[];
 export function isShortcut(key: unknown): boolean;
 export function collectCommands(doc: unknown, read: (rel: string) => unknown | Promise<unknown>): Promise<{ id: string; label?: string; title?: string; cat?: string; category?: string; key?: string; keybinding?: string; icon?: string; place?: string[] }[]>;
-export function designerCommand(raw: { id?: string; label?: string; title?: string; cat?: string; category?: string; key?: string; keybinding?: string; icon?: string }): { id: string; title: string; category: string; icon: string; core: string; keybinding?: string };
-export function designerCommands(list: { id?: string; label?: string; title?: string; cat?: string; category?: string; key?: string; keybinding?: string; icon?: string }[]): { id: string; title: string; category: string; icon: string; core: string; keybinding?: string }[];
+export function windowKeysFrom(keymap: unknown): Map<string, string>;
+export function commandKeybinding(raw: { id?: string; key?: string; keybinding?: string } | null | undefined, windowKeys?: Map<string, string>): string;
+export function designerCommand(raw: { id?: string; label?: string; title?: string; cat?: string; category?: string; key?: string; keybinding?: string; icon?: string }, windowKeys?: Map<string, string>): { id: string; title: string; category: string; icon: string; core: string; keybinding?: string };
+export function designerCommands(list: { id?: string; label?: string; title?: string; cat?: string; category?: string; key?: string; keybinding?: string; icon?: string }[], windowKeys?: Map<string, string>): { id: string; title: string; category: string; icon: string; core: string; keybinding?: string }[];
 export function handDocument(config: unknown, customThemes?: unknown): { kind: "uitool-design"; version: 1; config: unknown; customThemes: unknown };
 export type Hy3dBundle = {
   ribbon: unknown;

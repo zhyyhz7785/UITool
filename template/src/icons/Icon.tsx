@@ -107,11 +107,12 @@ export function resolveIcon(name: string | undefined, ctx: IconContextValue = {}
     const glyph = row[style] ?? row.hy;
     if (glyph?.s) return glyphEntry(row, glyph);
   }
-  return icons[semantic] ?? fromPool(semantic);
+  const hy3d = !semantic.includes(":") && !semantic.startsWith("h3-") ? icons["h3-" + semantic] : undefined;
+  return icons[semantic] ?? hy3d ?? fromPool(semantic);
 }
 
 export function hasIcon(name: string | undefined): boolean {
-  return !!name && (name in icons || name.startsWith("lu:") || name.startsWith("ta:"));
+  return !!name && (name in icons || (!name.includes(":") && !name.startsWith("h3-") && ("h3-" + name) in icons) || name.startsWith("lu:") || name.startsWith("ta:"));
 }
 
 interface IconProps {
@@ -127,7 +128,7 @@ export function Icon({ name, size = 16, strokeWidth = 1.5, className, style, tit
   const ctx = useContext(IconContext);
   const [, bump] = useState(0);
   const ref = name && !name.includes(":") ? (ctx.config?.overrides?.[name] ?? name) : name;
-  const needsPool = !!ref && (ref.startsWith("lu:") || ref.startsWith("ta:") || (!ref.includes(":") && !(ref in icons) && !variantIcons[ref]));
+  const needsPool = !!ref && (ref.startsWith("lu:") || ref.startsWith("ta:") || (!ref.includes(":") && !(ref in icons) && !variantIcons[ref] && !(("h3-" + ref) in icons)));
   useEffect(() => {
     if (!needsPool) return;
     const fn = () => bump((n) => n + 1);

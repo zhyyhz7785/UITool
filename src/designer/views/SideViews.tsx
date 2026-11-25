@@ -12,7 +12,6 @@ import { packageName, projectSummary, validateDoc } from "../export";
 import { PART_NAMES, PART_ORDER, PartColors, PartLayout } from "../partSettings";
 import { openTextFile, copyText } from "../platform";
 import { buildConfig, workTypes } from "../presets";
-import { buildHy3dTemplate } from "../presets/work/hy3dTemplate";
 import { migrateConfig } from "@tpl/workbench/migrate";
 import { allThemes, clone, design, useDesign, type DesignDoc } from "../store";
 
@@ -35,7 +34,6 @@ export function PresetsView() {
   const cfg = useDesign((s) => s.doc.config);
   const [snaps, setSnaps] = useState(loadSnaps);
   const [name, setName] = useState("");
-  const hy3dPreview = useMemo(() => buildHy3dTemplate(), []);
   const saveSnaps = (s: Snapshot[]) => {
     setSnaps(s);
     localStorage.setItem(SNAP_KEY, JSON.stringify(s));
@@ -75,25 +73,6 @@ export function PresetsView() {
             </div>
           </div>
         ))}
-      </Section>
-      <Section title="HY3d">
-        <div className="ut-note">构造照上面「CAD 二维制图 · 功能区」：标题栏、页签、左侧图层特性和大纲、底命令栏。页签上每条命令一颗按钮，用 hy3d 全套图标。</div>
-        <div className="ut-cards">
-          <button
-            type="button"
-            className={"ut-card" + (cfg.app.title === "HY3d" && cfg.scheme === "cad2d-best" ? " on" : "")}
-            onClick={() => {
-              design.setConfig(() => buildHy3dTemplate(design.get().doc.config.app));
-              design.select(null);
-              wb.notify("success", "已生成「HY3d · 功能区」", "图标已铺在页签上");
-            }}
-          >
-            <MiniLayout config={hy3dPreview} theme={findTheme(allThemes(design.get().doc), hy3dPreview.theme.id)} />
-            <div className="ut-card-title">功能区</div>
-            <div className="ut-card-desc">页签沿用功能区。253 条命令和三维预留的图标都在面上。</div>
-            <div className="ut-card-src">hy3d ui/icons.svg</div>
-          </button>
-        </div>
       </Section>
       <Section title="界面方案">
         {(cfg.schemes?.length ?? 0) === 0 && <div className="ut-note">还没有方案。从上面选一个工作类型。</div>}

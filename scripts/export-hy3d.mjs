@@ -5,7 +5,7 @@ import { createServer } from "vite";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { collectCommands, isShortcut, MENU_FILE, SCHEMES as HY3D_SCHEMES } from "./hy3d-spec.mjs";
+import { collectCommands, commandKeybinding, MENU_FILE, SCHEMES as HY3D_SCHEMES, windowKeysFrom } from "./hy3d-spec.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const designDir = path.resolve(root, "../13-软件模板/01-AutoCAD侧");
@@ -41,9 +41,10 @@ try {
   const missing = source.filter((c) => !ids.has(c.id));
   if (missing.length) throw new Error("缺少 hy3d 命令：" + missing.map((c) => c.id).join(", "));
   if (ids.size !== source.length) throw new Error(`命令条数 ${ids.size} != ${source.length}`);
+  const windowKeys = windowKeysFrom(JSON.parse(fs.readFileSync(path.join(uiDir, "keymap.json"), "utf8")));
   for (const c of source) {
     const got = cad.commands.find((x) => x.id === c.id);
-    const want = isShortcut(c.key) ? c.key : null;
+    const want = commandKeybinding(c, windowKeys) || null;
     if ((got.keybinding ?? null) !== want) throw new Error(`快捷键不一致 ${c.id}: ${got.keybinding ?? ""} != ${want ?? ""}`);
   }
 
@@ -93,9 +94,9 @@ try {
     };
     const hy3dScheme = HY3D_SCHEMES.find((x) => x.scheme === s.scheme);
     if (hy3dScheme?.skin === "ribbon-top") {
-      spec.tabs = hy.BLENDER_TABS;
-      spec.quick = hy.BLENDER_QUICK;
-      spec.statusToggles = hy.BLENDER_STATUS;
+      spec.tabs = hy.hy3dTabs;
+      spec.quick = hy.hy3dQuick;
+      spec.statusToggles = hy.hy3dStatus;
     }
     if (!skipHy3d && hy3dScheme) fs.writeFileSync(path.join(designOut, hy3dScheme.file), JSON.stringify(spec, null, 2) + "\n");
     const hyNote = !hy3dScheme ? "（hy3d 不收这套）" : skipHy3d ? "（未写 hy3d）" : `ui/design/${hy3dScheme.file}`;
@@ -106,6 +107,7 @@ try {
   const menus = {
     $comment: stamp,
     menus: cad.menus
+      .filter((m) => m.id !== "uitool-unplaced")
       .map((m) => ({
         id: m.id,
         title: m.title,
