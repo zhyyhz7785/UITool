@@ -6,12 +6,14 @@ import { defineConfig } from "vite";
 import { linkFsPlugin } from "./scripts/link-fs-plugin.mjs";
 // @ts-expect-error 本机开发态连接中转
 import { liveBrokerPlugin } from "./scripts/live-broker.mjs";
+// @ts-expect-error 只读提供产品壳层样式
+import { productCssPlugin } from "./scripts/product-css.mjs";
 
 const host = process.env.TAURI_DEV_HOST;
 
 // @tpl 指向 template/src：设计器的预览和导出的工程用的是同一份界面代码
 export default defineConfig({
-  plugins: [react(), linkFsPlugin(), liveBrokerPlugin()],
+  plugins: [react(), productCssPlugin(), linkFsPlugin(), liveBrokerPlugin()],
   define: { "import.meta.env.VITE_UIT_DESIGNER": JSON.stringify("1") },
   clearScreen: false,
   build: { chunkSizeWarningLimit: 2000 },

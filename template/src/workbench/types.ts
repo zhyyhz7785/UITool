@@ -40,6 +40,8 @@ export interface UiScheme {
   score?: number;
   /** 产品皮肤 id */
   skin?: string;
+  /** 产品配色 id。hy3d 预览用 acad-b。 */
+  palette?: string;
   listed?: boolean;
   chrome?: SchemeChrome;
   source?: string;

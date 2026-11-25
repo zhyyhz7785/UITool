@@ -29,6 +29,31 @@ export function PreviewView() {
   const stageRef = useRef<HTMLDivElement>(null);
   const apiRef = useRef<WorkbenchApi | null>(null);
   useEffect(() => {
+    const parts: PartId[] = ["titlebar", "toolbar", "activitybar", "sidebar", "editor", "panel", "auxiliarybar", "statusbar"];
+    const onMessage = (event: MessageEvent) => {
+      const data = event.data as { source?: string; part?: string; zone?: string; item?: string } | null;
+      if (!data || data.source !== "uitool-shell" || !data.part || !parts.includes(data.part as PartId)) return;
+      const sel: Selection = { part: data.part as PartId };
+      if (data.zone) sel.zone = data.zone;
+      if (data.item) sel.item = data.item;
+      design.select(sel);
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, []);
+  useEffect(() => {
+    const send = () => {
+      document.querySelector<HTMLIFrameElement>("iframe.wb-product-shell")?.contentWindow?.postMessage(
+        { source: "uitool-shell-mark", part: selected?.part ?? "", zone: selected?.zone ?? "", item: selected?.item ?? "" },
+        "*"
+      );
+    };
+    send();
+    const frame = document.querySelector("iframe.wb-product-shell");
+    frame?.addEventListener("load", send);
+    return () => frame?.removeEventListener("load", send);
+  }, [selected, doc.config]);
+  useEffect(() => {
     previewBridge.current = apiRef.current;
     if (previewBridge.pending && apiRef.current) {
       const id = previewBridge.pending;
