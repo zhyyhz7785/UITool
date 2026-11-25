@@ -1,11 +1,12 @@
 // 从 hy3d 当前界面生成 UITool 的命令表和图标包。
 // 命令、菜单、功能区、快速访问、状态栏、分析工作台都来自 ui/ 里正在加载的文件，不再按旧的八页签分类。
-// HY3D_ROOT 缺省 E:/Code/hy3d。HY3D_COMMANDS 指向 ui/commands.json。HY3D_COMMANDS_OUT 只给核对用。
+// 从 HY3D_ROOT 或已登记的只读主仓读取。HY3D_COMMANDS 指向 ui/commands.json。HY3D_COMMANDS_OUT 只给核对用。
 import fs from "node:fs";
 import path from "node:path";
 import { collectCommands, commandKeybinding, windowKeysFrom } from "./hy3d-spec.mjs";
+import { hy3dReadRoot } from "./path-policy.mjs";
 
-const hy3d = process.env.HY3D_ROOT ?? "E:/Code/hy3d";
+const hy3d = hy3dReadRoot();
 const ui = path.join(hy3d, "ui");
 const src = process.env.HY3D_COMMANDS ?? path.join(ui, "commands.json");
 const uiDir = path.dirname(src);

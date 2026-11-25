@@ -62,12 +62,12 @@ function panelTabs() {
   return [tab("cmd", "命令栏", "terminal", "commandline"), tab("log", "输出", "term", "output")];
 }
 
-/** 功能区。页签、面上按钮、下拉和大按钮跟 hy3d ribbon.json 同一份。文字编辑器页隐藏。 */
-function ribbonUi() {
+/** 功能区。页签、面上按钮、下拉和大按钮跟 hy3d ribbon.json 同一份。文字编辑器页隐藏。三种布局皮肤共用这一份命令。 */
+function ribbonUi(kind: "top" | "compact" | "hy" = "top") {
   const layout = baseLayout();
   layout.dialogStyle = "sheet";
   layout.activityBar = { visible: true, position: "side", bottom: [] };
-  layout.titleBar.menu = "ownrow";
+  layout.titleBar.menu = kind === "hy" ? "inline" : "ownrow";
   layout.titleBar.commandCenter = false;
   layout.titleBar.search = true;
   layout.titleBar.left = hy3dQuick.map((id) => {
@@ -85,7 +85,9 @@ function ribbonUi() {
     })
   };
   layout.auxiliaryBar.visible = false;
-  layout.panel = { ...layout.panel, visible: true, size: 120 };
+  layout.auxiliaryBar.width = kind === "compact" ? 266 : 240;
+  layout.primarySideBar.width = kind === "compact" ? 208 : 240;
+  layout.panel = { ...layout.panel, visible: true, size: kind === "hy" ? 96 : 120 };
   const statusBar = zones(
     [chip("coord", "0.0000, 0.0000, 0.0000")],
     [...hy3dStatus.map((t) => ({ id: "st-" + t.id, command: t.id, text: t.short })), chip("scale", "1:1")]
@@ -102,46 +104,7 @@ function ribbonUi() {
   };
 }
 
-const visibleTabs = hy3dTabs.filter((t) => !t.hidden);
-
-/** 「常用」页的各面板排成一条竖条，面板之间加分隔。 */
-function homeShelf() {
-  const home = visibleTabs.find((t) => t.title === "常用");
-  const start: { id: string; command?: string; separator?: boolean }[] = [];
-  (home?.panels ?? []).forEach((panel, pi) => {
-    if (pi) start.push({ id: "sep-" + pi, separator: true });
-    panel.ids.forEach((command) => start.push({ id: "t-" + command, command }));
-  });
-  return { id: "tools", title: "常用", start, center: [], end: [] };
-}
-
-/** Blender。hy3d 已没有这套规格。左侧竖条是「常用」页，菜单与功能区相同。 */
-function shelfUi() {
-  const layout = baseLayout();
-  layout.activityBar.visible = false;
-  layout.toolbars.top.visible = false;
-  layout.toolbars.side = { visible: true, position: "left", style: "icon", rows: [homeShelf()] };
-  layout.panel = { ...layout.panel, visible: false, size: 96 };
-  layout.primarySideBar.width = 200;
-  layout.auxiliaryBar.width = 260;
-  layout.editor.tabs = true;
-  return {
-    ...look("blender"),
-    layout,
-    activity: [
-      stack("tree", "大纲", "list-tree", [section("tree", "大纲", "list-tree", "outline", "top"), section("layers", "图层", "layer", "layers", "bottom")])
-    ],
-    auxiliary: [box("props", "属性", "props", "properties")],
-    panel: panelTabs(),
-    editors: visibleTabs.map((t) => editor(t.id, t.title, "persp", "viewport2d")),
-    statusBar: zones(
-      [chip("coord", "X 0.00  Y 0.00")],
-      [chip("snap", "捕捉", "snap"), chip("grid", "栅格", "grid"), chip("ortho", "正交", "ortho")]
-    )
-  };
-}
-
-/** 分析工作台。工具排来自 hy3d workbench.json。左工作树和图层，右特性，底输出。视口只有一块。 */
+/** 分析工作台。工具排来自 hy3d workbench.json。皮肤注册表里已没有单独入口，规格文件仍读写。 */
 function benchUi() {
   const layout = baseLayout();
   layout.activityBar.visible = false;
@@ -166,15 +129,25 @@ function benchUi() {
 
 export const cad: WorkTypeDef = {
   id: "cad2d",
-  name: "CAD 二维制图",
-  summary: "hy3d 的绘图、修改、标注和结构命令。命令栏只手动开关。",
+  name: "HY3D",
+  summary: "完整 CAD 工作台。命令、菜单和功能区来自 hy3d 当前的 ui/design。布局皮肤以 ui/skin.js 已注册的为准。",
   views,
   commands,
   menus,
   dialogs,
   schemes: [
-    { id: "cad2d-best", tier: "best", name: "功能区", desc: "页签：常用、插入、注释、视图、管理、输出、HY结构、HY沉降。文字编辑器页隐藏。左侧图层、特性和大纲，底命令栏。", source: "01-AutoCAD侧/B-Ribbon-AutoCAD原生风格.html", reason: "命令按页放好，找得最快", score: { efficiency: 52, aesthetic: 20, learn: 14 }, ui: ribbonUi(), menus },
-    { id: "cad2d-good", tier: "good", name: "Blender", desc: "hy3d 不再提供这套规格。左侧竖条是「常用」页的面板，菜单与功能区相同。", source: "01-AutoCAD侧/A-独立窗口-Blender式深色.html", reason: "视口更大，常用命令留在左侧", score: { efficiency: 46, aesthetic: 18, learn: 13 }, ui: shelfUi(), menus },
-    { id: "cad2d-basic", tier: "basic", name: "分析工作台", desc: "工具排来自 hy3d 的分析工作台。左工作树和图层，右特性，底输出。只有一块视口。", source: "01-AutoCAD侧/C-工程分析工作台-SAP2000式.html", reason: "分析信息挤在一起，画图时视口最小", score: { efficiency: 38, aesthetic: 15, learn: 12 }, ui: benchUi(), menus }
+    { id: "cad2d-best", skin: "ribbon-top", name: "功能区上置", desc: "默认皮肤。页签单独一行，命令跟 ribbon.json 同一份。左侧图层、特性和大纲，底命令栏。", source: "ui/skin.js · ribbon-top", ui: ribbonUi("top"), menus },
+    { id: "cad2d-compact", skin: "ribbon-compact", name: "紧凑制图", desc: "同一份功能区命令，侧栏按紧凑制图的宽度。颜色和尺寸用产品自己的 CSS 变量。", source: "ui/skins/ribbon-compact", ui: ribbonUi("compact"), menus },
+    {
+      id: "cad2d-hy-ribbon",
+      skin: "hy-ribbon",
+      name: "HY Ribbon",
+      desc: "标题栏并入功能页。组名在上，命令是上图标下文字。常显数量记在 hy3d.ui.hyRibbon，不另造命令表。",
+      source: "ui/skins/hy-ribbon",
+      ui: ribbonUi("hy"),
+      menus,
+      chrome: { hyRibbon: { v: 1, mode: "full", groups: {} } }
+    },
+    { id: "cad2d-basic", skin: "workbench", listed: false, name: "分析工作台", desc: "工具排来自 workbench.json。当前皮肤注册表没有单独入口，读写规格时仍保留。", source: "ui/design/workbench.json", ui: benchUi(), menus }
   ]
 };

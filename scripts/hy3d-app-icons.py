@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import math
+import os
 import shutil
 from pathlib import Path
 
@@ -9,7 +10,10 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "public" / "hy3d-icons"
-HYMD = Path(r"E:\Code\HyMdTauri2\src-tauri\icons\icon.png")
+_src = os.environ.get("HYMD_ICON", "")
+if not _src:
+    raise SystemExit("设置 HYMD_ICON 指向只读的图标源文件，脚本不会去写产品主仓")
+HYMD = Path(_src)
 FONT = Path(r"C:\Windows\Fonts\ariblk.ttf")
 SIZE = 1024
 

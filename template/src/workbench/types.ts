@@ -21,13 +21,27 @@ export interface SchemeUi {
   statusBar: ItemZones;
 }
 
+/** 产品壳层自己记住的状态。HY Ribbon 的显示方式和常显数量在这里，命令仍用同一份登记。 */
+export interface SchemeChrome {
+  hyRibbon?: {
+    v: 1;
+    mode: "full" | "compact" | "tabs";
+    groups: Record<string, { order: string[]; cap?: number }>;
+  };
+}
+
 export interface UiScheme {
   id: string;
-  tier: SchemeTier;
+  /** 旧设计里的档位。新设计不写，打开时忽略，不据此改布局。 */
+  tier?: SchemeTier;
   name: string;
   desc: string;
-  /** 效率 + 审美 + 学习，见 Docs/Research/工作类型三档评定.md */
-  score: number;
+  /** 旧设计里的分数。新设计不写。 */
+  score?: number;
+  /** 产品皮肤 id */
+  skin?: string;
+  listed?: boolean;
+  chrome?: SchemeChrome;
   source?: string;
   /** 用户选定并在调整的那一套 */
   tuned?: boolean;
@@ -128,6 +142,11 @@ export interface UiConfig {
   /** 当前界面方案 id，对应 schemes */
   scheme?: string;
   schemes?: UiScheme[];
+  /**
+   * 产品里已经有的 CSS 变量。只记下改过的值；空着就用产品自己的默认，不在这里再写一份。
+   * 键必须是 -- 开头的变量名。
+   */
+  tokens?: Record<string, string>;
   dialogs?: DialogDef[];
   /** 预设点不开的整页。和弹窗一样不进方案快照。 */
   sidePages?: SidePageDef[];

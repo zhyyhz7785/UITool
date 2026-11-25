@@ -1,6 +1,6 @@
 import { appWindow } from "../platform/window";
 import type { WorkbenchApi } from "./context";
-import { switchScheme, TIER_NAME } from "./schemes";
+import { switchScheme } from "./schemes";
 
 export interface BuiltinCommand {
   title: string;
@@ -105,7 +105,7 @@ export const builtinCommands: Record<string, BuiltinCommand> = {
         return;
       }
       const pick = await api.quickPick({
-        items: schemes.map((s) => ({ id: s.id, label: s.name, description: `${TIER_NAME[s.tier]} · ${s.score} 分`, detail: s.desc })),
+        items: schemes.map((s) => ({ id: s.id, label: s.name, description: s.skin, detail: s.desc })),
         placeholder: "切换界面方案（命令和按钮不变）",
         activeId: api.config.scheme
       });

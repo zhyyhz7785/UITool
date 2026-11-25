@@ -4,6 +4,7 @@
 import { createServer } from "vite";
 import fs from "node:fs";
 import path from "node:path";
+import { atomicWrite } from "./path-policy.mjs";
 import { handFile, hy3dRoot, uitoolRoot } from "./hy3d-paths.mjs";
 import { applyHy3dSpecs, handDocument, loadHy3dBundle } from "./hy3d-spec.mjs";
 
@@ -26,8 +27,7 @@ try {
   console.log(`ribbon.json  →  cad2d-best  页签 ${bundle.ribbon.tabs?.length ?? 0}  命令 ${bundle.commands.length}`);
   console.log(`workbench.json  →  cad2d-basic  工具排 ${bundle.workbench.toolbarRows?.length ?? 0}`);
 
-  fs.mkdirSync(path.dirname(handFile), { recursive: true });
-  fs.writeFileSync(handFile, JSON.stringify(handDocument(config, []), null, 2) + "\n");
+  atomicWrite(handFile, JSON.stringify(handDocument(config, []), null, 2) + "\n");
   console.log("写入 " + handFile);
 } finally {
   await server.close();

@@ -1,29 +1,35 @@
 import type { AppMeta, UiConfig, UiScheme } from "@tpl/workbench/types";
-import { assertWorkType, scoreTotal, type SchemeDef, type WorkTypeDef } from "./kit";
+import { assertWorkType, type SchemeDef, type WorkTypeDef } from "./kit";
 import { cad } from "./work/cad";
-import { image } from "./work/image";
-import { model3d } from "./work/model3d";
-import { sheet } from "./work/sheet";
-import { structure } from "./work/structure";
-import { ocr } from "./work/ocr";
-import { utility } from "./work/utility";
-import { video } from "./work/video";
+import { general } from "./work/general";
 import { writing } from "./work/writing";
 
 export type { SchemeDef, WorkTypeDef } from "./kit";
-export { scoreTotal } from "./kit";
 
-export const workTypes: WorkTypeDef[] = [writing, cad, structure, model3d, image, video, sheet, utility, ocr];
+export const workTypes: WorkTypeDef[] = [writing, cad, general];
+
+export const KNOWN_WORK_TYPES = new Set(workTypes.map((t) => t.id));
 
 for (const type of workTypes) assertWorkType(type);
 
 const clone = <T,>(v: T): T => JSON.parse(JSON.stringify(v));
 
 function toScheme(s: SchemeDef, tuned: boolean): UiScheme {
-  return { id: s.id, tier: s.tier, name: s.name, desc: s.desc, score: scoreTotal(s.score), source: s.source, tuned, ui: clone(s.ui), menus: s.menus ? clone(s.menus) : undefined };
+  return {
+    id: s.id,
+    name: s.name,
+    desc: s.desc,
+    source: s.source,
+    skin: s.skin,
+    listed: s.listed !== false,
+    chrome: s.chrome ? clone(s.chrome) : undefined,
+    tuned,
+    ui: clone(s.ui),
+    menus: s.menus ? clone(s.menus) : undefined
+  };
 }
 
-/** 生成一份设计：选中的方案放在顶层，另外两套放进 schemes。保留传入的应用信息。 */
+/** 生成一份设计：选中的皮肤放在顶层，同产品的其他皮肤附在 schemes 里。保留传入的应用信息。 */
 export function buildConfig(typeId: string, schemeId: string, keep?: AppMeta): UiConfig {
   const type = workTypes.find((t) => t.id === typeId) ?? workTypes[0];
   const scheme = type.schemes.find((s) => s.id === schemeId) ?? type.schemes[0];

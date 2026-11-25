@@ -2,10 +2,17 @@
 // 往返只认 ribbon.json、workbench.json、menus.json。Blender 规格不读不写。
 export const STAMP = "由 UITool/scripts/push-hy3d.mjs 从 Hy3d制图.uitool.json 写回";
 
-/** 方案 id → hy3d 皮肤与规格文件名。两套方案共用 menus.json。cad2d-good 留在设计文件里，不进这张表。 */
+/**
+ * 方案 id → hy3d 皮肤与规格文件名。
+ * ribbon-top、ribbon-compact、hy-ribbon 共用 ribbon.json，只由功能区上置写回。
+ * workbench.json 仍读写；皮肤注册表没有单独入口时，设计里可以不带这套。
+ * Blender 不在表里。
+ */
 export const SCHEMES = [
-  { scheme: "cad2d-best", skin: "ribbon-top", file: "ribbon.json", menus: "main" },
-  { scheme: "cad2d-basic", skin: "workbench", file: "workbench.json", menus: "main" }
+  { scheme: "cad2d-best", skin: "ribbon-top", file: "ribbon.json", menus: "main", writes: true, required: true },
+  { scheme: "cad2d-compact", skin: "ribbon-compact", file: "ribbon.json", menus: "main", writes: false },
+  { scheme: "cad2d-hy-ribbon", skin: "hy-ribbon", file: "ribbon.json", menus: "main", writes: false },
+  { scheme: "cad2d-basic", skin: "workbench", file: "workbench.json", menus: "main", writes: true }
 ];
 
 export const MENU_FILE = "menus.json";
@@ -455,7 +462,7 @@ export function specFromScheme(scheme, skin) {
     toolbarRows: rows.map((r) => ({ id: r.id, title: r.title || r.id, commands: commandsOfRow(r) }))
   };
   // blender 皮肤已不往返。仍按功能区写页签，避免旧调用丢掉字段。
-  if (skin === "blender" || skin === "ribbon-top") {
+  if (skin === "blender" || skin === "ribbon-top" || skin === "ribbon-compact" || skin === "hy-ribbon") {
     spec.tabs = rows.map(rowToTab);
     spec.quick = (L.titleBar.left || []).map((i) => i.command).filter(keepId);
     const toggles = (ui.statusBar?.end || []).map((i) => i.command).filter(keepId);
@@ -513,17 +520,21 @@ export function referencedIds(specs, menuDocs) {
   return ids;
 }
 
-/** 把功能区和分析工作台盖到已有的 cad2d 设计上。不读 cad2d-good。当前方案定为 cad2d-best。 */
+/** 把功能区和分析工作台盖到已有的 cad2d 设计上。缺了可选皮肤就跳过。当前方案定为 cad2d-best。 */
 export function applyHy3dSpecs(config, parts) {
   const menuMain = menusFrom(parts.menus);
   const byFile = { "ribbon.json": parts.ribbon, "workbench.json": parts.workbench };
   for (const s of SCHEMES) {
     const scheme = config.schemes?.find((x) => x.id === s.scheme);
-    if (!scheme) throw new Error("没有方案 " + s.scheme);
+    if (!scheme) {
+      if (s.required) throw new Error("没有方案 " + s.scheme);
+      continue;
+    }
     const spec = byFile[s.file];
     if (!spec) throw new Error("没有规格 " + s.file);
     scheme.ui = overlayScheme(scheme.ui, spec, parts.commands || []);
     scheme.menus = menuMain;
+    scheme.skin = s.skin;
   }
   config.commands = parts.commands || [];
   config.sidePages = [];
@@ -548,7 +559,11 @@ export function hy3dWritePlan(config) {
   const specs = [];
   for (const s of SCHEMES) {
     const scheme = config.schemes?.find((x) => x.id === s.scheme);
-    if (!scheme?.ui) throw new Error("没有方案 " + s.scheme);
+    if (!scheme?.ui) {
+      if (s.required) throw new Error("没有方案 " + s.scheme);
+      continue;
+    }
+    if (s.writes === false) continue;
     specs.push({ file: s.file, spec: specFromScheme(scheme, s.skin) });
     if (s.scheme === "cad2d-best") menus = menuSpec(scheme.menus ?? (config.scheme === scheme.id ? config.menus : []));
   }

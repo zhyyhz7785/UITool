@@ -1,4 +1,4 @@
-// 检查 9 个工作类型 × 3 套方案：视图一致、命令都在菜单里、切换不丢命令。
+// 检查三个内置预设：皮肤视图一致、命令都在菜单里、切换不丢命令。不要求档位和分数。
 import { createServer } from "vite";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -37,16 +37,21 @@ try {
   const schemes = await server.ssrLoadModule("/template/src/workbench/schemes.ts");
   const hymdSpec = await server.ssrLoadModule("/scripts/hymd-spec.mjs");
   const types = presets.workTypes;
-  if (types.length !== 9) throw new Error("工作类型应为 9 个，实际 " + types.length);
-  const tiers = new Set(["best", "good", "basic"]);
+  const wantIds = ["writing", "cad2d", "general"];
+  if (types.length !== 3 || types.some((t, i) => t.id !== wantIds[i])) throw new Error("内置预设应为 HyMdTauri、HY3D、通用模板，实际 " + types.map((t) => t.id).join(","));
   for (const type of types) {
-    if (type.schemes.length !== 3) throw new Error(type.id + " 不是 3 套");
-    const got = new Set(type.schemes.map((s) => s.tier));
-    if ([...tiers].some((t) => !got.has(t))) throw new Error(type.id + " 档位重复或缺档");
-    if (type.dialogs.length !== 3) throw new Error(type.id + " 弹窗不是 3 个");
-    const scores = Object.fromEntries(type.schemes.map((s) => [s.tier, s.score.efficiency + s.score.aesthetic + s.score.learn]));
-    if (!(scores.best > scores.good && scores.good > scores.basic)) throw new Error(type.id + " 分数顺序 " + JSON.stringify(scores));
+    if (!type.schemes.length) throw new Error(type.id + " 没有皮肤");
+    if (type.schemes.some((s) => s.tier || s.score || s.reason)) throw new Error(type.id + " 仍带档位或分数");
   }
+  const writing = types.find((t) => t.id === "writing");
+  const skins = writing.schemes.map((s) => s.skin).sort().join(",");
+  if (skins !== "notion,obsidian,vscode") throw new Error("HyMd 皮肤不对：" + skins);
+  const cad = types.find((t) => t.id === "cad2d");
+  const cadSkins = cad.schemes.filter((s) => s.listed !== false).map((s) => s.skin).join(",");
+  if (cadSkins !== "ribbon-top,ribbon-compact,hy-ribbon") throw new Error("HY3D 列出的皮肤不对：" + cadSkins);
+  if (!cad.schemes.find((s) => s.id === "cad2d-hy-ribbon")?.chrome?.hyRibbon) throw new Error("HY Ribbon 没有常显状态");
+  if (cad.schemes.some((s) => s.id === "cad2d-good")) throw new Error("Blender 皮肤不该再作为内置预设");
+  if (types.find((t) => t.id === "general").schemes.length !== 1) throw new Error("通用模板应只有一套工作台");
   const cfg = presets.buildConfig("writing", "writing-best", { name: "demo", title: "演示", identifier: "com.hy.demo", version: "0.1.0", description: "", icon: "layout" });
   if (cfg.app.name !== "demo") throw new Error("生成时没有保留应用名");
   if (cfg.schemes.length !== 3 || cfg.scheme !== "writing-best") throw new Error("附带方案不对");
@@ -64,7 +69,15 @@ try {
   const designed = switched.schemes.find((s) => s.id === "writing-good").ui.layout;
   if (reset.layout.dialogStyle !== designed.dialogStyle) throw new Error("重置布局没有回到设计值");
   checkSidePages(hymdSpec.hymdSidePages());
-  console.log("预设检查通过：9 类 × 3 套，切换保留命令，重置回到设计值，副页面都有分区");
+  const archived = { kind: "uitool-design", version: 1, customThemes: [], config: { ...cfg, workType: "image", app: { ...cfg.app, name: "old-image" } } };
+  if (!globalThis.localStorage) {
+    const mem = new Map();
+    globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => mem.set(k, String(v)), removeItem: (k) => mem.delete(k) };
+  }
+  const store = await server.ssrLoadModule("/src/designer/store.ts");
+  const opened = store.parseDesign(JSON.stringify(archived));
+  if (opened.config.workType !== "image" || opened.config.app.name !== "old-image") throw new Error("归档预设被换掉了");
+  console.log("预设检查通过：3 个预设，切换保留命令，重置回到设计值，归档设计按原文件打开");
 } finally {
   await server.close();
 }

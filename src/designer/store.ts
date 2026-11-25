@@ -44,8 +44,13 @@ export function sameModule(a: ModuleRef | null, b: ModuleRef | null): boolean {
   return a.kind === "menu" ? a.id === (b as { id: string }).id : a.part === (b as { part: PartId }).part;
 }
 
+export type DesignPhase = "local" | "baseline" | "draft" | "published";
+
 interface State {
   doc: DesignDoc;
+  /** 最近一次从真实产品读入的配置。不进撤销。 */
+  baseline: UiConfig | null;
+  phase: DesignPhase;
   past: DesignDoc[];
   future: DesignDoc[];
   selected: Selection | null;
@@ -77,7 +82,15 @@ function load(): DesignDoc {
   return { config: clone(templateDefault), customThemes: [] };
 }
 
-let state: State = { doc: load(), past: [], future: [], selected: null, dialogId: null, pageId: null, multi: [], selecting: true, frame: "fit", focus: null, lock: null };
+const CHECK = "uitool.checkpoint.v1";
+
+function fingerprint(doc: DesignDoc): string {
+  return JSON.stringify({ config: doc.config, customThemes: doc.customThemes });
+}
+
+let state: State = { doc: load(), baseline: null, phase: "local", past: [], future: [], selected: null, dialogId: null, pageId: null, multi: [], selecting: true, frame: "fit", focus: null, lock: null };
+let checkpoint = localStorage.getItem(CHECK) ?? fingerprint(state.doc);
+if (!localStorage.getItem(CHECK)) localStorage.setItem(CHECK, checkpoint);
 const listeners = new Set<() => void>();
 let lastCoalesce: { key: string; at: number } | null = null;
 let saveTimer: ReturnType<typeof setTimeout> | undefined;
@@ -105,11 +118,38 @@ export const design = {
     emit({ ...state, doc, past: merge ? state.past : [...state.past.slice(-99), state.doc], future: [] });
   },
   setConfig(fn: (c: UiConfig) => UiConfig, coalesce?: string) {
+    const before = state.doc;
     design.update((d) => ({ ...d, config: syncActiveScheme(fn(d.config)) }), coalesce);
+    if (state.doc !== before) design.noteDraft();
   },
   replace(doc: DesignDoc) {
     lastCoalesce = null;
     emit({ ...state, doc, past: [...state.past.slice(-99), state.doc], future: [], dialogId: null, pageId: null, focus: null, lock: null });
+  },
+  dirty() {
+    return fingerprint(state.doc) !== checkpoint;
+  },
+  markSaved() {
+    checkpoint = fingerprint(state.doc);
+    localStorage.setItem(CHECK, checkpoint);
+  },
+  /** 放弃上次保存或读取之后的修改。 */
+  revertUnsaved() {
+    if (!design.dirty()) return;
+    const doc = JSON.parse(checkpoint) as DesignDoc;
+    lastCoalesce = null;
+    emit({ ...state, doc, past: [...state.past.slice(-99), state.doc], future: [], multi: [] });
+  },
+  captureBaseline() {
+    emit({ ...state, baseline: clone(state.doc.config), phase: "baseline" });
+  },
+  markPublished() {
+    design.markSaved();
+    emit({ ...state, baseline: clone(state.doc.config), phase: "published" });
+  },
+  noteDraft() {
+    if (state.phase === "draft") return;
+    emit({ ...state, phase: "draft" });
   },
   undo() {
     const prev = state.past[state.past.length - 1];

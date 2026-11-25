@@ -7,15 +7,21 @@ const errMsg = (e: unknown) => (e as Error)?.message ?? String(e);
 
 export function newDesign(wb: WorkbenchApi) {
   design.replace({ config: clone(templateDefault), customThemes: [] });
+  design.markSaved();
   design.select(null);
-  wb.notify("info", "已新建设计", "从模板默认的 VSCode 式工作台开始。可撤销。");
+  wb.notify("info", "已新建设计", "从模板默认的工作台开始。可撤销。");
 }
 
 export async function openDesign(wb: WorkbenchApi) {
   const f = await openTextFile(".json,.uitool.json");
   if (!f) return;
   try {
+    if (design.dirty()) {
+      wb.notify("error", "没有打开", "当前设计还有未保存的修改。先保存，或在预设里放弃这些修改后再打开。");
+      return;
+    }
     design.replace(parseDesign(f.text));
+    design.markSaved();
     design.select(null);
     wb.notify("success", `已打开 ${f.name}`);
   } catch (e) {
@@ -27,7 +33,10 @@ export async function saveDesign(wb: WorkbenchApi) {
   const doc = design.get().doc;
   try {
     const path = await saveFile(`${doc.config.app.name}.uitool.json`, JSON.stringify(toDesignFile(doc), null, 2), { name: "UITool 设计", extensions: ["json"] });
-    if (path) wb.notify("success", "设计已保存", path);
+    if (path) {
+      design.markSaved();
+      wb.notify("success", "设计已保存", path);
+    }
   } catch (e) {
     wb.notify("error", "保存失败", errMsg(e));
   }
