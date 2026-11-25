@@ -56,6 +56,7 @@ export async function readHy3d() {
     }),
     bundle
   );
+  for (const scheme of config.schemes ?? []) scheme.palette = "acad-b";
   design.replace({ config, customThemes: [] });
   design.markSaved();
   design.captureBaseline();
@@ -131,6 +132,7 @@ export async function readHymd() {
     const spec = parse(await readText(`${root}/src/skins/design/${s.file}`));
     scheme.ui = stampExplorerGhost(overlayHymd(scheme.ui, spec)) as typeof scheme.ui;
     scheme.menus = menus as NonNullable<typeof scheme.menus>;
+    scheme.skin = s.skin;
   }
   config.sidePages = hymdSidePages();
   design.replace({ config: stampActive(config), customThemes: [] });

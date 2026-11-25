@@ -21,6 +21,7 @@ function toScheme(s: SchemeDef, tuned: boolean): UiScheme {
     desc: s.desc,
     source: s.source,
     skin: s.skin,
+    palette: s.palette,
     listed: s.listed !== false,
     chrome: s.chrome ? clone(s.chrome) : undefined,
     tuned,

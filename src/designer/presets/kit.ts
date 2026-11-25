@@ -7,6 +7,8 @@ export interface SchemeDef {
   source: string;
   /** 产品里的皮肤 id。没有对应真实皮肤时不填。 */
   skin?: string;
+  /** 产品配色 id。hy3d 预览用 acad-b。 */
+  palette?: string;
   /** 新建设计的卡片里不列出。规格仍随设计带走，旧文件照样打开。 */
   listed?: boolean;
   ui: SchemeUi;

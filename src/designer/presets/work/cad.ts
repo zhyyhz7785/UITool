@@ -136,11 +136,12 @@ export const cad: WorkTypeDef = {
   menus,
   dialogs,
   schemes: [
-    { id: "cad2d-best", skin: "ribbon-top", name: "功能区上置", desc: "默认皮肤。页签单独一行，命令跟 ribbon.json 同一份。左侧图层、特性和大纲，底命令栏。", source: "ui/skin.js · ribbon-top", ui: ribbonUi("top"), menus },
-    { id: "cad2d-compact", skin: "ribbon-compact", name: "紧凑制图", desc: "同一份功能区命令，侧栏按紧凑制图的宽度。颜色和尺寸用产品自己的 CSS 变量。", source: "ui/skins/ribbon-compact", ui: ribbonUi("compact"), menus },
+    { id: "cad2d-best", skin: "ribbon-top", palette: "acad-b", name: "功能区上置", desc: "默认皮肤。页签单独一行，命令跟 ribbon.json 同一份。左侧图层、特性和大纲，底命令栏。", source: "ui/skin.js · ribbon-top", ui: ribbonUi("top"), menus },
+    { id: "cad2d-compact", skin: "ribbon-compact", palette: "acad-b", name: "紧凑制图", desc: "同一份功能区命令，侧栏按紧凑制图的宽度。颜色和尺寸用产品自己的 CSS 变量。", source: "ui/skins/ribbon-compact", ui: ribbonUi("compact"), menus },
     {
       id: "cad2d-hy-ribbon",
       skin: "hy-ribbon",
+      palette: "acad-b",
       name: "HY Ribbon",
       desc: "标题栏并入功能页。组名在上，命令是上图标下文字。常显数量记在 hy3d.ui.hyRibbon，不另造命令表。",
       source: "ui/skins/hy-ribbon",
@@ -148,6 +149,6 @@ export const cad: WorkTypeDef = {
       menus,
       chrome: { hyRibbon: { v: 1, mode: "full", groups: {} } }
     },
-    { id: "cad2d-basic", skin: "workbench", listed: false, name: "分析工作台", desc: "工具排来自 workbench.json。当前皮肤注册表没有单独入口，读写规格时仍保留。", source: "ui/design/workbench.json", ui: benchUi(), menus }
+    { id: "cad2d-basic", skin: "workbench", palette: "acad-b", listed: false, name: "分析工作台", desc: "工具排来自 workbench.json。当前皮肤注册表没有单独入口，读写规格时仍保留。", source: "ui/design/workbench.json", ui: benchUi(), menus }
   ]
 };
