@@ -76,6 +76,11 @@ export function liveBrokerPlugin() {
             if (op === "poll") {
               const inst = instances.get(body.id);
               if (!inst) throw new Error("实例不在了");
+              if (inst.status === "dropped") {
+                instances.delete(body.id);
+                send(res, 200, { status: "dropped", token: "", commands: [] });
+                return;
+              }
               inst.seen = Date.now();
               const commands = inst.queue.splice(0, inst.queue.length);
               send(res, 200, { status: inst.status, token: inst.status === "allowed" ? inst.token : "", commands });
@@ -91,9 +96,15 @@ export function liveBrokerPlugin() {
             if (op === "list") {
               const now = Date.now();
               const rows = [...instances.values()]
-                .filter((inst) => now - inst.seen < 15000)
+                .filter((inst) => inst.status !== "dropped" && now - inst.seen < 15000)
                 .map((inst) => ({ id: inst.id, product: inst.product, label: inst.label, skin: inst.skin, status: inst.status, token: inst.token }));
               send(res, 200, { instances: rows });
+              return;
+            }
+            if (op === "drop") {
+              const inst = instances.get(body.id);
+              if (inst) inst.status = "dropped";
+              send(res, 200, { ok: true });
               return;
             }
             if (op === "allow") {

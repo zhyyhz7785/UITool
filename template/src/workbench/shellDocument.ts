@@ -73,23 +73,23 @@ function packSlots(slots: ToolSlot[]) {
 function menuItems(cfg: UiConfig, menu: Menu, items: MenuItem[]): string {
   return items
     .map((item) => {
-      if (item.separator) return `<div class="sep"></div>`;
+      if (item.separator) return `<div class="menu-separator"></div>`;
       const id = item.command || "";
       const title = item.title || commandOf(cfg, id)?.title || id || "菜单";
       const zone = `menu:${menu.id}`;
-      return `<button type="button" data-part="titlebar" data-zone="${esc(zone)}"${attr("data-item", id)}>${esc(title)}</button>`;
+      return `<button type="button" class="menu-item" data-part="titlebar" data-zone="${esc(zone)}"${attr("data-item", id)}>${esc(title)}</button>`;
     })
     .join("");
 }
 
-function menuRow(cfg: UiConfig, menus: Menu[]) {
+function menuRow(cfg: UiConfig, menus: Menu[], buttonClass: string) {
   return menus
     .filter((m) => !m.ghost)
     .map((menu) => {
       const zone = `menu:${menu.id}`;
-      return `<div class="menu">
-        <button type="button" data-part="titlebar" data-zone="${esc(zone)}">${esc(menu.title)}</button>
-        <div class="menu-pop">${menuItems(cfg, menu, menu.items)}</div>
+      return `<div class="menu-wrap">
+        <button type="button" class="${buttonClass}" data-part="titlebar" data-zone="${esc(zone)}">${esc(menu.title)}</button>
+        <div class="menu-dropdown">${menuItems(cfg, menu, menu.items)}</div>
       </div>`;
     })
     .join("");
@@ -113,16 +113,14 @@ function links(product: "hy3d" | "hymd", files: string[]) {
 }
 
 function hy3dStyles(skin: string, palette: string) {
-  const files = ["ui/tokens.css", "ui/styles.css", `ui/palettes/${palette}/palette.css`];
+  const files = ["ui/tokens.css", "ui/styles.css", "ui/cad-workspace.css", `ui/palettes/${palette}/palette.css`];
   if (skin === "ribbon-compact") files.push("ui/skins/ribbon-compact/ribbon.css");
   if (skin === "hy-ribbon") files.push("ui/skins/hy-ribbon/ribbon.css");
   return links("hy3d", files);
 }
 
-function hymdStyles(skin: string) {
-  const files = ["src/styles/skins/chrome.css"];
-  if (skin === "vscode" || skin === "obsidian" || skin === "notion") files.push(`src/styles/skins/${skin}.css`);
-  return links("hymd", files);
+function hymdStyles() {
+  return links("hymd", ["src/styles.css"]);
 }
 
 const SHELL_SCRIPT = `<script>
@@ -137,24 +135,32 @@ const SHELL_SCRIPT = `<script>
     var tab = target.closest("[data-tab]");
     if (tab) {
       var id = tab.getAttribute("data-tab");
-      document.querySelectorAll("[data-tab]").forEach(function (el) { el.classList.toggle("on", el === tab); });
+      document.querySelectorAll("[data-tab]").forEach(function (el) {
+        var on = el === tab;
+        el.classList.toggle("on", on);
+        el.classList.toggle("active", on);
+      });
       document.querySelectorAll("[data-page]").forEach(function (el) { el.hidden = el.getAttribute("data-page") !== id; });
     }
     var dock = target.closest("[data-dock]");
     if (dock) {
-      document.querySelectorAll("[data-dock]").forEach(function (el) { el.classList.toggle("on", el === dock); });
+      document.querySelectorAll("[data-dock]").forEach(function (el) {
+        var on = el === dock;
+        el.classList.toggle("on", on);
+        el.classList.toggle("active", on);
+      });
       var body = document.querySelector("#left-dock .dock-body");
       if (body) body.textContent = dock.getAttribute("data-label") || "";
     }
-    var menuBtn = target.closest(".menu > button");
+    var menuBtn = target.closest(".menu-wrap > button");
     if (menuBtn && menuBtn.parentElement) {
       var box = menuBtn.parentElement;
       var open = box.classList.contains("open");
-      document.querySelectorAll(".menu.open").forEach(function (el) { el.classList.remove("open"); });
+      document.querySelectorAll(".menu-wrap.open").forEach(function (el) { el.classList.remove("open"); });
       if (!open) box.classList.add("open");
       event.stopPropagation();
-    } else if (!target.closest(".menu-pop")) {
-      document.querySelectorAll(".menu.open").forEach(function (el) { el.classList.remove("open"); });
+    } else if (!target.closest(".menu-dropdown")) {
+      document.querySelectorAll(".menu-wrap.open").forEach(function (el) { el.classList.remove("open"); });
     }
     var part = attrOf(target, "data-part");
     if (!part) return;
@@ -250,16 +256,25 @@ html[data-only="editor"] #palette-tabs, html[data-only="editor"] #left-dock { di
 .workbench.no-activity { grid-template-columns: 220px minmax(0, 1fr); }
 .workbench.no-activity.with-aux { grid-template-columns: 220px minmax(0, 1fr) 220px; }
 .panel-tabs { display: flex; gap: 4px; background: #252525; }
+.titlebar-menus { display: flex; align-items: stretch; height: 100%; }
+.editor-tabs { display: flex; align-items: stretch; min-width: 0; }
 .titlebar-drag { flex: 1; display: flex; justify-content: center; }
-html[data-only] .shell > * { display: none; }
+.app-shell { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.app-body, .app-main-row { display: flex; flex: 1; min-height: 0; min-width: 0; }
+.app-center, .editor-part { display: flex; flex-direction: column; flex: 1; min-width: 0; min-height: 0; }
+.editor-content-hymd { flex: 1; min-height: 0; overflow: auto; padding: 28px 40px; }
+html[data-only] .shell > *, html[data-only] .app-shell > * { display: none; }
 html[data-only="titlebar"] .titlebar, html[data-only="menu"] .titlebar, html[data-only="statusbar"] .statusbar { display: flex; }
 html[data-only="activitybar"] .workbench, html[data-only="sidebar"] .workbench, html[data-only="auxiliarybar"] .workbench, html[data-only="editor"] .workbench { display: grid; }
+html[data-only="activitybar"] .app-body, html[data-only="sidebar"] .app-body, html[data-only="auxiliarybar"] .app-body, html[data-only="editor"] .app-body { display: flex; }
 html[data-only="panel"] .panel-tabs { display: flex; }
 }
 `;
 
-function doc(opts: { skin: string; palette: string; theme: string; only: string; styles: string; body: string }) {
-  return `<!doctype html><html data-skin="${esc(opts.skin)}" data-palette="${esc(opts.palette)}" data-theme="${esc(opts.theme)}"${attr("data-only", opts.only)}><head><meta charset="utf-8">${opts.styles}<style id="shell-fallback">${FALLBACK}</style></head><body><p id="shell-note" hidden>壳层样式还没连上产品目录。在连接里填写主仓后，预览会用产品自己的 CSS。</p>${opts.body}${SHELL_SCRIPT}</body></html>`;
+const PREVIEW_CHROME = `.menu-wrap{position:relative;height:100%;display:flex;align-items:stretch}.menu-wrap>.menu-dropdown{display:none}.menu-wrap.open>.menu-dropdown{display:flex;flex-direction:column;min-width:180px;z-index:20}`;
+
+function doc(opts: { skin: string; palette: string; theme: string; only: string; styles: string; body: string; attrs?: string }) {
+  return `<!doctype html><html data-skin="${esc(opts.skin)}" data-palette="${esc(opts.palette)}" data-theme="${esc(opts.theme)}"${attr("data-only", opts.only)}${opts.attrs ?? ""}><head><meta charset="utf-8">${opts.styles}<style id="shell-fallback">${FALLBACK}</style><style id="shell-preview">${PREVIEW_CHROME}</style></head><body><p id="shell-note" hidden>壳层样式还没连上产品目录。在连接里填写主仓后，预览会用产品自己的 CSS。</p>${opts.body}${SHELL_SCRIPT}</body></html>`;
 }
 
 function safeId(value: string) {
@@ -285,7 +300,7 @@ function hy3dRibbon(cfg: UiConfig) {
     return `<div id="ribbon" data-part="toolbar"><div id="ribbon-panels">${buttons}</div></div>`;
   }
   const tabs = rows
-    .map((row, index) => `<button type="button" data-tab="${esc(row.id)}" class="${index === 0 ? "on" : ""}" data-part="toolbar" data-zone="tbg:top:${esc(row.id)}">${esc(row.title || row.id)}</button>`)
+    .map((row, index) => `<button type="button" data-tab="${esc(row.id)}" class="ribbon-tab${index === 0 ? " active" : ""}" data-part="toolbar" data-zone="tbg:top:${esc(row.id)}">${esc(row.title || row.id)}</button>`)
     .join("");
   const pages = rows
     .map((row, index) => {
@@ -294,26 +309,25 @@ function hy3dRibbon(cfg: UiConfig) {
         .map((group) => {
           const slots = group.slots?.length ? group.slots : group.commands.filter(Boolean).map((command, i) => ({ command, size: i === 0 ? "big" as const : "small" as const }));
           const columns = packSlots(slots)
-            .map((column) => {
-              const buttons = column.slots
+            .map((column) =>
+              column.slots
                 .map((slot) => {
                   const face = faceOf(cfg, slot);
                   return toolButton("toolbar", zone, slot.command, face.text, face.icon, column.big, !!slot.menu?.length);
                 })
-                .join("");
-              return column.big ? buttons : `<div class="stack">${buttons}</div>`;
-            })
+                .join("")
+            )
             .join("");
           const launcher = group.launcher
-            ? `<button type="button" class="launcher" data-part="toolbar" data-zone="${esc(zone)}" data-item="${esc(group.launcher)}" title="启动"></button>`
+            ? `<button type="button" class="ribbon-panel-launcher" data-part="toolbar" data-zone="${esc(zone)}" data-item="${esc(group.launcher)}" title="启动"></button>`
             : "";
-          return `<section class="panel" data-part="toolbar" data-zone="${esc(zone)}"><div class="panel-body">${columns}</div><div class="panel-title" data-part="toolbar" data-zone="${esc(zone)}">${esc(group.title)}${launcher}</div></section>`;
+          return `<section class="ribbon-panel" data-part="toolbar" data-zone="${esc(zone)}"><div class="ribbon-panel-btns">${columns}</div><div class="ribbon-panel-name" data-part="toolbar" data-zone="${esc(zone)}"><span class="ribbon-panel-label">${esc(group.title)}</span>${launcher}</div></section>`;
         })
         .join("");
-      return `<div class="ribbon-page" data-page="${esc(row.id)}"${index === 0 ? "" : " hidden"}>${groups}</div>`;
+      return `<div class="ribbon-panels" data-page="${esc(row.id)}"${index === 0 ? "" : " hidden"}>${groups}</div>`;
     })
     .join("");
-  return `<div id="ribbon" data-part="toolbar"><div id="ribbon-tabs">${tabs}</div><div id="ribbon-panels">${pages}</div></div>`;
+  return `<div id="ribbon" data-part="toolbar"><div id="ribbon-tabs" class="ribbon-tabs">${tabs}</div><div id="ribbon-panels">${pages}</div></div>`;
 }
 
 function hy3dStatus(cfg: UiConfig) {
@@ -337,35 +351,47 @@ function hy3dDocument(cfg: UiConfig, options: ShellOptions) {
     .filter((item) => !item.separator)
     .map((item) => `<button type="button" data-part="titlebar" data-zone="title-left" data-item="${esc(item.id)}" title="${esc(itemText(cfg, item))}">${hy3dIcon(commandOf(cfg, item.command || "")?.icon || "")}<span>${esc(itemText(cfg, item))}</span></button>`)
     .join("");
+  const drawing = cfg.editors[0]?.title || cfg.app.title;
   const files = cfg.editors
-    .map((editor, index) => `<button type="button" class="${index === 0 ? "on" : ""}" data-part="editor" data-zone="tabs" data-item="${esc(editor.id)}">${esc(editor.title)}</button>`)
+    .map((editor, index) => `<button type="button" class="filetab${index === 0 ? " active" : ""}" data-part="editor" data-zone="tabs" data-item="${esc(editor.id)}">${esc(editor.title)}</button>`)
     .join("");
-  const docks = HY3D_DOCKS.map(([id, label], index) => {
+  const dockItems = cfg.activity.length ? cfg.activity.map((box) => [box.id, box.title] as [string, string]) : HY3D_DOCKS;
+  const docks = dockItems.map(([id, label], index) => {
     const container = cfg.activity.find((box) => box.id === id);
     const zone = container ? ` data-zone="side:${esc(id)}:header" data-item="${esc(id)}"` : "";
-    return `<button type="button" data-dock="${esc(id)}" data-label="${esc(label)}" class="${index === 4 ? "on" : ""}" data-part="sidebar"${zone}>${esc(label)}</button>`;
+    return `<button type="button" data-dock="${esc(id)}" data-label="${esc(label)}" class="pal-tab${index === 0 ? " active" : ""}" data-part="sidebar"${zone}>${esc(label)}</button>`;
   }).join("");
-  const body = `<div id="app">
-    <header id="titlebar-row" data-part="titlebar">
-      <button type="button" class="btn-app" data-part="titlebar" data-zone="appicon" data-item="appicon">${esc(cfg.app.title)}</button>
-      <div id="qat">${quick}</div>
-      <div id="title-doc">${esc(cfg.editors[0]?.title || cfg.app.title)}</div>
-      <input id="cmd-search" data-part="titlebar" data-zone="title-center" placeholder="搜索" aria-label="搜索">
-      <button type="button" id="hy-dock-left" data-part="sidebar">停靠</button>
-      <button type="button" id="hy-dock-right" data-part="auxiliarybar">停靠</button>
-      <button type="button" class="win-min" data-part="titlebar" data-zone="winctl" data-item="min">—</button>
-      <button type="button" class="win-max" data-part="titlebar" data-zone="winctl" data-item="max">□</button>
-      <button type="button" class="win-close" data-part="titlebar" data-zone="winctl" data-item="close">×</button>
+  const dockRows = dockItems.map(([id, label], index) => `<div class="view-row${index === 0 ? " selected" : ""}" data-part="sidebar" data-item="${esc(id)}">${esc(label)}</div>`).join("");
+  const rightTitle = cfg.auxiliary[0]?.title || "属性";
+  const body = `<div id="app" style="--left-dock-w:220px;--right-dock-w:200px;--pal-w:36px;--split-w:4px">
+    <header id="titlebar-row" class="chrome-row" data-part="titlebar">
+      <div class="titlebar-left">
+        <button type="button" class="app-button" data-part="titlebar" data-zone="appicon" data-item="appicon" title="${esc(cfg.app.title)}">${hy3dIcon("app") || esc(cfg.app.title)}</button>
+        <div id="qat" class="qat">${quick}</div>
+      </div>
+      <div class="titlebar-center"><div id="title-doc" class="title-doc">${esc(drawing)}</div></div>
+      <div class="titlebar-right">
+        <div class="titlebar-drag"></div>
+        <div class="cmd-search-wrap"><input id="cmd-search" data-part="titlebar" data-zone="title-center" placeholder="搜索命令…" aria-label="搜索命令"></div>
+        <div class="winctl">
+          <button type="button" id="win-min" data-part="titlebar" data-zone="winctl" data-item="min" title="最小化">—</button>
+          <button type="button" id="win-max" data-part="titlebar" data-zone="winctl" data-item="max" title="最大化">□</button>
+          <button type="button" id="win-close" class="close" data-part="titlebar" data-zone="winctl" data-item="close" title="关闭">×</button>
+        </div>
+      </div>
     </header>
-    <nav id="menubar">${menuRow(cfg, cfg.menus)}</nav>
+    <nav id="menubar" class="chrome-row">${menuRow(cfg, cfg.menus, "menu-top")}</nav>
     ${hy3dRibbon(cfg)}
-    <div id="filetabs">${files}</div>
+    <div id="filetabs" class="chrome-row">${files}</div>
     <div id="workspace">
-      <div id="palette-tabs" data-part="activitybar">${docks}</div>
-      <aside id="left-dock" data-part="sidebar"><div class="dock-body">图层</div></aside>
-      <div id="viewport" data-part="editor"></div>
+      <aside id="palette-tabs" data-part="activitybar">${docks}</aside>
+      <aside id="left-dock" data-part="sidebar"><div class="dock-title">${esc(dockItems[0]?.[1] || "文件")}</div><div class="dock-body">${dockRows}</div></aside>
+      <button type="button" id="split-left" class="splitter" aria-label="调整左停靠"></button>
+      <div id="viewport-frame"><div id="viewport" data-part="editor">${esc(drawing)}</div></div>
+      <button type="button" id="split-right" class="splitter" aria-label="调整右停靠"></button>
+      <aside id="right-dock" data-part="auxiliarybar"><div class="dock-title">${esc(rightTitle)}</div><div class="dock-body">${esc(rightTitle)}</div></aside>
     </div>
-    <div id="cmdbar" data-part="panel"><span>命令:</span></div>
+    <div id="cmdbar" class="chrome-row" data-part="panel"><span>命令:</span></div>
     ${hy3dStatus(cfg)}
   </div>`;
   return doc({
@@ -378,14 +404,30 @@ function hy3dDocument(cfg: UiConfig, options: ShellOptions) {
   });
 }
 
-function sidePane(cfg: UiConfig, part: "sidebar" | "auxiliarybar") {
+function hymdSide(cfg: UiConfig, part: "sidebar" | "auxiliarybar") {
   const boxes = part === "sidebar" ? cfg.activity : cfg.auxiliary;
   const active = boxes[0];
   if (!active) return "";
-  const sections = active.sections
-    .map((section) => `<section data-part="${part}" data-zone="sec:${esc(section.id)}"><div data-item="${esc(section.id)}#head">${esc(section.title)}</div></section>`)
-    .join("");
-  return `<aside class="${part === "sidebar" ? "sidebar" : "auxiliarybar"}" data-part="${part}"><div class="pane-title" data-part="${part}" data-zone="side:${esc(active.id)}:header" data-item="${esc(active.id)}">${esc(active.title)}</div>${sections}</aside>`;
+  const tabs = `<div class="sidebar-tabs" data-part="${part}" data-zone="${part}-tabs"><div class="sidebar-tabs-icons">${boxes
+    .map((box, index) => `<button type="button" class="sidebar-tab${index === 0 ? " active" : ""}" title="${esc(box.title)}" data-part="${part === "sidebar" ? "activitybar" : "auxiliarybar"}" data-zone="activity-items" data-item="${esc(box.id)}">${esc(box.title)}</button>`)
+    .join("")}</div></div>`;
+  const rows = active.sections.length
+    ? active.sections
+        .map((section, index) => `<div class="panel-title" data-part="${part}" data-zone="sec:${esc(section.id)}" data-item="${esc(section.id)}">${esc(section.title)}</div><button type="button" class="view-row${index === 0 ? " selected" : ""}" data-part="${part}" data-zone="sec:${esc(section.id)}" data-item="${esc(section.id)}"><span class="dot"></span>${esc(section.title)}</button>`)
+        .join("")
+    : `<button type="button" class="view-row selected" data-part="${part}" data-zone="side:${esc(active.id)}:header" data-item="${esc(active.id)}"><span class="dot"></span>${esc(active.title)}</button>`;
+  const width = part === "sidebar" ? cfg.layout.primarySideBar.width : cfg.layout.auxiliaryBar.width;
+  return `<aside class="${part === "sidebar" ? "sidebar" : "auxiliarybar"}" data-part="${part}" style="width:${width}px">${tabs}<div class="view-body">${rows}</div></aside>`;
+}
+
+function hymdStatus(cfg: UiConfig) {
+  const button = (name: string, items: ToolItem[]) =>
+    items
+      .filter((item) => !item.separator)
+      .map((item) => `<button type="button" class="statusbar-item" data-part="statusbar" data-zone="${name}" data-item="${esc(item.id)}">${esc(itemText(cfg, item))}</button>`)
+      .join("");
+  const bar = cfg.statusBar;
+  return `<footer class="statusbar" data-part="statusbar"><div class="statusbar-left">${button("status:start", bar.start)}</div><div class="statusbar-right">${button("status:center", bar.center)}${button("status:end", bar.end)}</div></footer>`;
 }
 
 function hymdDocument(cfg: UiConfig, options: ShellOptions) {
@@ -394,66 +436,55 @@ function hymdDocument(cfg: UiConfig, options: ShellOptions) {
   const theme = skin === "notion" ? "light" : "dark";
   const L = cfg.layout;
   const center = L.titleBar.commandCenter && skin === "vscode"
-    ? `<button type="button" class="titlebar-cmdcenter" data-part="titlebar" data-zone="title-center" data-item="command-center">搜索命令</button>`
+    ? `<button type="button" class="titlebar-cmdcenter" data-part="titlebar" data-zone="title-center" data-item="command-center"><span class="titlebar-cmdcenter-label">${esc(cfg.app.title)}</span><span class="titlebar-cmdcenter-key">Ctrl+Shift+P</span></button>`
     : `<div class="titlebar-title" data-part="titlebar" data-zone="title-center" data-item="title-text">${esc(cfg.app.title)}</div>`;
-  const activity = L.activityBar.visible
-    ? `<nav class="activitybar" data-part="activitybar">${cfg.activity
-        .map((box, index) => `<button type="button" class="${index === 0 ? "on" : ""}" title="${esc(box.title)}" data-part="activitybar" data-zone="activity-items" data-item="${esc(box.id)}">${esc(box.title)}</button>`)
-        .join("")}</nav>`
+  const sidebar = L.primarySideBar.visible ? hymdSide(cfg, "sidebar") : "";
+  const auxiliary = L.auxiliaryBar.visible ? hymdSide(cfg, "auxiliarybar") : "";
+  const tabs = L.editor.tabs
+    ? `<div class="editor-tabs" data-part="editor" data-zone="tabs"><div class="editor-tabs-scroll">${cfg.editors
+        .map((editor, index) => `<button type="button" class="editor-tab${index === 0 ? " active" : ""}" data-part="editor" data-zone="tabs" data-item="${esc(editor.id)}"><span class="tab-label">${esc(editor.title)}</span></button>`)
+        .join("")}</div></div>`
     : "";
-  const sidebar = L.primarySideBar.visible ? sidePane(cfg, "sidebar") : "";
-  const auxiliary = L.auxiliaryBar.visible ? sidePane(cfg, "auxiliarybar") : "";
-  const tabs = cfg.editors
-    .map((editor, index) => `<button type="button" class="${index === 0 ? "on" : ""}" data-part="editor" data-zone="tabs" data-item="${esc(editor.id)}">${esc(editor.title)}</button>`)
-    .join("");
+  const sample = cfg.editors[0]?.title || cfg.app.title;
   const panel = L.panel.visible
     ? `<div class="panel-tabs" data-part="panel" data-zone="panel-tabs">${cfg.panel
-        .map((tab) => `<button type="button" data-part="panel" data-zone="panel-tabs" data-item="${esc(tab.id)}">${esc(tab.title)}</button>`)
+        .map((tab, index) => `<button type="button" class="panel-tab${index === 0 ? " active" : ""}" data-part="panel" data-zone="panel-tabs" data-item="${esc(tab.id)}">${esc(tab.title)}</button>`)
         .join("")}</div>`
     : "";
-  const fixed = [
-    ["settings", "设置"],
-    ["problems", "0 问题"],
-    ["branch", "main"],
-    ["enc", "UTF-8"],
-    ["cursor", "Ln 1, Col 1"]
-  ];
-  const known = new Set(fixed.map(([id]) => id));
-  const spec = [...cfg.statusBar.start, ...cfg.statusBar.center, ...cfg.statusBar.end].filter((item) => !item.separator && !known.has(item.id));
-  const status = [
-    ...fixed.map(([id, label]) => {
-      const hit = [...cfg.statusBar.start, ...cfg.statusBar.center, ...cfg.statusBar.end].find((item) => item.id === id);
-      const zone = cfg.statusBar.start.some((item) => item.id === id) ? "status:start" : cfg.statusBar.end.some((item) => item.id === id) ? "status:end" : "status:center";
-      const text = hit?.text || label;
-      const itemAttr = hit ? ` data-zone="${zone}" data-item="${esc(hit.id)}"` : "";
-      return `<button type="button" data-part="statusbar"${itemAttr}>${esc(text)}</button>`;
-    }),
-    ...spec.map((item) => {
-      const zone = cfg.statusBar.start.some((entry) => entry.id === item.id) ? "status:start" : cfg.statusBar.end.some((entry) => entry.id === item.id) ? "status:end" : "status:center";
-      return `<button type="button" data-part="statusbar" data-zone="${zone}" data-item="${esc(item.id)}">${esc(itemText(cfg, item))}</button>`;
-    })
-  ].join("");
-  const auxClass = `${L.activityBar.visible ? "" : " no-activity"}${L.auxiliaryBar.visible ? " with-aux" : ""}`;
-  const body = `<div class="shell">
+  const status = L.statusBar.visible ? hymdStatus(cfg) : "";
+  const attrs = `${skin === "vscode" ? ` data-vscode-activity="${L.activityBar.position === "side" ? "side" : "top"}"` : ""}${L.editor.tabs ? "" : ` data-tabstrip="none"`}`;
+  const body = `<div class="app-shell">
     <header class="titlebar" data-part="titlebar">
-      <div class="titlebar-menus">${menuRow(cfg, cfg.menus)}</div>
+      <div class="titlebar-menus">${menuRow(cfg, cfg.menus, "titlebar-menu-btn")}</div>
       <div class="titlebar-drag">${center}</div>
       <div class="titlebar-actions">
-        <button type="button" data-part="titlebar" data-zone="winctl" data-item="min">—</button>
-        <button type="button" data-part="titlebar" data-zone="winctl" data-item="max">□</button>
-        <button type="button" data-part="titlebar" data-zone="winctl" data-item="close">×</button>
+        <button type="button" class="titlebar-icon-btn${L.primarySideBar.visible ? " active" : ""}" data-part="sidebar" title="侧栏">侧</button>
+        <button type="button" class="titlebar-icon-btn${L.panel.visible ? " active" : ""}" data-part="panel" title="面板">面</button>
+        <button type="button" class="titlebar-icon-btn${L.auxiliaryBar.visible ? " active" : ""}" data-part="auxiliarybar" title="辅栏">辅</button>
+        <button type="button" class="titlebar-win-btn" data-part="titlebar" data-zone="winctl" data-item="min" title="最小化">—</button>
+        <button type="button" class="titlebar-win-btn" data-part="titlebar" data-zone="winctl" data-item="max" title="最大化">□</button>
+        <button type="button" class="titlebar-win-btn close" data-part="titlebar" data-zone="winctl" data-item="close" title="关闭">×</button>
       </div>
     </header>
-    <div class="workbench${auxClass}">${activity}${sidebar}<main class="editor" data-part="editor"><div class="editor-tabs">${tabs}</div></main>${auxiliary}</div>
-    ${panel}
-    <footer class="statusbar" data-part="statusbar">${status}</footer>
+    <div class="app-body">
+      ${sidebar}
+      <div class="app-center">
+        <div class="app-main-row">
+          <div class="editor-part" data-part="editor">${tabs}<div class="editor-content-hymd" data-part="editor" data-zone="editor-body"><div class="hymd-keep-slot" style="padding:28px 40px;overflow:auto"><p>${esc(sample)}</p><p>这是预览里的示例正文。</p></div></div></div>
+          ${auxiliary}
+        </div>
+        ${panel}
+      </div>
+    </div>
+    ${status}
   </div>`;
   return doc({
     skin,
     palette: "",
     theme,
     only: onlyAttr(options),
-    styles: tokenStyle(cfg.tokens) + hymdStyles(skin),
+    attrs,
+    styles: tokenStyle(cfg.tokens) + hymdStyles(),
     body
   });
 }

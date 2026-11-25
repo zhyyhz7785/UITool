@@ -38,6 +38,10 @@ export async function allowInstance(id: string) {
   return data.token ?? "";
 }
 
+export async function dropInstance(id: string) {
+  await post({ op: "drop", id });
+}
+
 async function command(inst: LiveInstance, name: string, payload: unknown) {
   const sent = await post({ op: "command", id: inst.id, token: inst.token, name, payload });
   const commandId = sent.commandId;

@@ -3,6 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
 export function policyFile() {
   if (process.env.UITOOL_POLICY) return path.resolve(process.env.UITOOL_POLICY);
@@ -102,10 +103,18 @@ export function atomicWrite(file, text) {
   if (fs.existsSync(bak)) fs.rmSync(bak, { force: true });
 }
 
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+
+/** 政策和环境变量都空时，只读旁边已经在的仓库。不写政策，也不授权写回。 */
+function siblingRoot(name, marker) {
+  const dir = path.resolve(repoRoot, "..", name);
+  return fs.existsSync(path.join(dir, marker)) ? dir : "";
+}
+
 export function hy3dReadRoot() {
   if (process.env.HY3D_ROOT) return path.resolve(process.env.HY3D_ROOT);
   const hit = readPolicy().find((p) => p.id === "hy3d");
-  const dir = hit?.worktree || hit?.main || "";
+  const dir = hit?.worktree || hit?.main || siblingRoot("hy3d", path.join("ui", "styles.css"));
   if (!dir) throw new Error("没有 hy3d 主仓。在连接里填写，或设置 HY3D_ROOT。");
   return path.resolve(dir);
 }
@@ -124,7 +133,7 @@ export function hy3dWriteRoot() {
 export function hymdReadRoot() {
   if (process.env.HYMD_ROOT) return path.resolve(process.env.HYMD_ROOT);
   const hit = readPolicy().find((p) => p.id === "hymd");
-  const dir = hit?.worktree || hit?.main || "";
+  const dir = hit?.worktree || hit?.main || siblingRoot("HyMdTauri2", path.join("src", "styles.css"));
   if (!dir) throw new Error("没有 HyMd 主仓。在连接里填写，或设置 HYMD_ROOT。");
   return path.resolve(dir);
 }

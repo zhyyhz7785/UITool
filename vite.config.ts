@@ -26,10 +26,11 @@ export default defineConfig({
     dedupe: ["react", "react-dom", "@tauri-apps/api"]
   },
   server: {
-    port: 1430,
+    // 1440：hy3d 开发页占 1430，HyMdTauri 占 1420。三个 dev 同时开才好测。
+    port: 1440,
     strictPort: true,
     host: host || "127.0.0.1",
-    hmr: host ? { protocol: "ws", host, port: 1431 } : undefined,
+    hmr: host ? { protocol: "ws", host, port: 1441 } : undefined,
     watch: { ignored: ["**/src-tauri/**", "**/template/core/**", "**/target/**", "**/.tmp/**"] }
   }
 });

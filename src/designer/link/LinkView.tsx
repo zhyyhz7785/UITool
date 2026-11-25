@@ -2,7 +2,7 @@ import { Button } from "@tpl/workbench/ui";
 import { useWorkbench } from "@tpl/workbench/context";
 import { useEffect, useState } from "react";
 import { Section, TextField } from "../controls";
-import { allowInstance, inspect, listInstances, patch, publishLive, revertLive, type LiveInstance } from "../live/client";
+import { allowInstance, dropInstance, inspect, listInstances, patch, publishLive, revertLive, type LiveInstance } from "../live/client";
 import { design, useDesign } from "../store";
 import { linkFrom, previewHymd, previewHy3d, readHymd, readHy3d, writeHymd, writeHy3d, type LinkFrom, type WritePreview } from "./exchange";
 import { publishPaths } from "./io";
@@ -127,7 +127,7 @@ export function LinkView() {
         </Section>
       )}
       <Section title="开发窗口">
-        <div className="ut-note">产品以开发态打开后会出现在这里。允许之后才能读尺寸、改变量和恢复。不会重载图纸，也不编译 Rust。</div>
+        <div className="ut-note">产品以开发态打开后会出现在这里。允许之后才能读尺寸、改变量和恢复。断开会恢复该窗口连接前的界面，窗口接着重新等待允许。不会重载图纸，也不编译 Rust。</div>
         {instances.length === 0 && <div className="ut-note">还没有开发窗口。把 adapters/uitool-live.js 放进本机的 HY3D 或 HyMdTauri 开发页。</div>}
         {instances.map((inst) => (
           <div key={inst.id} className="ut-snap">
@@ -165,6 +165,18 @@ export function LinkView() {
                 读取选中
               </Button>
             )}
+            <Button
+              onClick={() =>
+                void run("已断开", async () => {
+                  await dropInstance(inst.id);
+                  setInstances((list) => list.filter((item) => item.id !== inst.id));
+                  setLive((cur) => (cur?.id === inst.id ? null : cur));
+                  if (live?.id === inst.id) setInspected("");
+                })
+              }
+            >
+              断开
+            </Button>
           </div>
         ))}
         {inspected && <div className="ut-note">选中：{inspected}</div>}

@@ -31,13 +31,18 @@ export function allowedProductRel(product, rel) {
   const ext = path.posix.extname(n).toLowerCase();
   if (!TYPES[ext]) return false;
   if (product === "hy3d") {
-    if (n === "ui/tokens.css" || n === "ui/styles.css" || n === "ui/icons.svg") return true;
+    if (n === "ui/tokens.css" || n === "ui/styles.css" || n === "ui/cad-workspace.css" || n === "ui/icons.svg") return true;
     if (/^ui\/palettes\/[A-Za-z0-9._-]+\/[A-Za-z0-9._-]+$/.test(n)) return true;
     if (/^ui\/skins\/[A-Za-z0-9._-]+\/[A-Za-z0-9._-]+$/.test(n)) return true;
     if (/^ui\/fonts\/[A-Za-z0-9._-]+$/.test(n)) return true;
     return false;
   }
-  if (product === "hymd") return n.startsWith("src/styles/");
+  if (product === "hymd") {
+    if (n === "src/parts/seti/seti.woff") return true;
+    if (ext !== ".css") return false;
+    if (n === "src/styles.css" || n === "src/editor/layoutPreview/ui-tokens.css") return true;
+    return n.startsWith("src/styles/");
+  }
   return false;
 }
 

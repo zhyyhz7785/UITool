@@ -15,7 +15,8 @@
   if (host !== "127.0.0.1" && host !== "localhost") return;
 
   var product = global.__HY3D_DEV_SERVER ? "hy3d" : "hymd";
-  var ports = [1430, 5173, 1420, 4173];
+  // 设计器在 1440。不探测 hy3d 的 1430 和 HyMd 的 1420，避免连到产品自己的开发服务。
+  var ports = [1440];
   var broker = "";
   var inst = null;
   var selected = null;
@@ -183,9 +184,28 @@
     return { error: "拒绝" };
   }
 
+  function forget() {
+    inst = null;
+    broker = "";
+    snapshot = null;
+    selected = null;
+  }
+
   async function poll() {
     if (!inst) return;
-    var data = await talk({ op: "poll", id: inst.id });
+    var data;
+    try {
+      data = await talk({ op: "poll", id: inst.id });
+    } catch (err) {
+      var msg = err && err.message ? String(err.message) : "";
+      if (msg.indexOf("实例不在了") >= 0) forget();
+      return;
+    }
+    if (data.status === "dropped") {
+      revert();
+      forget();
+      return;
+    }
     if (data.status === "allowed" && data.token && !snapshot) takeSnapshot();
     var list = data.commands || [];
     var i;
@@ -206,12 +226,14 @@
     true
   );
 
-  findBroker().then(function () {
-    if (!inst) return;
-    global.setInterval(function () {
-      poll().catch(function () {
-        /* 设计器没开时下一次再试 */
-      });
-    }, 400);
-  });
+  function tick() {
+    var job = inst ? poll() : findBroker();
+    Promise.resolve(job).catch(function () {
+      /* 设计器没开时下一轮再登记 */
+    }).then(function () {
+      global.setTimeout(tick, 400);
+    });
+  }
+
+  tick();
 })(typeof window !== "undefined" ? window : globalThis);
