@@ -123,3 +123,12 @@ html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #ribbon-panels {
 html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense-stack > .hy-rib-dense-btn {
   align-self:flex-start;
 }
+
+/* Do not stretch untouched baseline space between dense groups. Keep actual
+   occupied widths; the desktop full design may scroll a short tail. */
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #ribbon-panels:has(.hy-rib-dense) {
+  justify-content:flex-start;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .hy-rib-dense-btn .btn-label {
+  max-width:none;
+}
