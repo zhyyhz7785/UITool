@@ -105,44 +105,106 @@ html[data-uitool-density-design="1"] #right-dock :is(.cad-panel-empty,.cad-panel
   font-size:var(--ud-caption);padding:var(--ud-gap) var(--ud-pad);
 }
 html[data-uitool-density-design="1"] #right-dock .cad-panel-links .cad-panel-link {padding:2px 0;}
-/* Block workbench: match the property pane. All five pages share bw-* primitives. */
+/* Block workbench: property-palette density, shared by all five native pages.
+   Keep the existing DOM, page visibility, command bindings and scroll/fixed footer.
+   All dimensions are derived from the shared density and user font tokens. */
 html[data-uitool-density-design="1"] #bw-root {
-  --h-ctl:var(--ud-control);--h-tab:var(--ud-tab);--h-title:var(--ud-row);
-  --fs-ui:var(--ud-font);--fs-cap:var(--ud-caption);--gap:var(--ud-gap);
+  --bw-line:max(calc(var(--ud-row) - 2px),calc(var(--ud-font) + 8px));
+  --bw-control:max(calc(var(--ud-control) - 2px),calc(var(--ud-font) + 8px));
+  --bw-tab:max(calc(var(--ud-tab) - 4px),calc(var(--ud-font) + 8px));
+  --bw-gap:max(2px,calc(var(--ud-gap) - 2px));
+  --bw-preview:max(48px,calc(var(--ud-preview) - 8px));
+  --h-ctl:var(--bw-control);--h-tab:var(--bw-tab);--h-title:var(--bw-line);
+  --fs-ui:var(--ud-font);--fs-cap:var(--ud-caption);--gap:var(--bw-gap);
   --r-ctl:var(--ud-radius);
+  font:var(--ud-font)/1.25 var(--font-ui);
 }
 html[data-uitool-density-design="1"] #bw-root .bw-title {
-  padding:0 var(--ud-pad);background:var(--bg-raised);font-size:var(--ud-font);font-weight:600;
+  height:auto;min-height:var(--bw-line);padding:0 var(--ud-pad);gap:var(--ud-gap);
+  background:var(--bg-raised);font-size:var(--ud-font);font-weight:600;
+}
+html[data-uitool-density-design="1"] #bw-root .bw-title .bw-x {
+  width:var(--bw-control);height:var(--bw-control);padding:0;font:inherit;
 }
 html[data-uitool-density-design="1"] #bw-root .bw-mark {
   width:var(--ud-icon);height:var(--ud-icon);background:transparent;
   border:1px solid var(--text-2);border-radius:2px;box-shadow:inset 3px 3px 0 var(--accent-soft);
 }
 html[data-uitool-density-design="1"] #bw-root .bw-tabs {background:var(--bg-panel);}
-html[data-uitool-density-design="1"] #bw-root .bw-tab {height:var(--ud-tab);font-size:var(--ud-font);font-weight:400;}
-html[data-uitool-density-design="1"] #bw-root .bw-tab.on {color:var(--text);background:var(--accent-soft);border-bottom-color:var(--accent);font-weight:600;}
-html[data-uitool-density-design="1"] #bw-root .bw-scroll {padding:var(--ud-pad);}
-html[data-uitool-density-design="1"] #bw-root .bw-sec {margin:0 0 var(--ud-group);}
-html[data-uitool-density-design="1"] #bw-root .bw-head {margin-bottom:var(--ud-gap);gap:var(--ud-gap);}
-html[data-uitool-density-design="1"] #bw-root .bw-sec h3 {font-size:var(--ud-font);font-weight:600;}
-html[data-uitool-density-design="1"] #bw-root :is(.bw-grid,.bw-filters) {gap:var(--ud-gap);grid-template-columns:repeat(2,minmax(0,1fr));}
-html[data-uitool-density-design="1"] #bw-root .bw-filters {grid-template-columns:repeat(3,minmax(0,1fr));}
-html[data-uitool-density-design="1"] #bw-root :is(.bw-search,.bw-list,.bw-actions,.bw-row,.bw-name,.bw-field) {gap:var(--ud-gap);}
-html[data-uitool-density-design="1"] #bw-root .bw-name {grid-template-columns:minmax(0,1fr) calc(var(--ud-control) + 8px);}
-html[data-uitool-density-design="1"] #bw-root :is(.bw-btn,.bw-tile) {
-  border-radius:var(--ud-radius);font-size:var(--ud-font);font-weight:400;min-width:0;
+html[data-uitool-density-design="1"] #bw-root .bw-tab {
+  box-sizing:border-box;height:var(--bw-tab);padding:0 2px;font:inherit;font-weight:400;
 }
-html[data-uitool-density-design="1"] #bw-root .bw-btn {min-height:var(--ud-control);height:auto;padding:2px var(--ud-pad);line-height:1.35;overflow-wrap:anywhere;}
-html[data-uitool-density-design="1"] #bw-root .bw-btn.on {background:var(--accent-soft);border-color:var(--accent);}
-html[data-uitool-density-design="1"] #bw-root .bw-btn.primary {background:var(--accent);color:var(--text-on-accent);font-weight:600;}
-html[data-uitool-density-design="1"] #bw-root :is(.bw-tiny,.bw-hint,.bw-pill,.bw-check,.bw-more summary,.bw-status,.bw-field) {font-size:var(--ud-caption);line-height:1.35;}
-html[data-uitool-density-design="1"] #bw-root :is(.bw-field input,.bw-field select,.bw-search input) {height:var(--ud-control);font-size:var(--ud-font);}
-html[data-uitool-density-design="1"] #bw-root .bw-pill {line-height:calc(var(--ud-control) - 2px);white-space:nowrap;}
-html[data-uitool-density-design="1"] #bw-root :is(.bw-hint,.bw-preview,.bw-check,.bw-more) {margin-block:var(--ud-gap);}
-html[data-uitool-density-design="1"] #bw-root .bw-preview {min-height:var(--ud-preview);background:var(--bg-input);}
-html[data-uitool-density-design="1"] #bw-root .bw-preview svg {height:var(--ud-preview);}
-html[data-uitool-density-design="1"] #bw-root .bw-foot {gap:var(--ud-gap);padding:var(--ud-pad);background:var(--bg-raised);}
-html[data-uitool-density-design="1"] #bw-root .bw-status {min-height:var(--ud-row);padding:var(--ud-gap) var(--ud-pad);}
+html[data-uitool-density-design="1"] #bw-root .bw-tab:hover {background:var(--bg-hover);}
+html[data-uitool-density-design="1"] #bw-root .bw-tab.on {
+  color:var(--selection-text,var(--text));background:var(--selection-bg,var(--accent-soft));
+  border-bottom-color:var(--selection-border,var(--accent));font-weight:600;
+}
+html[data-uitool-density-design="1"] #bw-root .bw-scroll {padding:var(--ud-gap);}
+html[data-uitool-density-design="1"] #bw-root .bw-sec {margin:0 0 var(--ud-gap);}
+html[data-uitool-density-design="1"] #bw-root .bw-head {
+  min-height:var(--bw-line);margin:0 0 var(--bw-gap);padding:0 var(--ud-gap);
+  gap:var(--ud-gap);background:var(--bg-raised);border-bottom:1px solid var(--border);
+}
+html[data-uitool-density-design="1"] #bw-root .bw-sec h3 {
+  min-width:0;margin:0;font:inherit;font-weight:600;overflow-wrap:anywhere;
+}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-grid,.bw-filters) {
+  gap:var(--bw-gap);grid-template-columns:repeat(2,minmax(0,1fr));
+}
+html[data-uitool-density-design="1"] #bw-root .bw-filters {grid-template-columns:repeat(3,minmax(0,1fr));}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-search,.bw-list,.bw-actions,.bw-row,.bw-name,.bw-field) {gap:var(--bw-gap);}
+html[data-uitool-density-design="1"] #bw-root .bw-name {grid-template-columns:minmax(0,1fr) calc(var(--bw-control) + 4px);}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-grid,.bw-list,.bw-actions,.bw-field,.bw-row,.bw-check,.bw-tiny) + :is(.bw-grid,.bw-row,.bw-field,.bw-check,.bw-btn,.bw-hint,.bw-more) {
+  margin-top:var(--bw-gap);
+}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-btn,.bw-tile) {
+  box-sizing:border-box;border-radius:var(--ud-radius);font:inherit;font-weight:400;min-width:0;
+  color:var(--text);background:var(--bg-ctl);border:1px solid var(--border);
+}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-btn,.bw-actions button,.bw-cmd) {
+  height:auto;min-height:var(--bw-control);padding:0 var(--ud-gap);line-height:1.25;overflow-wrap:anywhere;
+}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-btn,.bw-tile):not(:disabled):hover {background:var(--bg-hover);}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-btn.on,.bw-btn[aria-pressed="true"],.bw-tile[aria-pressed="true"]) {
+  background:var(--selection-bg,var(--accent-soft));border-color:var(--selection-border,var(--accent));
+  color:var(--selection-text,var(--text));
+}
+html[data-uitool-density-design="1"] #bw-root .bw-btn.primary {
+  background:var(--selection-bg,var(--accent-soft));border-color:var(--selection-border,var(--accent));
+  color:var(--selection-text,var(--text));font-weight:600;
+}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-btn.primary,.bw-btn.on,.bw-btn[aria-pressed="true"],.bw-tile[aria-pressed="true"]):not(:disabled):hover {
+  background:var(--selection-hover,var(--bg-hover));
+}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-btn,.bw-tile):disabled {opacity:.45;cursor:not-allowed;}
+html[data-uitool-density-design="1"] #bw-root .bw-tile {
+  min-height:var(--bw-line);padding:2px var(--ud-gap);gap:1px;overflow-wrap:anywhere;
+}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-tiny,.bw-hint,.bw-pill,.bw-more summary,.bw-status) {
+  font-size:var(--ud-caption);line-height:1.25;
+}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-field,.bw-check) {font-size:var(--ud-font);line-height:1.25;}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-field input,.bw-field select,.bw-search input) {
+  box-sizing:border-box;width:100%;min-width:0;min-height:var(--bw-control);height:var(--bw-control);
+  padding:0 var(--ud-gap);font:inherit;font-variant-numeric:tabular-nums;
+  border-radius:var(--ud-radius);background:var(--bg-input);
+}
+html[data-uitool-density-design="1"] #bw-root .bw-field textarea {
+  min-width:0;min-height:calc(var(--bw-control) * 2);font:inherit;padding:2px var(--ud-gap);
+}
+html[data-uitool-density-design="1"] #bw-root .bw-pill {
+  flex:0 0 auto;padding:1px var(--bw-gap);line-height:1.25;white-space:nowrap;
+}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-hint,.bw-preview,.bw-check,.bw-more) {margin-block:var(--bw-gap);}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-search,.bw-filters) {margin-bottom:var(--bw-gap);}
+html[data-uitool-density-design="1"] #bw-root .bw-list .bw-hint {margin:0;}
+html[data-uitool-density-design="1"] #bw-root .bw-check input {margin:0;}
+html[data-uitool-density-design="1"] #bw-root .bw-preview {min-height:var(--bw-preview);background:var(--bg-input);}
+html[data-uitool-density-design="1"] #bw-root .bw-preview svg {height:var(--bw-preview);}
+html[data-uitool-density-design="1"] #bw-root .bw-more summary {min-height:var(--bw-line);padding:3px var(--ud-gap);}
+html[data-uitool-density-design="1"] #bw-root .bw-more summary:hover {background:var(--bg-hover);}
+html[data-uitool-density-design="1"] #bw-root .bw-foot {gap:var(--ud-gap);padding:var(--ud-gap);background:var(--bg-raised);}
+html[data-uitool-density-design="1"] #bw-root .bw-status {min-height:var(--bw-line);padding:var(--bw-gap) var(--ud-gap);}
 /* History / layer manager / auxiliary setting forms keep existing content layouts. */
 html[data-uitool-density-design="1"] :is(#history-diff,#explorer-history) :is(.hy-topbar,.hy-time-title,.hy-lane,.hy-row) {min-height:var(--ud-row);gap:var(--ud-gap);}
 html[data-uitool-density-design="1"] :is(#history-diff,#explorer-history) :is(.hy-name,.hy-user-note,.hy-filters,.hy-summary p,.hy-detail p) {font-size:var(--ud-caption);}
