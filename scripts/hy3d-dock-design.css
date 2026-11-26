@@ -74,3 +74,29 @@ html[data-uitool-dock-design="1"] #right-dock.is-icon-dock #dock-workspace-bar .
 html[data-uitool-dock-design="1"] #right-dock.is-icon-dock #dock-workspace-bar .dock-workspace-tabs > button::first-letter { font-size:12px; }
 html[data-uitool-dock-design="1"] #right-dock.is-icon-dock .uitool-dock-more { margin-left:0; }
 html[data-uitool-dock-design="1"] #app.bp-800 #left-dock > .explorer-narrow-label { display:flex !important; }
+
+/* Full-height side docks: workspace spans drawing + docked command row.
+   Keep #cmdbar a direct child of #app; native resize/floating handlers stay intact.
+   A row subgrid shares the real auto-sized command row (zero when hidden/floating). */
+@supports (grid-template-rows: subgrid) {
+  html[data-uitool-dock-design="1"][data-uitool-dock-span="1"] #app:not(.toolbar-side) > #workspace {
+    grid-row:5 / 7;
+    grid-template-rows:subgrid;
+  }
+  html[data-uitool-dock-design="1"][data-uitool-dock-span="1"] #app.toolbar-side > #workspace {
+    grid-row:4 / 6;
+    grid-template-rows:subgrid;
+  }
+  html[data-uitool-dock-design="1"][data-uitool-dock-span="1"] #app.toolbar-side > #ribbon { grid-row:4 / 6; }
+  html[data-uitool-dock-design="1"][data-uitool-dock-span="1"] #workspace > :is(#palette-tabs,#left-dock,#split-left,#split-right,#right-dock) {
+    grid-row:1 / -1;
+    min-height:0;
+  }
+  html[data-uitool-dock-design="1"][data-uitool-dock-span="1"] #workspace > #viewport-frame { grid-row:1; min-height:0; }
+  html[data-uitool-dock-design="1"][data-uitool-dock-span="1"] #app > #cmdbar.open:not(.floating) {
+    justify-self:start;
+    margin-left:var(--uitool-cmd-inset, 0px);
+    width:var(--uitool-cmd-width, 100%);
+    min-width:0;
+  }
+}
