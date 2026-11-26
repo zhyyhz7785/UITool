@@ -193,12 +193,13 @@ function serveHy3d() {
         let previewHtml = html.replace(hostScript, (tag) => tag + '\n<script src="/__uitool-explorer-fixture.js"></script>');
         if (url.searchParams.get("style") === "layer") {
           try {
-            layerDesignSource(readFileSync(path.join(root, "skins", "hy-ribbon", "layout.js"), "utf8"));
-            previewHtml = layerDesignHtml(previewHtml);
+            const native = readFileSync(path.join(root, "skins", "hy-ribbon", "layout.js"), "utf8");
+            layerDesignSource(native);
+            previewHtml = layerDesignHtml(previewHtml, !/\bnativeCadProfile:\s*true\b/.test(native));
           } catch (error) {
             res.statusCode = 502;
             res.setHeader("content-type", "text/plain; charset=utf-8");
-            res.end("UITool 图层设计需要已包含 HY3D #2206 的原生 HY Ribbon 前端镜像。请同步镜像，或切换 HY Ribbon / A5 查看原界面。\n" + String(error));
+            res.end("UITool 图层设计与当前镜像的布局接口不匹配。请反馈下方错误，或切换 HY Ribbon / A5 查看原界面。\n" + String(error));
             return;
           }
         }
