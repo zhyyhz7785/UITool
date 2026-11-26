@@ -22,6 +22,7 @@ const DOCK_DESIGN_CSS = path.join(HERE, "hy3d-dock-design.css");
 const DOCK_DESIGN_JS = path.join(HERE, "hy3d-dock-design.js");
 const STATUS_DESIGN_CSS = path.join(HERE, "hy3d-status-design.css");
 const SETTINGS_DESIGN_CSS = path.join(HERE, "hy3d-settings-design.css");
+const DENSITY_DESIGN_CSS = path.join(HERE, "hy3d-ui-density.css");
 const STATUS_DESIGN_JS = path.join(HERE, "hy3d-status-design.js");
 const MIRROR_UI = path.resolve(HERE, "..", ".product-sources", "hy3d", "ui");
 const MIRROR_HYMD = path.resolve(HERE, "..", ".product-sources", "hymd");
@@ -130,6 +131,12 @@ function serveHy3d() {
       if (!local(req)) {
         res.statusCode = 403;
         res.end();
+        return;
+      }
+      if (raw === "/__uitool-ui-density.css") {
+        res.setHeader("content-type", MIME[".css"]);
+        res.setHeader("cache-control", "no-store");
+        createReadStream(DENSITY_DESIGN_CSS).pipe(res);
         return;
       }
       if (raw === "/__uitool-settings-design.css") {
@@ -293,7 +300,7 @@ function serveHy3d() {
             if (!settingsShell.test(previewHtml)) throw new Error("缺少设置窗口 settings-shell.js 入口");
             previewHtml = previewHtml
               .replace(settingsShell, '<script src="/__uitool-settings-shell.js"></script>')
-              .replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-settings-design.css"><script>document.documentElement.dataset.uitoolSettingsDesign="1"</script></head>');
+              .replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-settings-design.css"><link rel="stylesheet" href="/__uitool-ui-density.css"><script>document.documentElement.dataset.uitoolSettingsDesign="1";document.documentElement.dataset.uitoolDensityDesign="1"</script></head>');
           } catch (error) {
             res.statusCode = 502;
             res.setHeader("content-type", "text/plain; charset=utf-8");

@@ -1,0 +1,153 @@
+/* One density system for the real HY3D Ribbon design candidate.
+   Native settings already persist and update html[data-density].
+   Do not change CAD geometry, viewport, command dispatch, or panel structure. */
+html[data-uitool-density-design="1"] {
+  --ud-font: var(--interface-font, 13px);
+  --ud-caption: max(11px, calc(var(--ud-font) - 1px));
+  --ud-row: 30px;
+  --ud-control: 28px;
+  --ud-tab: 32px;
+  --ud-icon: 18px;
+  --ud-gap: 6px;
+  --ud-pad: 8px;
+  --ud-group: 10px;
+  --ud-settings-row: 38px;
+  --ud-status: 30px;
+  --ud-status-control: 26px;
+  --ud-preview: 72px;
+  --ud-radius: var(--r-sm, 4px);
+}
+html[data-uitool-density-design="1"][data-density="compact"] {
+  --ud-font: var(--interface-font, 12px);
+  --ud-row: 24px;
+  --ud-control: 24px;
+  --ud-tab: 28px;
+  --ud-icon: 16px;
+  --ud-gap: 4px;
+  --ud-pad: 6px;
+  --ud-group: 6px;
+  --ud-settings-row: 32px;
+  --ud-status: 26px;
+  --ud-status-control: 22px;
+  --ud-preview: 56px;
+}
+html[data-uitool-density-design="1"] body {font-family:var(--font-ui);font-size:var(--ud-font);}
+/* Native select popup: explicit foreground AND opaque surface. Do not recolor
+   CAD color swatches, drawn entities, or the document editor's content. */
+html[data-uitool-density-design="1"]:not([data-theme="light"]) {color-scheme:dark;}
+html[data-uitool-density-design="1"][data-theme="light"] {color-scheme:light;}
+html[data-uitool-density-design="1"] :is(select, select option, select optgroup) {
+  color:var(--text);background-color:var(--bg-input);
+  color-scheme:inherit;
+}
+html[data-uitool-density-design="1"] select option:checked {color:var(--text);background-color:var(--bg-raised);}
+html[data-uitool-density-design="1"] select option:disabled {color:var(--text-2);}
+/* Shell controls: keep the previously approved Ribbon geometry and commands.
+   Text and icon hierarchy vary with density; large command art stays large. */
+html[data-uitool-density-design="1"] :is(#titlebar-row,#filetabs,#menubar,#ribbon,#cmdbar,#statusbar) {
+  font-family:var(--font-ui);font-size:var(--ud-font);
+}
+html[data-uitool-density-design="1"] :is(#titlebar-row,#filetabs,#menubar,#ribbon) button {font-size:var(--ud-font);}
+html[data-uitool-density-design="1"] #ribbon .hy-rib-head {font-size:var(--ud-caption);}
+html[data-uitool-density-design="1"] #ribbon .hy-rib-dense .hy-rib-dense-btn:not([data-dense-kind="big"]) {
+  font-size:var(--ud-font);line-height:1.2;
+}
+html[data-uitool-density-design="1"] #ribbon .hy-rib-dense .hy-rib-dense-btn:not([data-dense-kind="big"]) .ic {
+  width:var(--ud-icon);height:var(--ud-icon);flex-basis:var(--ud-icon);
+}
+html[data-uitool-density-design="1"] #ribbon .hy-rib-layer-state svg {width:var(--ud-icon);height:var(--ud-icon);flex-basis:var(--ud-icon);}
+html[data-uitool-density-design="1"] #ribbon .hy-rib-layer-state select {font-size:var(--ud-font);}
+html[data-uitool-density-design="1"] :is(#titlebar-row .qat,#titlebar-row .hy-dock-toggles) button .ic,
+html[data-uitool-density-design="1"] #titlebar-row .hy-dock-toggle svg {width:var(--ud-icon);height:var(--ud-icon);}
+html[data-uitool-density-design="1"] #cmdbar .cmd-prompt-label {font-size:var(--ud-font);}
+/* The same typography and controls are inherited by all sidebar modules.
+   Avoid forcing display or changing positioning of hidden/collapsed panels. */
+html[data-uitool-density-design="1"] :is(#left-dock,#right-dock,#bw-root,#settings-editor,.ld-dialog,.interface-settings,#font-report) {
+  font-family:var(--font-ui);font-size:var(--ud-font);line-height:1.35;
+}
+html[data-uitool-density-design="1"] :is(#left-dock,#right-dock,#bw-root,#settings-editor,.ld-dialog,.interface-settings,#font-report)
+  :is(button,input,select,textarea) {font-family:inherit;font-size:var(--ud-font);}
+html[data-uitool-density-design="1"] :is(#left-dock,#right-dock,#bw-root,#settings-editor,.ld-dialog,.interface-settings,#font-report)
+  :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),select) {
+  min-height:var(--ud-control);border-radius:var(--ud-radius);
+}
+html[data-uitool-density-design="1"] :is(#left-dock,#right-dock,#bw-root,#settings-editor,.ld-dialog,.interface-settings,#font-report)
+  :is(input[type="checkbox"],input[type="radio"]) {
+  width:calc(var(--ud-icon) - 2px);height:calc(var(--ud-icon) - 2px);accent-color:var(--accent);flex-shrink:0;
+}
+html[data-uitool-density-design="1"] :is(#left-dock,#right-dock,#bw-root,#settings-editor,.ld-dialog,.interface-settings,#font-report)
+  :is(button, input, select, textarea):focus-visible {outline:1px solid var(--accent);outline-offset:-1px;}
+html[data-uitool-density-design="1"] :is(#left-dock,#right-dock) .dock-body {font-size:var(--ud-font);line-height:1.35;}
+html[data-uitool-density-design="1"] #left-dock :is(.explorer-row,.explorer-titlebar) {min-height:var(--ud-row);font-size:var(--ud-font);}
+html[data-uitool-density-design="1"] #left-dock .explorer-title {font-size:var(--ud-font);}
+html[data-uitool-density-design="1"] #left-dock :is(.explorer-icon-btn,.cad-icon-button) {width:var(--ud-control);height:var(--ud-control);flex-basis:var(--ud-control);}
+html[data-uitool-density-design="1"] #left-dock :is(.explorer-icon-btn .ic,.explorer-ico) {width:var(--ud-icon);height:var(--ud-icon);}
+html[data-uitool-density-design="1"] #left-dock :is(.search-bar,.scm-bar) {gap:var(--ud-gap);padding:var(--ud-pad);}
+html[data-uitool-density-design="1"] #left-dock :is(.search-hit,.scm-row,.scm-graph-row) {min-height:var(--ud-row);font-size:var(--ud-font);}
+html[data-uitool-density-design="1"] #left-dock :is(.search-summary,.scm-note,.scm-empty) {font-size:var(--ud-caption);}
+html[data-uitool-density-design="1"] #right-dock :is(.cad-panels,.cad-layer-panel,.cad-native-properties #props-body,.cad-property-row) {font-size:var(--ud-font);}
+html[data-uitool-density-design="1"] #right-dock :is(.cad-panel-section-head,.cad-selection-top) {
+  min-height:var(--ud-row);padding:0 var(--ud-pad);gap:var(--ud-gap);font-size:var(--ud-font);
+}
+html[data-uitool-density-design="1"] #right-dock .cad-panel-section-head > .ic {width:var(--ud-icon);height:var(--ud-icon);}
+html[data-uitool-density-design="1"] #right-dock :is(.cad-property-row,.cad-native-properties #props-body > .props-row) {
+  min-height:var(--ud-row);line-height:1.35;
+}
+html[data-uitool-density-design="1"] #right-dock :is(.cad-property-label,.cad-property-value) {
+  padding:calc(var(--ud-gap) / 2) var(--ud-pad);
+}
+html[data-uitool-density-design="1"] #right-dock :is(.cad-layer-row,.cad-layer-name) {min-height:var(--ud-row);height:auto;font-size:var(--ud-font);}
+html[data-uitool-density-design="1"] #right-dock .cad-panel-action {width:var(--ud-control);min-width:var(--ud-control);height:var(--ud-control);padding:2px;}
+html[data-uitool-density-design="1"] #right-dock :is(.cad-panel-action .ic,.cad-layer-mark .ic) {width:var(--ud-icon);height:var(--ud-icon);}
+html[data-uitool-density-design="1"] #right-dock :is(.cad-current-layer,.cad-layer-tools,.cad-panel-links) {gap:var(--ud-gap);padding:var(--ud-gap) var(--ud-pad);}
+html[data-uitool-density-design="1"] #right-dock :is(.cad-layer-select,.cad-layer-filter) {height:var(--ud-control);font-size:var(--ud-font);}
+html[data-uitool-density-design="1"] #right-dock :is(.cad-panel-empty,.cad-panel-message,.cad-layer-count,.cad-layer-columns,.cad-panel-link) {
+  font-size:var(--ud-caption);padding:var(--ud-gap) var(--ud-pad);
+}
+html[data-uitool-density-design="1"] #right-dock .cad-panel-links .cad-panel-link {padding:2px 0;}
+/* Block workbench: match the property pane. All five pages share bw-* primitives. */
+html[data-uitool-density-design="1"] #bw-root {
+  --h-ctl:var(--ud-control);--h-tab:var(--ud-tab);--h-title:var(--ud-row);
+  --fs-ui:var(--ud-font);--fs-cap:var(--ud-caption);--gap:var(--ud-gap);
+  --r-ctl:var(--ud-radius);
+}
+html[data-uitool-density-design="1"] #bw-root .bw-title {
+  padding:0 var(--ud-pad);background:var(--bg-raised);font-size:var(--ud-font);font-weight:600;
+}
+html[data-uitool-density-design="1"] #bw-root .bw-mark {
+  width:var(--ud-icon);height:var(--ud-icon);background:transparent;
+  border:1px solid var(--text-2);border-radius:2px;box-shadow:inset 3px 3px 0 var(--accent-soft);
+}
+html[data-uitool-density-design="1"] #bw-root .bw-tabs {background:var(--bg-panel);}
+html[data-uitool-density-design="1"] #bw-root .bw-tab {height:var(--ud-tab);font-size:var(--ud-font);font-weight:400;}
+html[data-uitool-density-design="1"] #bw-root .bw-tab.on {color:var(--text);background:var(--accent-soft);border-bottom-color:var(--accent);font-weight:600;}
+html[data-uitool-density-design="1"] #bw-root .bw-scroll {padding:var(--ud-pad);}
+html[data-uitool-density-design="1"] #bw-root .bw-sec {margin:0 0 var(--ud-group);}
+html[data-uitool-density-design="1"] #bw-root .bw-head {margin-bottom:var(--ud-gap);gap:var(--ud-gap);}
+html[data-uitool-density-design="1"] #bw-root .bw-sec h3 {font-size:var(--ud-font);font-weight:600;}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-grid,.bw-filters) {gap:var(--ud-gap);grid-template-columns:repeat(2,minmax(0,1fr));}
+html[data-uitool-density-design="1"] #bw-root .bw-filters {grid-template-columns:repeat(3,minmax(0,1fr));}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-search,.bw-list,.bw-actions,.bw-row,.bw-name,.bw-field) {gap:var(--ud-gap);}
+html[data-uitool-density-design="1"] #bw-root .bw-name {grid-template-columns:minmax(0,1fr) calc(var(--ud-control) + 8px);}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-btn,.bw-tile) {
+  border-radius:var(--ud-radius);font-size:var(--ud-font);font-weight:400;min-width:0;
+}
+html[data-uitool-density-design="1"] #bw-root .bw-btn {min-height:var(--ud-control);height:auto;padding:2px var(--ud-pad);line-height:1.35;overflow-wrap:anywhere;}
+html[data-uitool-density-design="1"] #bw-root .bw-btn.on {background:var(--accent-soft);border-color:var(--accent);}
+html[data-uitool-density-design="1"] #bw-root .bw-btn.primary {background:var(--accent);color:var(--text-on-accent);font-weight:600;}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-tiny,.bw-hint,.bw-pill,.bw-check,.bw-more summary,.bw-status,.bw-field) {font-size:var(--ud-caption);line-height:1.35;}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-field input,.bw-field select,.bw-search input) {height:var(--ud-control);font-size:var(--ud-font);}
+html[data-uitool-density-design="1"] #bw-root .bw-pill {line-height:calc(var(--ud-control) - 2px);white-space:nowrap;}
+html[data-uitool-density-design="1"] #bw-root :is(.bw-hint,.bw-preview,.bw-check,.bw-more) {margin-block:var(--ud-gap);}
+html[data-uitool-density-design="1"] #bw-root .bw-preview {min-height:var(--ud-preview);background:var(--bg-input);}
+html[data-uitool-density-design="1"] #bw-root .bw-preview svg {height:var(--ud-preview);}
+html[data-uitool-density-design="1"] #bw-root .bw-foot {gap:var(--ud-gap);padding:var(--ud-pad);background:var(--bg-raised);}
+html[data-uitool-density-design="1"] #bw-root .bw-status {min-height:var(--ud-row);padding:var(--ud-gap) var(--ud-pad);}
+/* History / layer manager / auxiliary setting forms keep existing content layouts. */
+html[data-uitool-density-design="1"] :is(#history-diff,#explorer-history) :is(.hy-topbar,.hy-time-title,.hy-lane,.hy-row) {min-height:var(--ud-row);gap:var(--ud-gap);}
+html[data-uitool-density-design="1"] :is(#history-diff,#explorer-history) :is(.hy-name,.hy-user-note,.hy-filters,.hy-summary p,.hy-detail p) {font-size:var(--ud-caption);}
+html[data-uitool-density-design="1"] .ld-dialog .ld-table td {height:var(--ud-row);}
+html[data-uitool-density-design="1"] .ld-dialog :is(.ld-node,.ld-mi) {min-height:var(--ud-control);font-size:var(--ud-font);}
+html[data-uitool-density-design="1"] .ld-dialog :is(.ld-head,.ld-tools,.ld-quick,.ld-foot) {gap:var(--ud-gap);padding:var(--ud-gap) var(--ud-pad);}
+html[data-uitool-density-design="1"] .interface-settings .interface-row {min-height:var(--ud-settings-row);gap:var(--ud-gap);}
+html[data-uitool-density-design="1"] .interface-settings .interface-row :is(select,input[type="number"]) {height:var(--ud-control);}

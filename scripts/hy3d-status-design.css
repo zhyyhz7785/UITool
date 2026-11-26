@@ -1,8 +1,8 @@
 /* Status design candidate: HY tokens, compact AutoCAD-like icon strip. */
-html[data-uitool-status-design="1"] { --status-h:26px; }
+html[data-uitool-status-design="1"] { --status-h:var(--ud-status,26px); }
 html[data-uitool-status-design="1"] #statusbar {
   display:flex; align-items:center; gap:3px; padding:0 4px; min-width:0;
-  background:var(--bg-panel); font-size:11px; overflow:hidden;
+  background:var(--bg-panel); font-size:var(--ud-caption,11px); overflow:hidden;
 }
 html[data-uitool-status-design="1"] #statusbar > * { min-height:0; }
 html[data-uitool-status-design="1"] #statusbar [data-uitool-status-hidden="1"],
@@ -27,14 +27,14 @@ html[data-uitool-status-design="1"] #statusbar :is(#sb-toggles,#uitool-status-ex
 html[data-uitool-status-design="1"] #statusbar :is(#sb-toggles,#uitool-status-extra)::-webkit-scrollbar { display:none; }
 html[data-uitool-status-design="1"] #statusbar :is(#sb-toggles,#uitool-status-extra) > button,
 html[data-uitool-status-design="1"] #statusbar :is(#sb-settings,#sb-bell,#uitool-status-more) {
-  flex:0 0 23px; width:23px; min-width:23px; height:22px; padding:0;
+  flex:0 0 calc(var(--ud-status-control,22px) + 1px); width:calc(var(--ud-status-control,22px) + 1px); min-width:calc(var(--ud-status-control,22px) + 1px); height:var(--ud-status-control,22px); padding:0;
   display:inline-flex; align-items:center; justify-content:center;
   border:1px solid transparent; border-radius:3px; background:transparent; color:var(--text-2);
 }
 html[data-uitool-status-design="1"] #statusbar :is(#sb-toggles,#uitool-status-extra) > button:not(:has(svg)) { width:auto; flex-basis:auto; padding:0 4px; }
 html[data-uitool-status-design="1"] #statusbar :is(#sb-model,#sb-layout) > button,
 html[data-uitool-status-design="1"] #statusbar #sb-scale {
-  height:22px; min-height:22px; padding:0 6px; border-radius:3px; font-size:11px;
+  height:var(--ud-status-control,22px); min-height:var(--ud-status-control,22px); padding:0 6px; border-radius:3px; font-size:var(--ud-caption,11px);
 }
 html[data-uitool-status-design="1"] #statusbar #sb-layout-btn::after { content:""; display:inline-block; margin-left:4px; border-left:3px solid transparent; border-right:3px solid transparent; border-top:3px solid currentColor; vertical-align:middle; }
 html[data-uitool-status-design="1"] #statusbar :is(#sb-toggles,#uitool-status-extra) > button.active,
@@ -43,8 +43,8 @@ html[data-uitool-status-design="1"] #statusbar #uitool-status-more[aria-expanded
 html[data-uitool-status-design="1"] #statusbar #sb-bell.active { background:var(--accent-soft); border-color:var(--accent); color:var(--text); }
 html[data-uitool-status-design="1"] #statusbar button:hover { background:var(--bg-hover); color:var(--text); }
 html[data-uitool-status-design="1"] #statusbar button:focus-visible { outline:1px solid var(--accent); outline-offset:-1px; }
-html[data-uitool-status-design="1"] #statusbar :is(#sb-toggles,#uitool-status-extra,#sb-settings,#sb-bell) svg { width:16px; height:16px; }
-html[data-uitool-status-design="1"] #uitool-status-more svg { width:16px; height:16px; fill:currentColor; }
+html[data-uitool-status-design="1"] #statusbar :is(#sb-toggles,#uitool-status-extra,#sb-settings,#sb-bell) svg { width:var(--ud-icon,16px); height:var(--ud-icon,16px); }
+html[data-uitool-status-design="1"] #uitool-status-more svg { width:var(--ud-icon,16px); height:var(--ud-icon,16px); fill:currentColor; }
 html[data-uitool-status-design="1"] #uitool-status-menu {
   position:fixed; z-index:20001; width:184px; max-width:calc(100vw - 12px); max-height:calc(100vh - 40px);
   overflow:auto; background:var(--bg-raised); color:var(--text); border:1px solid var(--border-strong,var(--border));
@@ -52,11 +52,11 @@ html[data-uitool-status-design="1"] #uitool-status-menu {
 }
 html[data-uitool-status-design="1"] #uitool-status-menu[hidden] { display:none !important; }
 html[data-uitool-status-design="1"] #uitool-status-menu button {
-  display:flex; width:100%; align-items:center; gap:8px; height:25px; padding:0 7px; border:0;
-  border-radius:3px; background:transparent; color:var(--text); text-align:left; font:inherit; font-size:12px;
+  display:flex; width:100%; align-items:center; gap:var(--ud-gap,8px); height:var(--ud-control,25px); padding:0 7px; border:0;
+  border-radius:3px; background:transparent; color:var(--text); text-align:left; font:inherit; font-size:var(--ud-font,12px);
 }
 html[data-uitool-status-design="1"] #uitool-status-menu button:hover,
 html[data-uitool-status-design="1"] #uitool-status-menu button:focus-visible { background:var(--bg-hover); outline:1px solid var(--accent); outline-offset:-1px; }
 html[data-uitool-status-design="1"] #uitool-status-menu .uitool-status-check { flex:0 0 14px; width:14px; text-align:center; color:var(--accent); }
-html[data-uitool-status-design="1"] #uitool-status-menu .uitool-status-head { padding:5px 7px; font-size:11px; color:var(--text-2); }
+html[data-uitool-status-design="1"] #uitool-status-menu .uitool-status-head { padding:5px 7px; font-size:var(--ud-caption,11px); color:var(--text-2); }
 html[data-uitool-status-design="1"] #uitool-status-menu hr { margin:3px 4px; border:0; border-top:1px solid var(--border); }
