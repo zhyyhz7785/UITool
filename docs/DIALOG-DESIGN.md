@@ -19,3 +19,9 @@
 - 1461 浏览器隔离环境，没有真实图纸、原生 Tauri IPC；untitled 文档与视图胶片不落盘。产品依赖由原有预览工作树提供，若缺少服务/组件则明确报告。删除旧快照及专用 1450 路由。仅 UITool 审定，未同步 HY3D。
 
 Windows 实机、构建、功能验收 NOT RUN。
+
+### 高级文字：原生主题及 Excel 式表格
+
+- 右侧直接挂载 HyMdTauri `AuxiliaryBar`（内含原生 `ThemeGalleryPane`），默认打开主题；原生 `Sash`/`useShellSashes` 支持调整宽度，顶部主题按钮开关，不另做样式画廊。正文与纸面共用主题状态。
+- 示例普通 GFM 表格通过原生右键命令 `upgrade-to-sheet` / `upgradeGfmTableToSheet` 升级为 Univer 工作簿；随后用 HyMdTauri 原生 sheet overlay 编辑、保存快照、再降级为普通表。原生升级需要写外置 snapshot，故仅在独立 1461 实验页通过 `setPlatformForTest` 注入内存文件系统；命令与编辑器宿主桥解析同一 untitled 路径。不会写真实磁盘或接入 CAD；重开页面丢弃示例和快照。切到纸面前要求先关闭原生表格编辑面板。未接入本机 XLSX 导入/导出；并非实际 Microsoft Excel 应用。未更改产品授权。
+- 代码与接口静态核对；构建和实际主题/升级/工作簿交互 NOT RUN。

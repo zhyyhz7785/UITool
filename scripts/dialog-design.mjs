@@ -4,6 +4,7 @@ import path from "node:path";
 import http from "node:http";
 import { fileURLToPath } from "node:url";
 const MTEXT_LAB = fileURLToPath(new URL("./hymd-mtext-lab.js", import.meta.url));
+const MTEXT_MEMORY = fileURLToPath(new URL("./hymd-mtext-memory.js", import.meta.url));
 export const HY3D_DIALOGS = [
   ["font-report","字体替换 / 原生字体报告","font_report.js",null],
   ["options","设置","settings-shell.js","app.options"],
@@ -124,8 +125,8 @@ export async function startHymdDialogLab(){
     if(req.socket.remoteAddress!=="127.0.0.1"||!["GET","HEAD"].includes(req.method)){res.writeHead(403);res.end();return;}
     let url;
     try{url=new URL(req.url,"http://127.0.0.1:1461");if(url.origin!=="http://127.0.0.1:1461")throw Error();}catch{res.writeHead(400);res.end();return;}
-    if(url.pathname==="/__uitool-hymd-mtext.js"){
-      res.writeHead(200,{"content-type":"text/javascript; charset=utf-8","cache-control":"no-store","x-content-type-options":"nosniff"});res.end(readFileSync(MTEXT_LAB));return;
+    if(url.pathname==="/__uitool-hymd-mtext.js"||url.pathname==="/__uitool-hymd-mtext-memory.js"){
+      res.writeHead(200,{"content-type":"text/javascript; charset=utf-8","cache-control":"no-store","x-content-type-options":"nosniff"});res.end(readFileSync(url.pathname==="/__uitool-hymd-mtext.js"?MTEXT_LAB:MTEXT_MEMORY));return;
     }
     if(url.pathname==="/"){
       const id=url.searchParams.get("dialog");
