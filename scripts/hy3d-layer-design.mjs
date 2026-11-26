@@ -1,8 +1,10 @@
 // Read-only overlay. Only UITool's layer design preview loads this candidate.
 import { readFileSync } from "node:fs";
 import { legacyLayerSource } from "./hy3d-layer-legacy.mjs";
+import { denseRibbonSource } from "./hy3d-ribbon-dense.mjs";
 const patch = JSON.parse(readFileSync(new URL("./hy3d-layer-design.patch.json", import.meta.url), "utf8"));
-export function layerDesignSource(source) {
+export function layerDesignSource(source) { return denseRibbonSource(layerBaseSource(source)); }
+function layerBaseSource(source) {
   if (!/\bnativeCadProfile:\s*true\b/.test(source)) return legacyLayerSource(source);
   if (source.includes("function makeLayerPicker(select)") && source.includes("var LAYER_MARKS =")) {
     const store = 'var STORE = "hy3d.ui.hyRibbon";';
