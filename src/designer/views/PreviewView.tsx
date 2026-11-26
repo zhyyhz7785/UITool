@@ -1,5 +1,6 @@
 import { views as templateViews } from "@tpl/views";
 import { ProductPreview } from "./ProductPreview";
+import { ProductDialogDesign, useDialogDesign } from "./DialogDesign";
 import { photoHandlers } from "@tpl/views/photoSession";
 import type { WorkbenchApi } from "@tpl/workbench/context";
 import { Workbench } from "@tpl/workbench/Workbench";
@@ -23,6 +24,8 @@ const FRAMES = [
 /** 两个产品和通用模板都嵌产品自己的页面。通用模板用 general=1 藏起文档专属入口。 */
 export function PreviewView() {
   const workType = useDesign((s) => s.doc.config.workType);
+  const dialog = useDialogDesign();
+  if (dialog) return <ProductDialogDesign key={dialog.id} entry={dialog} />;
   if (workType === "writing") return <ProductPreview key="hymd" product="hymd" />;
   if (workType === "general") return <ProductPreview key="general" product="general" />;
   if (workType === "cad2d") return <ProductPreview key="hy3d" product="hy3d" />;

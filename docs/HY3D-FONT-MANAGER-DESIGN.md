@@ -2,7 +2,7 @@
 
 ## 入口
 
-在 UITool 选择 HY3D 模板 → 产品预览顶部「字体设计」，点击「返回产品预览」回到现有原生预览。该入口不要求启动 HY3D 服务；退出原型后会重新挂载原生预览，示例状态不会写回产品。独立页面：`public/hy3d-font-manager/index.html`，由 Vite public 目录随应用提供。使用 sandbox 隔离脚本，不接入 CAD 内核、文件写入或本机字体扫描。
+在 UITool「预设 → 弹窗设计 → HY3D」选择「字体替换 / V2 设计候选」。点击「返回产品」回到现有预览。原型无需启动产品服务；独立页面 `public/hy3d-font-manager/index.html`，sandbox 隔离脚本，不接入 CAD 内核、文件写入或本机字体扫描。另有「字体替换 / 原生字体报告」，使用产品原生 `font_report.js` 和独立内存示例数据，便于与 V2 候选对照。
 
 ## 风格
 
