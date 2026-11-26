@@ -107,6 +107,8 @@ export function hatchDesignSource(source, fixture) {
       designCloseMenu(false);
       designCategories();
       renderThumbs();
+      var active=dlg.querySelector('#he-category [aria-pressed="true"]');
+      if(active) active.focus();
     }
     function designNameEditor(anchor,key,pattern) {
       designOpenMenu(anchor,null,function(menu){
@@ -171,6 +173,16 @@ export function hatchDesignSource(source, fixture) {
         if(key && key!=="all"){
           designAction(menu,"添加图案…",function(){designPicker(anchor,key);});
           designAction(menu,"重命名…",function(){designNameEditor(anchor,key);});
+          var keys=Object.keys(designLabels).filter(function(k){return k!=="all";});
+          var index=keys.indexOf(key);
+          function move(delta){
+            var other=index+delta, labels=Object.create(null), groups=Object.create(null);
+            keys[index]=keys[other]; keys[other]=key;
+            keys.concat("all").forEach(function(k){labels[k]=designLabels[k];groups[k]=designGroups[k];});
+            designLabels=labels;designGroups=groups;designRefresh();
+          }
+          designAction(menu,"左移分类",function(){move(-1);},index===0);
+          designAction(menu,"右移分类",function(){move(1);},index===keys.length-1);
           designAction(menu,"删除分类…",function(){
             designOpenMenu(anchor,null,function(confirm){
               designEl(confirm,"strong","删除「"+designLabels[key]+"」？");
@@ -193,6 +205,13 @@ export function hatchDesignSource(source, fixture) {
     function designPatternMenu(anchor,event,name) {
       designOpenMenu(anchor,event,function(menu){
         designEl(menu,"strong",name);
+        var removeCurrent=null;
+        if(designCategory!=="all" && designGroups[designCategory].indexOf(name)>=0){
+          removeCurrent=designAction(menu,"从「"+designLabels[designCategory]+"」移除",function(){
+            designGroups[designCategory]=designGroups[designCategory].filter(function(n){return n!==name;});
+            designRefresh();
+          });
+        }
         designEl(menu,"div","添加到 / 移出分类","he-category-empty");
         var groupList=designEl(menu,"div",null,"he-category-picker");
         Object.keys(designLabels).filter(function(k){return k!=="all";}).forEach(function(k){
@@ -202,6 +221,7 @@ export function hatchDesignSource(source, fixture) {
           box.addEventListener("change",function(){
             if(box.checked){if(designGroups[k].indexOf(name)<0)designGroups[k].push(name);}
             else designGroups[k]=designGroups[k].filter(function(n){return n!==name;});
+            if(removeCurrent && k===designCategory) removeCurrent.hidden=!box.checked;
             designSave();
             // Keep the menu open for multi-category editing; refresh cards without changing the CAD form.
             renderThumbs();
@@ -241,13 +261,13 @@ export function hatchDesignSource(source, fixture) {
           });
           renderThumbs();
         });
-        b.addEventListener("contextmenu",function(e){e.preventDefault();designCategoryMenu(b,e,key);});
+        b.addEventListener("contextmenu",function(e){e.preventDefault();e.stopPropagation();designCategoryMenu(b,e,key);});
       });
       var manage=designEl(row,"button","⋯","he-category-manage");
       manage.id="he-category-manage";manage.type="button";
       manage.title="分类管理";manage.setAttribute("aria-label","分类管理");
       manage.addEventListener("click",function(){designCategoryMenu(manage,null,designCategory);});
-      manage.addEventListener("contextmenu",function(e){e.preventDefault();designCategoryMenu(manage,e,null);});
+      manage.addEventListener("contextmenu",function(e){e.preventDefault();e.stopPropagation();designCategoryMenu(manage,e,null);});
       // Keep the chosen tab visible when categories overflow horizontally.
       var active=tabs.querySelector('[aria-pressed="true"]');
       if(active && active.offsetLeft+active.offsetWidth>tabs.clientWidth) tabs.scrollLeft=active.offsetLeft;
@@ -270,7 +290,7 @@ export function hatchDesignSource(source, fixture) {
       }
       matches.forEach(function (name) {`);
  once('        b.title = cap("pattern") ? name : pendingLabel("pattern");', `        b.title = (cap("pattern") ? name : pendingLabel("pattern")) + " · 右键管理分类";
-        b.addEventListener("contextmenu",function(e){e.preventDefault();designPatternMenu(b,e,name);});`);
+        b.addEventListener("contextmenu",function(e){e.preventDefault();e.stopPropagation();designPatternMenu(b,e,name);});`);
  once('    function closeDlg(result) {', '    function closeDlg(result) {\n      designCloseMenu(false);');
  once(`      if (!els || !els.gradThumbs) return;`, `      if (!els || !els.gradThumbs || !state || !state.form) return;`);
  once(`        b.innerHTML = islandThumb(id);`, `        b.innerHTML = islandThumb(id) + '<span>' + lab + '</span>';`);
