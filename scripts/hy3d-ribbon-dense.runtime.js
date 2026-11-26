@@ -201,6 +201,7 @@
     var applied = host.querySelectorAll(".hy-rib-dense").length;
     var buttons = host.querySelectorAll(".hy-rib-dense-btn").length;
     var icons = host.querySelectorAll('.hy-rib-dense-btn[data-dense-kind="icon"]').length;
-    reportDense(applied === 6 ? "ready" : "partial-fallback", applied, buttons, icons);
+    var failed = boxes.filter(function(b){return b.dataset.uitoolDenseError;}).map(function(b){return b.dataset.hyKey + ": " + b.dataset.uitoolDenseError;});
+    reportDense(applied === 6 ? "ready" : "partial-fallback", applied, buttons, icons, failed.join("\n"));
     host.dataset.uitoolDenseStatus = applied === 6 ? "ready" : "partial-fallback";
   }

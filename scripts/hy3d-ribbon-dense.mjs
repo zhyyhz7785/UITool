@@ -10,6 +10,9 @@ export function denseRibbonSource(source) {
   const save = "  function saveGroup(key, order, cap) {";
   if (source.split(save).length !== 2) throw new Error("Ribbon 设计缺少排序保存入口");
   source = source.replace(save, () => save + "\n    if (model[key] && model[key].dense) key += '/dense';");
+  const reset = "      delete prefs.groups[key];";
+  if (source.split(reset).length !== 2) throw new Error("Ribbon 设计缺少恢复默认入口");
+  source = source.replace(reset, () => "      delete prefs.groups[model[key] && model[key].dense ? key + '/dense' : key];");
   return source.replace(anchor, () =>
     "  var UITOOL_RIBBON = " + JSON.stringify(design) + ";\n" + runtime +
     "\n  function buildPanels(cur) {\n" +
