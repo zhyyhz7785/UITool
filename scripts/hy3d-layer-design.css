@@ -244,20 +244,20 @@ html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #ribbon-panels > .hy-r
    actually loaded. A fallback/other tab keeps its original height.
    Override the inherited app grid track as well as the ribbon itself,
    including the old A5 short-window rule. */
-html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.panel-ribbon-off):not(.toolbar-side):not(.ribbon-minimized):has(#ribbon-panels[data-uitool-dense-status="ready"] > .hy-rib-group > .hy-rib-dense[data-dense-rows="3"]) {
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.panel-ribbon-off):not(.toolbar-side):not(.ribbon-minimized):has(#ribbon-panels[data-uitool-dense-status="ready"]:has(> .hy-rib-group > .hy-rib-dense) > .hy-rib-group > .hy-rib-dense[data-dense-rows="3"]) {
   --ribbon-h:104px !important;
 }
-html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.panel-ribbon-off):not(.toolbar-side):not(.ribbon-minimized) #ribbon-panels[data-uitool-dense-status="ready"] {
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.panel-ribbon-off):not(.toolbar-side):not(.ribbon-minimized) #ribbon-panels[data-uitool-dense-status="ready"]:has(> .hy-rib-group > .hy-rib-dense) {
   padding:1px 4px;
   overflow-x:auto;
   overflow-y:hidden;
   scrollbar-width:thin;
 }
-html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"] > .hy-rib-group {
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"]:has(> .hy-rib-group > .hy-rib-dense) > .hy-rib-group {
   padding-top:0;
   padding-bottom:1px;
 }
-html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"] > .hy-rib-group > .hy-rib-head {
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"]:has(> .hy-rib-group > .hy-rib-dense) > .hy-rib-group > .hy-rib-head {
   flex:0 0 15px;
   height:15px;
   min-height:15px;
@@ -267,36 +267,36 @@ html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side
   line-height:14px;
   text-align:center;
 }
-html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"] .hy-rib-dense,
-html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"] .hy-rib-layer-face {
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"]:has(> .hy-rib-group > .hy-rib-dense) .hy-rib-dense,
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"]:has(> .hy-rib-group > .hy-rib-dense) .hy-rib-layer-face {
   padding-top:1px;
   padding-bottom:0;
   margin-bottom:0;
 }
-html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"] .hy-rib-dense button.hy-rib-dense-btn:not([data-dense-kind="big"]) {
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"]:has(> .hy-rib-group > .hy-rib-dense) .hy-rib-dense button.hy-rib-dense-btn:not([data-dense-kind="big"]) {
   height:24px;
   min-height:24px;
   padding-block:0;
 }
-html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"] .hy-rib-dense button[data-dense-kind="big"] {
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"]:has(> .hy-rib-group > .hy-rib-dense) .hy-rib-dense button[data-dense-kind="big"] {
   height:74px;
   min-height:74px;
   padding-top:10px;
 }
-html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"] .hy-rib-layer-face button:not(.big):not(.ribbon-split-arrow) {
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"]:has(> .hy-rib-group > .hy-rib-dense) .hy-rib-layer-face button:not(.big):not(.ribbon-split-arrow) {
   height:24px;
   min-height:24px;
   padding-block:0;
 }
-html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"] .hy-rib-layer-face button.big {
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"]:has(> .hy-rib-group > .hy-rib-dense) .hy-rib-layer-face button.big {
   height:78px;
   min-height:78px;
 }
 /* The white corner follows the vertical shift of the original glyph.
    Keep the same size, horizontal position, color and click semantics. */
-html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"] .hy-rib-dense button.uitool-family-arrow {
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"]:has(> .hy-rib-group > .hy-rib-dense) .hy-rib-dense button.uitool-family-arrow {
   top:13px;
 }
-html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"] .hy-rib-dense .uitool-family-split.is-big > button.uitool-family-arrow {
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels[data-uitool-dense-status="ready"]:has(> .hy-rib-group > .hy-rib-dense) .hy-rib-dense .uitool-family-split.is-big > button.uitool-family-arrow {
   top:32px;
 }
