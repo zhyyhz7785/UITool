@@ -25,7 +25,8 @@ function denseRuntime() {
   }
   function denseItem(spec, id) {
     var item = spec.dense.find(function (r) { return r[0] === id; });
-    var label = item ? item[1] : (spec.byId[id].label || id);
+    var command = spec.byId[id];
+    var label = String(item ? item[1] : (command && command.label || id));
     var kind = item ? item[2] : "text";
     return { label:label, kind:kind, width:kind === "big" ? 48 : kind === "icon" ? 26 : Math.min(108, Math.max(52, 28 + label.length * 12)) };
   }
@@ -69,7 +70,7 @@ function denseRuntime() {
         target = stack; used++;
       }
       var button;
-      if (api.appendRibbonSlot) {
+      if (typeof api.appendRibbonSlot === "function") {
         api.appendRibbonSlot(target,{cmd:cmd,big:big,iconOnly:icon,rest:denseRest(spec,id,visible)});
         var last = target.lastElementChild;
         button = last && (last.matches("button") ? last : last.querySelector("button[data-cmd-id]"));
@@ -77,7 +78,7 @@ function denseRuntime() {
         button = api.makeCmdButton(cmd,{ribbonTip:true,onlyGivenBig:true,big:big});
         target.appendChild(button);
       }
-      if (!button) return;
+      if (!button) throw new Error("Missing button: " + id);
       button.classList.add("hy-rib-dense-btn");
       button.dataset.denseKind = item.kind;
       button.style.setProperty("--dense-w",item.width+"px");
@@ -97,29 +98,109 @@ function denseRuntime() {
       }
     });
   }
+  // The baseline (#11 layer design) owns initialization, all groups and menus.
+  // Enhancement never clears the live ribbon. Prepare each group off-DOM first.
+  function enhanceDense(cur) {
+    var host = api && api.ribbonPanels;
+    if (!host || !cur || ["常用","默认","绘制"].indexOf(cur.id || cur.name) < 0) return;
+    var boxes = Array.prototype.slice.call(host.querySelectorAll(".hy-rib-group"));
+    var candidates = [], reserved = 0;
+    function occupied(box) {
+      // Do not count flex-distributed empty space as necessary width.
+      var row = box.querySelector(".hy-rib-cmds");
+      var children = row ? Array.prototype.slice.call(row.children) : [];
+      var sum = children.reduce(function (w, el) { return w + (el.offsetWidth || 0); },0);
+      var title = box.querySelector(".hy-rib-head");
+      return Math.max(sum + Math.max(0,children.length-1)*2, title ? title.scrollWidth : 0, 40) + 12;
+    }
+    function warn(error, box) {
+      root.console && root.console.warn("[UITool Ribbon] fallback to original group", error);
+      if (box) box.dataset.uitoolDenseError = String(error);
+    }
+    boxes.forEach(function (box) {
+      var key = box.dataset.hyKey, original = model[key];
+      var panel = original && (cur.panels || []).find(function (p) { return p.name === original.name; });
+      var row = box.querySelector(".hy-rib-cmds");
+      if (!original || !panel || !row || original.name === "图层") {
+        reserved += occupied(box); return;
+      }
+      try {
+        var cmds = original.order.map(function (id) { return original.byId[id]; }).filter(Boolean);
+        var profile = denseProfile(cur,panel,cmds);
+        if (!profile) { reserved += occupied(box); return; }
+        var byId = Object.assign(Object.create(null),original.byId);
+        cmds.forEach(function (cmd) { byId[cmd.id] = cmd; });
+        var ids = denseOrder(profile,original.order);
+        // Keep the approved layer setting key. Accept old /dense preferences,
+        // then save future changes through the original group's normal menu.
+        var prefKey = prefs.groups[key] ? key : key + "/dense";
+        var pref = orderOf(prefKey,ids);
+        var order = pref.order.filter(function (id) { return !!byId[id]; });
+        if (!order.length) { reserved += occupied(box); return; }
+        var cap = Math.max(1,Math.min(order.length, pref.cap == null ? profile.length : pref.cap));
+        var spec = Object.assign({},original,{
+          byId:byId, order:order, dense:profile, denseRows:prefs.mode === "compact" ? 2 : 3,
+          storedCap:pref.cap, cap:cap, pad:12
+        });
+        candidates.push({box:box,row:row,original:original,spec:spec,count:1});
+      } catch (error) {
+        warn(error,box); reserved += occupied(box);
+      }
+    });
+    if (!candidates.length) return;
+    var available = Math.max(0,host.clientWidth - 8 - reserved);
+    function total() {
+      return candidates.reduce(function (w,c) { return w+denseWidth(c.spec,c.count); },0);
+    }
+    // Always retain one real button per group even in a very narrow preview.
+    // The host can scroll rather than clearing or hiding whole groups.
+    for (var round=0; round<100; round++) {
+      var changed=false;
+      candidates.forEach(function(c) {
+        if (c.count >= c.spec.cap) return;
+        c.count++;
+        if (total() <= available) changed=true;
+        else c.count--;
+      });
+      if (!changed) break;
+    }
+    candidates.forEach(function(c) {
+      try {
+        var next = root.document.createElement("div");
+        next.className = "hy-rib-cmds";
+        // Candidate stays detached until all its buttons are successfully rendered.
+        renderDense(next,c.spec,c.count);
+        if (!next.querySelector("button[data-cmd-id]")) throw new Error("Empty candidate group");
+        c.row.replaceWith(next);
+        c.spec.shown=c.count;
+        model[c.original.key]=c.spec;
+        delete c.box.dataset.uitoolDenseError;
+      } catch (error) { warn(error,c.box); }
+    });
+    if (openKey && model[openKey]) {
+      var head = boxes.find(function(b){return b.dataset.hyKey===openKey;});
+      var anchor = head && head.querySelector(".hy-rib-head");
+      if (anchor) renderFly(openKey,anchor);
+    }
+    host.dataset.uitoolDenseStatus = boxes.some(function(b){return b.dataset.uitoolDenseError;}) ? "partial-fallback" : "ready";
+  }
 }
 export function denseRibbonSource(source) {
-  let s = source;
-  const r = (a,b) => {
-    if (s.split(a).length !== 2) throw new Error("Ribbon 设计适配点不匹配："+a.slice(0,80));
-    s=s.replace(a,()=>b);
-  };
+  // Do not rewrite the native allocator or build loop. If the optional hook is
+  // incompatible, deliver the working layer baseline rather than a blank page.
+  const anchor = "  function buildPanels(cur) {";
+  if (source.split(anchor).length !== 2) {
+    return source + "\n;console.warn('[UITool Ribbon] optional design hook unavailable; using layer baseline');\n";
+  }
   const runtime = denseRuntime.toString();
-  r("  function buildPanels(cur) {", "  var UITOOL_RIBBON = "+JSON.stringify(design)+";\n"+runtime.slice(runtime.indexOf("{")+1,runtime.lastIndexOf("}"))+"\n  function buildPanels(cur) {");
-  r("    function widthOf(g, count) {","    function widthOf(g, count) {\n      if (g.dense) return denseWidth(g,count);");
-  r("      var ids = cmds.map(function (c) { return c.id; });","      var dense = denseProfile(cur,panel,cmds);\n      var ids = cmds.map(function (c) { return c.id; });");
-  const legacy = s.includes("var pref = orderOf(key, order);");
-  if (legacy) {
-    r("      var pref = orderOf(key, order);","      if (dense) key += '/dense';\n      var pref = orderOf(key, denseOrder(dense,order));");
-  } else {
-    r("      var pref = orderOf(key, defaultOrder(panel, ids));","      if (dense) key += '/dense';\n      var pref = orderOf(key, denseOrder(dense,defaultOrder(panel, ids)));");
-  }
-  r("      specs.push({","      if (dense) cap = Math.min(ids.length, pref.cap == null ? dense.length : Math.max(1,pref.cap));\n      specs.push({\n        dense:dense,\n        denseRows:mode === 'compact' ? 2 : 3,");
-  if (legacy) {
-    r('      if (spec.name === "图层") {\n        row.classList.add("hy-rib-layer-face");','      if (spec.dense) { renderDense(row,spec,count); }\n      else if (spec.name === "图层") {\n        row.classList.add("hy-rib-layer-face");');
-  } else {
-    r("      var stack = null, stackCount = 0;","      if (spec.dense) { renderDense(row,spec,count); } else {\n      var stack = null, stackCount = 0;");
-    r("      box.appendChild(row);\n      box.appendChild(head);","      }\n      box.appendChild(row);\n      box.appendChild(head);");
-  }
-  return s;
+  const helper = runtime.slice(runtime.indexOf("{")+1,runtime.lastIndexOf("}"));
+  return source.replace(anchor, () =>
+    "  var UITOOL_RIBBON = " + JSON.stringify(design) + ";\n" + helper +
+    "\n  function buildPanels(cur) {\n" +
+    "    buildLayerPanels(cur);\n" +
+    "    try { enhanceDense(cur); } catch (error) {\n" +
+    "      if (api && api.ribbonPanels) api.ribbonPanels.dataset.uitoolDenseStatus = 'fallback';\n" +
+    "      root.console && root.console.warn('[UITool Ribbon] using layer baseline', error);\n" +
+    "    }\n  }\n  function buildLayerPanels(cur) {"
+  );
 }
