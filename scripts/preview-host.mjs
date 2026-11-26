@@ -10,6 +10,7 @@ import { a5Html, a5RibbonSource } from "./hy3d-a5-preview.mjs";
 import { layerDesignHtml, layerDesignSource } from "./hy3d-layer-design.mjs";
 import { statusDesignSource } from "./hy3d-status-design.mjs";
 import { commandRowsSource } from "./hy3d-command-rows.mjs";
+import { dialogCatalog, HY3D_DIALOGS, startHymdDialogLab } from "./dialog-design.mjs";
 import { settingsDesignSource } from "./hy3d-settings-design.mjs";
 import { applyCommandIcons, appendCadSymbols, loadCadPack } from "./hy3d-cad-icons.mjs";
 
@@ -19,6 +20,7 @@ const HY3D_APP_ICON = path.resolve(HERE, "..", "public", "hy3d-icons", "11-hy-ca
 const A5_CSS = path.join(HERE, "hy3d-a5-preview.css");
 const THEME_DESIGN_CSS = path.join(HERE, "hy3d-theme-design.css");
 const QAT_HISTORY_JS = path.join(HERE, "hy3d-qat-history.js");
+const DIALOG_LAUNCH_JS = path.join(HERE, "hy3d-dialog-launch.js");
 const LAYER_CSS = path.join(HERE, "hy3d-layer-design.css");
 const LAYER_SCENE = path.join(HERE, "hy3d-layer-scene.js");
 const DOCK_DESIGN_CSS = path.join(HERE, "hy3d-dock-design.css");
@@ -210,6 +212,24 @@ function serveHy3d() {
         }
         return;
       }
+      if (raw === "/__uitool-dialog-launch.js") {
+        res.setHeader("content-type", MIME[".js"]);
+        res.setHeader("cache-control", "no-store");
+        createReadStream(DIALOG_LAUNCH_JS).pipe(res);
+        return;
+      }
+      if (raw === "/__uitool-font-report.js") {
+        res.setHeader("content-type", MIME[".js"]);
+        res.setHeader("cache-control", "no-store");
+        try {
+          const source = readFileSync(path.join(root, "font_report.js"), "utf8");
+          const guard = "if (!button || !global.Host || !Host.hasTauri || !Host.hasTauri()) return;";
+          if (source.split(guard).length !== 2) throw Error("字体报告适配点不匹配");
+          const next = source.replace(guard, 'if (!button || !global.Host || !Host.hasTauri || (!Host.hasTauri() && !(tab && tab.id === "uitool-font-demo" && new URLSearchParams(location.search).get("dialog") === "hy3d-font-report"))) return;');
+          res.end(next);
+        } catch (error) { res.statusCode=502; res.end("// " + JSON.stringify(String(error))); }
+        return;
+      }
       if (raw === "/__uitool-qat-history.js") {
         res.setHeader("content-type", MIME[".js"]);
         res.setHeader("cache-control", "no-store");
@@ -371,6 +391,15 @@ function serveHy3d() {
           previewHtml = previewHtml.replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-theme-design.css"><script>document.documentElement.dataset.uitoolThemeDesign="1"</script></head>')
             .replace(/<\/body\s*>/i, '<script src="/__uitool-qat-history.js"></script></body>');
         }
+        const dialogId = url.searchParams.get("dialog");
+        if (dialogId && HY3D_DIALOGS.some(x => x.id === dialogId)) {
+          if (dialogId === "hy3d-font-report") {
+            const fontScript = /<script\b[^>]*\bsrc\s*=\s*["'](?:\.\/)?font_report\.js["'][^>]*>\s*<\/script\s*>/i;
+            if (!fontScript.test(previewHtml)) { res.statusCode=502; res.end("当前镜像缺少原生字体报告入口"); return; }
+            previewHtml = previewHtml.replace(fontScript, '<script src="/__uitool-font-report.js"></script>');
+          }
+          previewHtml = previewHtml.replace(/<\/body\s*>/i, '<script src="/__uitool-dialog-launch.js"></script></body>');
+        }
         res.end(withHy3dAppIcon(previewHtml));
         return;
       }
@@ -450,6 +479,23 @@ export function previewHostPlugin() {
         const product = PRODUCTS[productId];
         if (!product) {
           send(res, 400, { error: "未知产品" });
+          return;
+        }
+        if (req.method === "GET" && pathname === "/dialogs") {
+          send(res, 200, dialogCatalog(productId, productId === "hy3d" ? hy3dUi() : hymdFilesRoot()));
+          return;
+        }
+        if (req.method === "POST" && pathname === "/dialog-lab" && productId === "hymd") {
+          (async () => {
+            if (!(await probe(product.port, product.marker))) {
+              if (await probe(product.port, product.probe)) { send(res, 409, {error:"1460 上已有非 UITool 预览服务"}); return; }
+              if (!startHymd() || !(await waitUp(product, 60)) || !(await probe(product.port, product.marker))) {
+                send(res, 502, {error:"HyMdTauri 预览未启动或缺少标记，请同步工作树"}); return;
+              }
+            }
+            const ready = await startHymdDialogLab();
+            send(res, ready ? 200 : 409, ready ? {up:true} : {error:"1461 弹窗预览端口已占用"});
+          })().catch(error=>send(res,502,{error:String(error)}));
           return;
         }
         if (req.method === "GET" && pathname === "/shell") {
