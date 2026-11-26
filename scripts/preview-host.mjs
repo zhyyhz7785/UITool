@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import { a5Html, a5RibbonSource } from "./hy3d-a5-preview.mjs";
 import { layerDesignHtml, layerDesignSource } from "./hy3d-layer-design.mjs";
 import { statusDesignSource } from "./hy3d-status-design.mjs";
+import { settingsDesignSource } from "./hy3d-settings-design.mjs";
 import { applyCommandIcons, appendCadSymbols, loadCadPack } from "./hy3d-cad-icons.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -20,6 +21,7 @@ const LAYER_SCENE = path.join(HERE, "hy3d-layer-scene.js");
 const DOCK_DESIGN_CSS = path.join(HERE, "hy3d-dock-design.css");
 const DOCK_DESIGN_JS = path.join(HERE, "hy3d-dock-design.js");
 const STATUS_DESIGN_CSS = path.join(HERE, "hy3d-status-design.css");
+const SETTINGS_DESIGN_CSS = path.join(HERE, "hy3d-settings-design.css");
 const STATUS_DESIGN_JS = path.join(HERE, "hy3d-status-design.js");
 const MIRROR_UI = path.resolve(HERE, "..", ".product-sources", "hy3d", "ui");
 const MIRROR_HYMD = path.resolve(HERE, "..", ".product-sources", "hymd");
@@ -128,6 +130,23 @@ function serveHy3d() {
       if (!local(req)) {
         res.statusCode = 403;
         res.end();
+        return;
+      }
+      if (raw === "/__uitool-settings-design.css") {
+        res.setHeader("content-type", MIME[".css"]);
+        res.setHeader("cache-control", "no-store");
+        createReadStream(SETTINGS_DESIGN_CSS).pipe(res);
+        return;
+      }
+      if (raw === "/__uitool-settings-shell.js") {
+        res.setHeader("content-type", MIME[".js"]);
+        res.setHeader("cache-control", "no-store");
+        try {
+          res.end(settingsDesignSource(readFileSync(path.join(root, "settings-shell.js"), "utf8")));
+        } catch (error) {
+          res.statusCode = 502;
+          res.end("// UITool settings design incompatible: " + JSON.stringify(String(error)));
+        }
         return;
       }
       if (raw === "/__uitool-status-design.css" || raw === "/__uitool-status-design.js") {
@@ -269,6 +288,12 @@ function serveHy3d() {
               .replace(statusApp, '<script src="/__uitool-status-app.js"></script>')
               .replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-status-design.css"><script>document.documentElement.dataset.uitoolStatusDesign="1"</script></head>')
               .replace(/<\/body\s*>/i, '<script src="/__uitool-status-design.js"></script></body>');
+            settingsDesignSource(readFileSync(path.join(root, "settings-shell.js"), "utf8"));
+            const settingsShell = /<script\b[^>]*\bsrc\s*=\s*["'](?:\.\/)?settings-shell\.js["'][^>]*>\s*<\/script\s*>/i;
+            if (!settingsShell.test(previewHtml)) throw new Error("缺少设置窗口 settings-shell.js 入口");
+            previewHtml = previewHtml
+              .replace(settingsShell, '<script src="/__uitool-settings-shell.js"></script>')
+              .replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-settings-design.css"><script>document.documentElement.dataset.uitoolSettingsDesign="1"</script></head>');
           } catch (error) {
             res.statusCode = 502;
             res.setHeader("content-type", "text/plain; charset=utf-8");
