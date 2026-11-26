@@ -35,7 +35,8 @@ export function Designer() {
     const hasHy3d = chrome.activity.some((a) => a.id === "hy3d-icons");
     const dialogs = chrome.activity.find((a) => a.id === "dialogs");
     const titleStale = !!dialogs && (dialogs.title !== "副页面" || dialogs.sections.some((s) => s.view === "dialogsView" && s.title !== "副页面"));
-    if (hasHy3d && dialogs && !titleStale) return;
+    const appIconStale = chrome.app.iconImage !== "/favicon.svg";
+    if (hasHy3d && dialogs && !titleStale && !appIconStale) return;
     let activity = chrome.activity;
     if (!hasHy3d) {
       activity = [
@@ -60,7 +61,7 @@ export function Designer() {
           : a
       );
     }
-    setChrome({ ...chrome, activity });
+    setChrome({ ...chrome, app: appIconStale ? { ...chrome.app, iconImage: "/favicon.svg" } : chrome.app, activity });
   }, [chrome, setChrome]);
   const api = useRef<WorkbenchApi | null>(null);
   const selected = useDesign((s) => s.selected);

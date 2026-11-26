@@ -9,6 +9,7 @@ type Item = { id: string; file: string; name: string; note: string; group: strin
 type Target = "hy3d" | "hymd";
 
 const ITEMS: Item[] = [
+  { id: "11", file: "11-hy-cad-clear-blue.png", group: "已选 HY 工程图标", name: "HY · 清透蓝（方案 03）", note: "白色 HY、定位圆、制图网格和三角尺，清透蓝底。" },
   { id: "07", file: "07-hy-cube-above.png", group: "Hy 在方块上面", name: "hy3d · Hy 上立方", note: "白字 Hy 压在方块上。顶面是界面蓝，两侧浅灰，明暗和视口小方块一样。" },
   { id: "09", file: "09-hy-cube-corner.png", group: "Hy 在方块上面", name: "hy3d · Hy 大方块", note: "同一套三面颜色，方块再大一圈，白字 Hy 小一号，仍压在上面。" },
   { id: "08", file: "08-hy-3-above.png", group: "Hy 字，标记在上面", name: "hy3d · Hy 上3", note: "Hy 在下，数字 3 居中叠在上面。" },
@@ -51,7 +52,7 @@ export function Hy3dIconsView() {
   const wb = useWorkbench();
   const workType = useDesign((s) => s.doc.config.workType);
   const target = targetOf(workType);
-  const [pick, setPick] = useState(() => localStorage.getItem(KEY) ?? "");
+  const [pick, setPick] = useState(() => localStorage.getItem(KEY) ?? "11");
   const [busy, setBusy] = useState(false);
   const chosen = ITEMS.find((it) => it.id === pick);
   const choose = (id: string) => {

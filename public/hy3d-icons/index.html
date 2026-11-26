@@ -39,6 +39,7 @@
   <script>
     const KEY = "uitool.hy3d-icon";
     const items = [
+      ["11", "11-hy-cad-clear-blue.png", "已选 HY 工程图标", "HY · 清透蓝（方案 03）", "白色 HY、定位圆、制图网格和三角尺，清透蓝底。"],
       ["07", "07-hy-cube-above.png", "Hy 在方块上面", "hy3d · Hy 上立方", "白字 Hy 压在方块上。顶面是界面蓝，两侧浅灰，明暗和视口小方块一样。"],
       ["09", "09-hy-cube-corner.png", "Hy 在方块上面", "hy3d · Hy 大方块", "同一套三面颜色，方块再大一圈，白字 Hy 小一号，仍压在上面。"],
       ["08", "08-hy-3-above.png", "Hy 字，标记在上面", "hy3d · Hy 上3", "Hy 在下，数字 3 居中叠在上面。"],
@@ -52,7 +53,7 @@
     ];
     const board = document.getElementById("board");
     const pickEl = document.getElementById("pick");
-    let pick = localStorage.getItem(KEY) || "";
+    let pick = localStorage.getItem(KEY) || "11";
     function render() {
       board.innerHTML = "";
       let group = "";
