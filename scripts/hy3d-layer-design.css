@@ -1,0 +1,51 @@
+/* CAD layer panel: 32px manager, two 26px rows, four paired icon columns and a text pair.
+   Same width rules apply to the offscreen measurement probe and live controls. */
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face { gap: 2px; }
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face button.big {
+  width: 48px; min-width: 48px; max-width: 48px; height: 82px;
+  padding: 2px; gap: 3px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face .big .btn-glyph,
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face .big .ic {
+  width: 32px; height: 32px; flex: 0 0 32px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face .big .btn-label {
+  width: 30px; white-space: normal; word-break: break-all;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face button:not(.big):not(.ribbon-split-arrow),
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face[data-hy-rows="2"] button:not(.big):not(.ribbon-split-arrow) {
+  height: 26px; min-height: 26px; gap: 3px; padding: 1px 2px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face button.ribbon-icon-only {
+  width: 26px; min-width: 26px; justify-content: center;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face button:not(.big) .btn-glyph,
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face button:not(.big) .ic {
+  width: 20px; height: 20px; flex: 0 0 20px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-column {
+  display: flex; flex-direction: column; align-items: stretch;
+  min-width: 220px; gap: 2px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-picker {
+  display: flex; align-items: center; flex: 0 0 auto;
+  width: 220px; min-width: 220px; height: 26px; box-sizing: border-box;
+  background: var(--bg-input); border: 1px solid var(--border); border-radius: 2px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-column .hy-rib-layer-picker { width: 100%; }
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-state {
+  display: none; align-items: center; gap: 2px; flex: 0 0 auto; padding-left: 3px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-picker.has-layer .hy-rib-layer-state { display: flex; }
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-state svg { width: 17px; height: 17px; flex: 0 0 17px; }
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-swatch {
+  width: 14px; height: 14px; box-sizing: border-box; border: 1px solid var(--text-2);
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-picker .hy-rib-layer {
+  width: 0; flex: 1 1 auto; min-width: 0; max-width: none; height: 24px;
+  border: 0; background: transparent; padding-left: 3px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-commands {
+  display: flex; align-items: flex-start; gap: 2px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-commands .hy-rib-stack { gap: 1px; }
