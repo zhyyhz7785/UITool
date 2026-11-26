@@ -43,7 +43,49 @@ html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-swatch {
 }
 html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-picker .hy-rib-layer {
   width: 0; flex: 1 1 auto; min-width: 0; max-width: none; height: 24px;
-  border: 0; background: transparent; padding-left: 3px;
+  border: 0; background: transparent; padding-left: 3px; color: var(--text);
+}
+/* Native select fallback: follow the CAD theme, not the OS/browser default.
+   Keep the actual select and its keyboard/change/disabled behavior intact. */
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"][data-theme="dark"] .hy-rib-layer {
+  color-scheme: dark;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"][data-theme="light"] .hy-rib-layer {
+  color-scheme: light;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer option {
+  background-color: var(--bg-input); color: var(--text);
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer option:checked {
+  background-color: var(--bg-active); color: var(--text);
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer:focus-visible {
+  outline: 1px solid var(--accent); outline-offset: -1px;
+}
+/* Chromium/WebView2 customizable select: native popups may ignore option
+   colors, so opt in only where the browser supports the styled picker. */
+@supports (appearance: base-select) and selector(::picker(select)) {
+  html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer,
+  html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer::picker(select) {
+    appearance: base-select;
+  }
+  html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer::picker(select) {
+    background: var(--bg-input); color: var(--text);
+    border: 1px solid var(--border); border-radius: 2px; padding: 0;
+  }
+  html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer option:hover,
+  html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer option:focus-visible {
+    background: var(--bg-hover); color: var(--text);
+  }
+  html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer option:checked {
+    background: var(--bg-active); color: var(--text);
+  }
+  html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer option:focus-visible {
+    outline: 1px solid var(--accent); outline-offset: -1px;
+  }
+  html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer::picker-icon {
+    color: var(--text-2);
+  }
 }
 html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-commands {
   display: flex; align-items: flex-start; gap: 2px;
