@@ -64,6 +64,7 @@ export function ProductPreview({ product }: { product: ProductId }) {
   const [quiet, setQuiet] = useState(false);
   const [regions, setRegions] = useState<Region[]>([]);
   const [ui, setUi] = useState<UiState | null>(null);
+  const [ribbonReport, setRibbonReport] = useState<{status:string;groups:number;buttons:number;icons:number;error?:string} | null>(null);
   const [fit, setFit] = useState(false);
   const [stage, setStage] = useState({ w: 800, h: 600 });
   const [reloadKey, setReloadKey] = useState(0);
@@ -120,7 +121,7 @@ export function ProductPreview({ product }: { product: ProductId }) {
 
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
-      if (event.origin !== page.origin) return;
+      if (event.origin !== page.origin || event.source !== frameRef.current?.contentWindow) return;
       const data = event.data as {
         source?: string;
         product?: string;
@@ -131,6 +132,7 @@ export function ProductPreview({ product }: { product: ProductId }) {
         scheme?: string;
         regions?: Region[];
         state?: UiState;
+        design?: {status:string;groups:number;buttons:number;icons:number;error?:string};
       } | null;
       if (!data || data.source !== "uitool-product" || data.product !== page.kind) return;
       if (data.op === "skins") {
@@ -141,6 +143,7 @@ export function ProductPreview({ product }: { product: ProductId }) {
       }
       if (data.op === "regions") setRegions(Array.isArray(data.regions) ? data.regions : []);
       if (data.op === "state" && data.state) setUi(data.state);
+      if (data.op === "ribbon-design" && data.design) setRibbonReport(data.design);
     };
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
@@ -212,6 +215,7 @@ export function ProductPreview({ product }: { product: ProductId }) {
             onChange={(v) => {
               setRegions([]);
               setUi(null);
+              setRibbonReport(null);
               setPreviewStyle(v === "original" ? "original" : v === "a5" ? "a5" : "layer");
             }}
           />
@@ -265,6 +269,11 @@ export function ProductPreview({ product }: { product: ProductId }) {
           </select>
         )}
         <span className="wb-sp" />
+        {product === "hy3d" && previewStyle === "layer" && (
+          <span className="ut-dim" title={ribbonReport?.error || "实际已加载的候选组和按钮数量"}>
+            {!ribbonReport ? "Ribbon 设计：等待回报" : ribbonReport.status === "other-tab" ? "Ribbon 设计：非默认页" : `Ribbon 设计 ${ribbonReport.groups}/6 组 · ${ribbonReport.buttons} 命令 · ${ribbonReport.icons} 纯图标${ribbonReport.status === "ready" ? "" : "（部分回退）"}`}
+          </span>
+        )}
         {commit && <span className="ut-dim">来源 {commit}</span>}
         {ui && (
           <span className="ut-dim">
