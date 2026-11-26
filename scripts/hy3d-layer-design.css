@@ -49,3 +49,21 @@ html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-commands
   display: flex; align-items: flex-start; gap: 2px;
 }
 html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-commands .hy-rib-stack { gap: 1px; }
+
+/* Legacy A5 uses grid for regular groups, not for the layer face. */
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face {
+  display:flex; flex-direction:row; align-items:flex-start; justify-content:flex-start;
+  min-width:max-content; padding-top:2px; gap:2px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face .hy-rib-stack {
+  display:flex; flex-direction:column; align-items:stretch; flex:0 0 auto;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face button {
+  display:flex; flex-direction:row; align-items:center; justify-content:flex-start;
+  white-space:nowrap; box-sizing:border-box; font-size:12px; line-height:14px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face button.big {
+  flex-direction:column; justify-content:center;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face .ribbon-icon-only .btn-label { display:none; }
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face .big .btn-label { text-align:center; }
