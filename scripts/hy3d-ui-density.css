@@ -68,7 +68,7 @@ html[data-uitool-density-design="1"] :is(#left-dock,#right-dock,#bw-root,#settin
 html[data-uitool-density-design="1"] :is(#left-dock,#right-dock,#bw-root,#settings-editor,.ld-dialog,.interface-settings,#font-report)
   :is(button,input,select,textarea) {font-family:inherit;font-size:var(--ud-font);}
 html[data-uitool-density-design="1"] :is(#left-dock,#right-dock,#bw-root,#settings-editor,.ld-dialog,.interface-settings,#font-report)
-  :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),select) {
+  :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),select):where(:not(#bw-root *)) {
   min-height:var(--ud-control);border-radius:var(--ud-radius);
 }
 html[data-uitool-density-design="1"] :is(#left-dock,#right-dock,#bw-root,#settings-editor,.ld-dialog,.interface-settings,#font-report)
