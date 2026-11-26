@@ -12,6 +12,7 @@ import { applyCommandIcons, appendCadSymbols, loadCadPack } from "./hy3d-cad-ico
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const EXPLORER_FIXTURE = path.join(HERE, "hy3d-explorer-fixture.js");
+const HY3D_APP_ICON = path.resolve(HERE, "..", "public", "hy3d-icons", "11-hy-cad-clear-blue.png");
 const A5_CSS = path.join(HERE, "hy3d-a5-preview.css");
 const LAYER_CSS = path.join(HERE, "hy3d-layer-design.css");
 const LAYER_SCENE = path.join(HERE, "hy3d-layer-scene.js");
@@ -83,6 +84,26 @@ function probe(port, urlPath) {
   });
 }
 
+// Replace only the application-menu glyph, not the shared i-app SVG symbol
+// (also used by viewport management). Keep the native button and its events.
+function withHy3dAppIcon(html) {
+  const button = /(<button\b[^>]*\bid=["']btn-app["'][^>]*>)([\s\S]*?)(<\/button\s*>)/i;
+  const glyph = /<svg\b[^>]*>[\s\S]*?<use\b[^>]*\bhref=["']#i-app["'][^>]*>[\s\S]*?<\/svg\s*>/i;
+  let changed = false;
+  const result = html.replace(button, (tag, open, body, close) => {
+    if (!glyph.test(body)) return tag;
+    changed = true;
+    return open + body.replace(glyph, '<img class="uitool-hy3d-app-icon" src="/__uitool-hy3d-app-icon.png" width="28" height="28" alt="" aria-hidden="true" draggable="false" style="display:block;object-fit:contain;flex:none;pointer-events:none">') + close;
+  });
+  if (!changed) {
+    console.warn("UITool: HY3D application-menu glyph not found; keeping native preview.");
+    return html;
+  }
+  // The new icon carries its own blue background. Avoid a second blue tile,
+  // while keeping the existing hover/open feedback and button dimensions.
+  return result.replace(/<\/head\s*>/i, '<style>#btn-app:not(:hover):not([aria-expanded="true"]) { background: transparent; }</style></head>');
+}
+
 function serveHy3d() {
   if (hy3dServer) return Promise.resolve(true);
   const root = hy3dUi();
@@ -135,6 +156,17 @@ function serveHy3d() {
         } catch (error) {
           res.statusCode = 502;
           res.end("// UITool A5 source incompatible: " + JSON.stringify(String(error)));
+        }
+        return;
+      }
+      if (raw === "/__uitool-hy3d-app-icon.png") {
+        res.setHeader("content-type", MIME[".png"]);
+        res.setHeader("cache-control", "no-store");
+        try {
+          res.end(readFileSync(HY3D_APP_ICON));
+        } catch (error) {
+          res.statusCode = 404;
+          res.end("UITool: HY3D app icon missing.");
         }
         return;
       }
@@ -223,7 +255,7 @@ function serveHy3d() {
             return;
           }
         }
-        res.end(previewHtml);
+        res.end(withHy3dAppIcon(previewHtml));
         return;
       }
       createReadStream(target).pipe(res);
