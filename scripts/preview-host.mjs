@@ -7,6 +7,7 @@ import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { a5Html, a5RibbonSource } from "./hy3d-a5-preview.mjs";
+import { applyCommandIcons, appendCadSymbols, loadCadPack } from "./hy3d-cad-icons.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const EXPLORER_FIXTURE = path.join(HERE, "hy3d-explorer-fixture.js");
@@ -83,6 +84,7 @@ function serveHy3d() {
   if (hy3dServer) return Promise.resolve(true);
   const root = hy3dUi();
   if (!existsSync(root)) return Promise.resolve(false);
+  const cadPack = loadCadPack();
   return new Promise((resolve) => {
     const server = http.createServer((req, res) => {
       let url, raw;
@@ -142,6 +144,23 @@ function serveHy3d() {
       res.statusCode = 200;
       res.setHeader("content-type", MIME[path.extname(target).toLowerCase()] || "application/octet-stream");
       res.setHeader("cache-control", "no-store");
+      // Only the dedicated preview origin (1450) serves the candidate command art.
+      // Keep native handlers, placements, labels and all non-command symbols untouched.
+      try {
+        if (rel === "icons.svg") {
+          res.end(appendCadSymbols(readFileSync(target, "utf8"), cadPack));
+          return;
+        }
+        if (rel === "commands.json" || /^commands\/[^/]+\.json$/.test(rel)) {
+          const doc = JSON.parse(readFileSync(target, "utf8"));
+          res.end(JSON.stringify(applyCommandIcons(doc, cadPack)));
+          return;
+        }
+      } catch (error) {
+        res.statusCode = 502;
+        res.end("UITool CAD 图标预览失败：" + String(error));
+        return;
+      }
       // Only UITool's own preview response is changed. The source tree stays read-only.
       if (rel === "index.html" && url.searchParams.get("uitool") === "1") {
         const html = readFileSync(target, "utf8");
