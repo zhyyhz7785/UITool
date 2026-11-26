@@ -51,7 +51,19 @@ export async function exportProject(wb: WorkbenchApi): Promise<string | null> {
     return null;
   }
   try {
-    const zip = zipProject(doc);
+    const extra: Record<string, string> = {};
+    if (doc.config.workType === "general") {
+      try {
+        const res = await fetch("/__uitool/preview/shell?product=hymd");
+        if (res.ok) {
+          const body = (await res.json()) as { files?: { path: string; text: string }[] };
+          for (const file of body.files ?? []) extra[file.path] = file.text;
+        }
+      } catch {
+        /* 开发服务不在时，导出仍只用模板自带的样式，不读取产品目录。 */
+      }
+    }
+    const zip = zipProject(doc, extra);
     const path = await saveFile(`${doc.config.app.name}.zip`, zip, { name: "工程压缩包", extensions: ["zip"] });
     if (path) wb.notify("success", `工程已导出（${(zip.length / 1024).toFixed(0)} KB）`, `${path}\n解压后：npm install → npm run tauri dev`);
     return path;

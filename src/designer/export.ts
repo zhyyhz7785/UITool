@@ -144,10 +144,14 @@ function slimVariants(full: { source?: string; icons: Record<string, Record<stri
   return { source: full.source, styles: [...usage.styles], icons };
 }
 
-export function zipProject(doc: DesignDoc): Uint8Array {
+export function zipProject(doc: DesignDoc, extra: Record<string, string> = {}): Uint8Array {
   const root = doc.config.app.name;
   const tree: Record<string, Uint8Array> = {};
   for (const [p, data] of Object.entries(buildProjectFiles(doc))) tree[`${root}/${p}`] = data;
+  for (const [p, text] of Object.entries(extra)) {
+    if (!p.startsWith("src/product-shell/") || p.includes("..")) continue;
+    tree[`${root}/${p}`] = enc.encode(text);
+  }
   return zipSync(tree, { level: 6 });
 }
 

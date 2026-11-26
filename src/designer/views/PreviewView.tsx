@@ -1,4 +1,5 @@
 import { views as templateViews } from "@tpl/views";
+import { ProductPreview } from "./ProductPreview";
 import { photoHandlers } from "@tpl/views/photoSession";
 import type { WorkbenchApi } from "@tpl/workbench/context";
 import { Workbench } from "@tpl/workbench/Workbench";
@@ -19,8 +20,16 @@ const FRAMES = [
   { value: "1024x768", label: "1024 × 768" }
 ];
 
-/** 预览：直接渲染导出工程里的 Workbench（同一份代码），所见即所得。 */
+/** 两个产品和通用模板都嵌产品自己的页面。通用模板用 general=1 藏起文档专属入口。 */
 export function PreviewView() {
+  const workType = useDesign((s) => s.doc.config.workType);
+  if (workType === "writing") return <ProductPreview key="hymd" product="hymd" />;
+  if (workType === "general") return <ProductPreview key="general" product="general" />;
+  if (workType === "cad2d") return <ProductPreview key="hy3d" product="hy3d" />;
+  return <TemplatePreview />;
+}
+
+function TemplatePreview() {
   const doc = useDesign((s) => s.doc);
   const selected = useDesign((s) => s.selected);
   const selecting = useDesign((s) => s.selecting);

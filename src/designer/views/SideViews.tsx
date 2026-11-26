@@ -43,34 +43,28 @@ export function PresetsView() {
     <div className="ut-view">
       {archived && <div className="ut-note">这份设计来自已归档的预设「{cfg.workType}」。按文件里的布局打开，没有换成其他模板。</div>}
       <Section title="新建设计">
-        <div className="ut-note">三个产品共用这一套设计器。点一张卡片会换成该产品的皮肤，同产品的其他皮肤附在下面，可以切换。不会改你已经保存的设计文件。</div>
-        {workTypes.map((type) => (
-          <div key={type.id}>
-            <div className="ut-group-title">{type.name}</div>
-            <div className="ut-cards">
-              {type.schemes.filter((s) => s.listed !== false).map((s) => {
-                const preview = buildConfig(type.id, s.id);
-                const t = findTheme(allThemes(design.get().doc), preview.theme.id);
-                return (
-                  <button
-                    key={s.id}
-                    type="button"
-                    className={"ut-card" + (cfg.scheme === s.id ? " on" : "")}
-                    onClick={() => {
-                      design.setConfig(() => buildConfig(type.id, s.id, design.get().doc.config.app));
-                      design.select(null);
-                      wb.notify("success", `已生成「${type.name} · ${s.name}」`);
-                    }}
-                  >
-                    <MiniLayout config={preview} theme={t} />
-                    <div className="ut-card-title">{s.name}</div>
-                    <div className="ut-card-desc">{s.desc}</div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        ))}
+        <div className="ut-note">HyMdTauri 和 HY3D 打开产品自己的开发页。皮肤在预览里向那一页查询。通用模板仍用设计器里的工作台。已保存的设计文件按原样打开。</div>
+        <div className="ut-cards">
+          {workTypes.map((type) => {
+            const scheme = type.schemes.find((s) => s.listed !== false) ?? type.schemes[0];
+            return (
+              <button
+                key={type.id}
+                type="button"
+                className={"ut-card" + (cfg.workType === type.id ? " on" : "")}
+                onClick={() => {
+                  if (!scheme) return;
+                  design.setConfig(() => buildConfig(type.id, scheme.id, design.get().doc.config.app));
+                  design.select(null);
+                  wb.notify("success", `已打开「${type.name}」`);
+                }}
+              >
+                <div className="ut-card-title">{type.name}</div>
+                <div className="ut-card-desc">{type.summary}</div>
+              </button>
+            );
+          })}
+        </div>
       </Section>
       <Section title="打开已有设计">
         <div className="ut-note">打开 .uitool.json 或工程里的 ui.config.json。旧预设只要文件里带着自己的布局，就按原样打开。有未保存修改时不会覆盖。</div>
@@ -90,8 +84,8 @@ export function PresetsView() {
         <div className="ut-note">读取 HY3D 或 HyMdTauri 的现有界面，或连接本机正在运行的开发窗口。</div>
         <Button onClick={() => wb.showActivity("link")}>打开连接</Button>
       </Section>
-      <Section title="界面方案">
-        {(cfg.schemes?.length ?? 0) === 0 && <div className="ut-note">还没有皮肤。从上面选一个产品。</div>}
+      {cfg.workType === "general" && <Section title="界面方案">
+        {(cfg.schemes?.length ?? 0) === 0 && <div className="ut-note">还没有皮肤。从上面选通用模板。</div>}
         {cfg.schemes?.map((s) => (
           <div key={s.id} className="ut-snap">
             <span className="ut-grow">
@@ -111,7 +105,7 @@ export function PresetsView() {
             )}
           </div>
         ))}
-      </Section>
+      </Section>}
       <Section title="我的设计（本机）">
         <div className="ut-row">
           <input className="wb-input ut-grow" placeholder="给当前设计起个名字" value={name} onChange={(e) => setName(e.target.value)} />
@@ -169,39 +163,6 @@ export function DialogsView() {
           </button>
         ))}
       </Section>
-    </div>
-  );
-}
-
-/** 方案卡片上的布局缩略图（按真实布局和主题色画）。 */
-function MiniLayout({ config: c, theme }: { config: UiConfig; theme: ThemeData }) {
-  const col = resolveColors(theme, c.theme);
-  const L = c.layout;
-  const left = L.primarySideBar.position === "left";
-  const side = (
-    <>
-      {L.activityBar.visible && L.activityBar.position === "side" && <i style={{ width: 8, background: col["activityBar.background"] }} />}
-      {L.primarySideBar.visible && <i style={{ width: 30, background: col["sideBar.background"] }} />}
-    </>
-  );
-  return (
-    <div className="ut-mini" style={{ background: col["editor.background"], borderColor: col["base.border"] }}>
-      <i style={{ height: 6, background: col["titleBar.activeBackground"] }} />
-      {L.toolbars.top.visible && <i style={{ height: 5, background: col["toolbar.background"], borderBottom: `1px solid ${col["base.border"]}` }} />}
-      <div className="ut-mini-main">
-        {L.toolbars.side.visible && <i style={{ width: 6, background: col["toolbar.background"] }} />}
-        {left && side}
-        {!left && L.auxiliaryBar.visible && <i style={{ width: 26, background: col["sideBar.background"] }} />}
-        <div className="ut-mini-center">
-          {L.editor.tabs && <i style={{ height: 6, background: col["editorGroupHeader.tabsBackground"] }} />}
-          <i style={{ flex: 1, background: col["editor.background"] }} />
-          {L.panel.visible && L.panel.position === "bottom" && <i style={{ height: 16, background: col["panel.background"], borderTop: `1px solid ${col["panel.border"]}` }} />}
-        </div>
-        {L.panel.visible && L.panel.position === "right" && <i style={{ width: 26, background: col["panel.background"] }} />}
-        {left && L.auxiliaryBar.visible && <i style={{ width: 26, background: col["sideBar.background"] }} />}
-        {!left && side}
-      </div>
-      {L.statusBar.visible && <i style={{ height: 4, background: col["statusBar.background"] }} />}
     </div>
   );
 }

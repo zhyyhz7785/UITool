@@ -6,7 +6,7 @@
 
 ```bash
 npm install
-npm run dev          # 只看界面：浏览器打开 http://localhost:1420，内核用模拟（src/core/mock.ts）
+npm run dev          # 只看界面：浏览器打开 http://127.0.0.1:1470，内核用模拟（src/core/mock.ts）
 npm run tauri dev    # 桌面应用：启动 Rust 内核
 npm run tauri build  # 打包安装程序
 cargo test -p app-core  # 单测内核

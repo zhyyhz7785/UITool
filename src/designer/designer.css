@@ -149,6 +149,15 @@
 .ut-partlist button:hover { background: var(--vscode-list-hoverBackground); }
 
 /* 预览 */
+.ut-product-stage { position: relative; }
+.ut-product-fit { position: relative; flex-shrink: 0; }
+.ut-product-scale { position: relative; transform-origin: 0 0; }
+.ut-product-frame { width: 100%; height: 100%; border: 0; background: #1e1e1e; display: block; }
+.ut-product-overlay { position: absolute; inset: 0; }
+.ut-product-hit { position: absolute; box-sizing: border-box; border: 1px dashed var(--vscode-focusBorder, #3794ff); background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; padding: 0; }
+.ut-product-hit.on { border-width: 2px; }
+.ut-product-hit span { position: absolute; left: 2px; top: 2px; padding: 0 6px; font-size: 11px; line-height: 16px; background: var(--vscode-focusBorder, #3794ff); color: var(--vscode-editor-background, #fff); pointer-events: none; }
+.ut-product-off { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: var(--sp-2); padding: var(--sp-5); }
 .ut-preview { display: flex; flex-direction: column; height: 100%; min-height: 0; }
 .ut-preview-bar { display: flex; align-items: center; gap: var(--sp-3); height: calc(var(--h-ctl) + 10px); padding: 0 var(--sp-3); flex-shrink: 0; border-bottom: 1px solid var(--vscode-editorGroup-border, var(--vscode-base-border)); background: var(--vscode-editorGroupHeader-tabsBackground); overflow: hidden; }
 .ut-stage { flex: 1; min-height: 0; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background-color: var(--vscode-canvas-background, var(--vscode-editor-background)); background-image: radial-gradient(circle, color-mix(in srgb, var(--vscode-foreground) 12%, transparent) 1px, transparent 1px); background-size: 16px 16px; }

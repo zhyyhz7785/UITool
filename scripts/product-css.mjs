@@ -1,4 +1,4 @@
-// 开发服务器只读提供 hy3d / HyMd 的壳层样式。不复制进仓库，也不提供脚本。
+// 旧的壳层样式白名单。预览不再用它决定源码范围，整页由产品自己的入口提供。
 import fs from "node:fs";
 import path from "node:path";
 import { hy3dReadRoot, hymdReadRoot } from "./path-policy.mjs";

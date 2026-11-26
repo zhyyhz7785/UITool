@@ -6,14 +6,16 @@ import { defineConfig } from "vite";
 import { linkFsPlugin } from "./scripts/link-fs-plugin.mjs";
 // @ts-expect-error 本机开发态连接中转
 import { liveBrokerPlugin } from "./scripts/live-broker.mjs";
-// @ts-expect-error 只读提供产品壳层样式
+// @ts-expect-error 旧的样式白名单。产品预览不走这里，走各自的整页入口。
 import { productCssPlugin } from "./scripts/product-css.mjs";
+// @ts-expect-error 只拉起产品前端，不编译 Rust
+import { previewHostPlugin } from "./scripts/preview-host.mjs";
 
 const host = process.env.TAURI_DEV_HOST;
 
 // @tpl 指向 template/src：设计器的预览和导出的工程用的是同一份界面代码
 export default defineConfig({
-  plugins: [react(), productCssPlugin(), linkFsPlugin(), liveBrokerPlugin()],
+  plugins: [react(), productCssPlugin(), linkFsPlugin(), liveBrokerPlugin(), previewHostPlugin()],
   define: { "import.meta.env.VITE_UIT_DESIGNER": JSON.stringify("1") },
   clearScreen: false,
   build: { chunkSizeWarningLimit: 2000 },
@@ -26,11 +28,11 @@ export default defineConfig({
     dedupe: ["react", "react-dom", "@tauri-apps/api"]
   },
   server: {
-    // 1440：hy3d 开发页占 1430，HyMdTauri 占 1420。三个 dev 同时开才好测。
+    // 1420 HyMdTauri，1430 hy3d，1440 设计器。预览另用 1450 和 1460，不占产品端口。
     port: 1440,
     strictPort: true,
     host: host || "127.0.0.1",
     hmr: host ? { protocol: "ws", host, port: 1441 } : undefined,
-    watch: { ignored: ["**/src-tauri/**", "**/template/core/**", "**/target/**", "**/.tmp/**"] }
+    watch: { ignored: ["**/src-tauri/**", "**/template/core/**", "**/target/**", "**/.tmp/**", "**/.product-sources/**"] }
   }
 });

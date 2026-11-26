@@ -21,7 +21,6 @@ import { bindOverlayScroll } from "./overlayScroll";
 import { Sash } from "./parts/Sash";
 import { SideBar } from "./parts/SideBar";
 import { StatusBar } from "./parts/StatusBar";
-import { ProductShell } from "./ProductShell";
 import { TitleBar } from "./parts/TitleBar";
 import { ToolBar } from "./parts/ToolBar";
 import type { CommandHandler, PartId, UiConfig, ViewRegistry } from "./types";
@@ -344,8 +343,6 @@ export function Workbench({ config, defaultConfig, onConfigChange, themes = buil
   const showSideBar = L.toolbars.side.visible && L.toolbars.side.rows.length > 0;
   const toolbarPos = showTopBar && showSideBar ? "both" : showSideBar ? "side" : showTopBar ? "top" : "none";
 
-  const productShell = import.meta.env.VITE_UIT_DESIGNER === "1" && mode === "embedded" && (cfg.workType === "cad2d" || cfg.workType === "writing");
-
   const title = (
     <>
       {L.titleBar.style === "custom" ? <TitleBar /> : L.titleBar.menu !== "hidden" && <MenuBar standalone />}
@@ -383,7 +380,7 @@ export function Workbench({ config, defaultConfig, onConfigChange, themes = buil
         data-panel-align={align}
         tabIndex={mode === "embedded" ? -1 : undefined}
       >
-        {productShell ? <ProductShell config={cfg} onlyPart={onlyPart} onlyMenu={onlyMenu} /> : focused ?? (
+        {focused ?? (
           <>
             {title}
             {showTopBar && <ToolBar which="top" />}

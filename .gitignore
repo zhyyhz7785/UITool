@@ -7,3 +7,4 @@ template/node_modules/
 template/dist/
 template/src-tauri/gen/
 *.log
+.product-sources/

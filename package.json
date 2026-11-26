@@ -13,6 +13,7 @@
     "typecheck": "tsc --noEmit && tsc --noEmit -p template",
     "check": "node scripts/check-export.mjs",
     "check:presets": "node scripts/check-presets.mjs",
+    "sync:ui": "node scripts/sync-ui.mjs",
     "pull:hy3d": "node scripts/pull-hy3d.mjs",
     "push:hy3d": "node scripts/push-hy3d.mjs"
   },
