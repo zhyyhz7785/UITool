@@ -16,6 +16,8 @@ const HY3D_APP_ICON = path.resolve(HERE, "..", "public", "hy3d-icons", "11-hy-ca
 const A5_CSS = path.join(HERE, "hy3d-a5-preview.css");
 const LAYER_CSS = path.join(HERE, "hy3d-layer-design.css");
 const LAYER_SCENE = path.join(HERE, "hy3d-layer-scene.js");
+const DOCK_DESIGN_CSS = path.join(HERE, "hy3d-dock-design.css");
+const DOCK_DESIGN_JS = path.join(HERE, "hy3d-dock-design.js");
 const MIRROR_UI = path.resolve(HERE, "..", ".product-sources", "hy3d", "ui");
 const MIRROR_HYMD = path.resolve(HERE, "..", ".product-sources", "hymd");
 const WORKTREE_UI = "E:\\Code\\_shared\\worktrees\\hy3d\\cl\\ui";
@@ -125,6 +127,12 @@ function serveHy3d() {
         res.end();
         return;
       }
+      if (raw === "/__uitool-dock-design.css" || raw === "/__uitool-dock-design.js") {
+        res.setHeader("content-type", MIME[raw.endsWith(".css") ? ".css" : ".js"]);
+        res.setHeader("cache-control", "no-store");
+        createReadStream(raw.endsWith(".css") ? DOCK_DESIGN_CSS : DOCK_DESIGN_JS).pipe(res);
+        return;
+      }
       if (raw === "/__uitool-layer.css" || raw === "/__uitool-layer-scene.js") {
         res.setHeader("content-type", MIME[raw.endsWith(".css") ? ".css" : ".js"]);
         res.setHeader("cache-control", "no-store");
@@ -228,6 +236,11 @@ function serveHy3d() {
             const native = readFileSync(path.join(root, "skins", "hy-ribbon", "layout.js"), "utf8");
             layerDesignSource(native);
             previewHtml = layerDesignHtml(previewHtml, !/\bnativeCadProfile:\s*true\b/.test(native));
+            // Same candidate as Ribbon design, never alter A5 / original.
+            if (!/<\/head\s*>/i.test(previewHtml) || !/<\/body\s*>/i.test(previewHtml)) throw new Error("缺少侧栏设计入口");
+            previewHtml = previewHtml
+              .replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-dock-design.css"></head>')
+              .replace(/<\/body\s*>/i, '<script src="/__uitool-dock-design.js"></script></body>');
           } catch (error) {
             res.statusCode = 502;
             res.setHeader("content-type", "text/plain; charset=utf-8");
