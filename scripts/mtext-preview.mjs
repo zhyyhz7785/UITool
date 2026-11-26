@@ -13,8 +13,13 @@ function readDependency(root,rel){
   const file=path.join(root,rel);
   if(!existsSync(file)||!statSync(file).isFile())throw Error("产品镜像缺少 "+rel+"，请先同步 HY3D 界面");
   const bytes=readFileSync(file);
-  if(gitBlob(bytes)!==manifest.assets[rel])throw Error("产品镜像版本不匹配："+rel+"；需要与 HY3D #2237 的 SDK 版本一致");
-  return bytes;
+  if(gitBlob(bytes)===manifest.assets[rel])return bytes;
+  // Windows checkout may apply autocrlf. Accept only the exact pinned LF content.
+  if(/\.(?:js|css|json|svg)$/i.test(rel)){
+    const normalized=Buffer.from(bytes.toString("utf8").replace(/\r\n/g,"\n"),"utf8");
+    if(gitBlob(normalized)===manifest.assets[rel])return normalized;
+  }
+  throw Error("产品镜像版本不匹配："+rel+"；需要与 HY3D #2237 的 SDK 版本一致");
 }
 export function serveMtextPreview(raw,req,res,root){
   if(!raw.startsWith(PREFIX))return false;
