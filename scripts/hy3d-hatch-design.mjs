@@ -54,6 +54,7 @@ export function hatchDesignSource(source, fixture) {
       if (designMenu) designMenu.remove();
       designMenu = null;
       if (restore && focus && focus.isConnected) focus.focus();
+      else if (restore && dlg) { var manage=dlg.querySelector("#he-category-manage"); if(manage) manage.focus(); }
     }
     function designOpenMenu(anchor, event, build) {
       designCloseMenu(false);
@@ -270,7 +271,7 @@ export function hatchDesignSource(source, fixture) {
       matches.forEach(function (name) {`);
  once('        b.title = cap("pattern") ? name : pendingLabel("pattern");', `        b.title = (cap("pattern") ? name : pendingLabel("pattern")) + " · 右键管理分类";
         b.addEventListener("contextmenu",function(e){e.preventDefault();designPatternMenu(b,e,name);});`);
- once('    function closeDlg(result) {', '    function closeDlg(result) {\\n      designCloseMenu(false);');
+ once('    function closeDlg(result) {', '    function closeDlg(result) {\n      designCloseMenu(false);');
  once(`      if (!els || !els.gradThumbs) return;`, `      if (!els || !els.gradThumbs || !state || !state.form) return;`);
  once(`        b.innerHTML = islandThumb(id);`, `        b.innerHTML = islandThumb(id) + '<span>' + lab + '</span>';`);
  once(`          '<label class="hwb-search">搜索 <input type="text" id="he-pat-search" /></label>' +`, `          '<div id="he-category" class="he-category" role="group" aria-label="图案分类"></div>' +
