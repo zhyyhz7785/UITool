@@ -72,6 +72,13 @@
         nativeEntry(lookup(left, "data-tab", item[0]), item[1]);
       });
     } else {
+      // Keep the original workbench close handler (not merely hide the dock).
+      // Resolve on every menu open because the workbench is mounted dynamically.
+      var blockClose = document.querySelector("#right-dock-body #bw-root > .bw-title .bw-x");
+      if (blockClose) {
+        nativeEntry(blockClose, "关闭图块");
+        separator();
+      }
       nativeEntry(lookup(rightActions, "data-dock-act", "pin"), "钉住", true);
       nativeEntry(lookup(rightActions, "data-dock-act", "autohide"), "自动隐藏");
       nativeEntry(lookup(rightActions, "data-dock-act", "float"), "浮动");
