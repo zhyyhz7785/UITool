@@ -59,7 +59,12 @@
   function tick(){
     if(window.hy3dApp&&window.Registry?.isDone?.(command)){
       try{
-        if(!Registry.run(command)){report("error","原生命令未能启动");return;}
+        if(id==="hy3d-table" && document.documentElement.dataset.uitoolThemeDesign==="1"){
+          if(!window.hy3dTableInsertDialog?.tryStart(window.hy3dApp)){report("error","表格设计入口不可用");return;}
+          if(document.getElementById("uitool-table-insert")?.open){report("opened","表格设计候选 · 示例样式 · 不写入图纸");return;}
+          report("pending","表格设计未打开，已回退原生入口");return;
+        }
+        if(Registry.run(command)===false){report("error","原生命令未能启动");return;}
         let checks=0;
         function check(){
           if(visible()){report("opened","已打开原生组件（浏览器预览）");return;}
