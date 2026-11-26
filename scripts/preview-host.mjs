@@ -18,6 +18,7 @@ const EXPLORER_FIXTURE = path.join(HERE, "hy3d-explorer-fixture.js");
 const HY3D_APP_ICON = path.resolve(HERE, "..", "public", "hy3d-icons", "11-hy-cad-clear-blue.png");
 const A5_CSS = path.join(HERE, "hy3d-a5-preview.css");
 const THEME_DESIGN_CSS = path.join(HERE, "hy3d-theme-design.css");
+const QAT_HISTORY_JS = path.join(HERE, "hy3d-qat-history.js");
 const LAYER_CSS = path.join(HERE, "hy3d-layer-design.css");
 const LAYER_SCENE = path.join(HERE, "hy3d-layer-scene.js");
 const DOCK_DESIGN_CSS = path.join(HERE, "hy3d-dock-design.css");
@@ -209,6 +210,12 @@ function serveHy3d() {
         }
         return;
       }
+      if (raw === "/__uitool-qat-history.js") {
+        res.setHeader("content-type", MIME[".js"]);
+        res.setHeader("cache-control", "no-store");
+        createReadStream(QAT_HISTORY_JS).pipe(res);
+        return;
+      }
       if (raw === "/__uitool-theme-design.css") {
         res.setHeader("content-type", MIME[".css"]);
         res.setHeader("cache-control", "no-store");
@@ -361,7 +368,8 @@ function serveHy3d() {
             res.end("UITool 命令栏设计与当前镜像不兼容。可切换原始预览。\n" + String(error));
             return;
           }
-          previewHtml = previewHtml.replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-theme-design.css"><script>document.documentElement.dataset.uitoolThemeDesign="1"</script></head>');
+          previewHtml = previewHtml.replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-theme-design.css"><script>document.documentElement.dataset.uitoolThemeDesign="1"</script></head>')
+            .replace(/<\/body\s*>/i, '<script src="/__uitool-qat-history.js"></script></body>');
         }
         res.end(withHy3dAppIcon(previewHtml));
         return;
