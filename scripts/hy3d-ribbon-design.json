@@ -1,0 +1,378 @@
+{
+  "groups": {
+    "绘图": [
+      [
+        "cad.line",
+        "直线",
+        "big"
+      ],
+      [
+        "cad.pline",
+        "多段线",
+        "text"
+      ],
+      [
+        "cad.circle",
+        "圆",
+        "text"
+      ],
+      [
+        "cad.arc",
+        "圆弧",
+        "text"
+      ],
+      [
+        "cad.rect",
+        "矩形",
+        "text"
+      ],
+      [
+        "cad.hatch",
+        "填充",
+        "text"
+      ],
+      [
+        "cad.spline",
+        "样条",
+        "text"
+      ],
+      [
+        "cad.ellipse",
+        "椭圆",
+        "icon"
+      ],
+      [
+        "cad.polygon",
+        "多边形",
+        "icon"
+      ],
+      [
+        "cad.region",
+        "面域",
+        "icon"
+      ],
+      [
+        "cad.mline",
+        "多线",
+        "icon"
+      ],
+      [
+        "cad.boundary",
+        "边界",
+        "icon"
+      ],
+      [
+        "cad.revcloud",
+        "修订云线",
+        "icon"
+      ]
+    ],
+    "修改": [
+      [
+        "cad.move",
+        "移动",
+        "big"
+      ],
+      [
+        "cad.copy",
+        "复制",
+        "text"
+      ],
+      [
+        "cad.rotate",
+        "旋转",
+        "text"
+      ],
+      [
+        "cad.trim",
+        "修剪",
+        "text"
+      ],
+      [
+        "cad.offset",
+        "偏移",
+        "text"
+      ],
+      [
+        "cad.mirror",
+        "镜像",
+        "text"
+      ],
+      [
+        "cad.fillet",
+        "圆角",
+        "text"
+      ],
+      [
+        "cad.stretch",
+        "拉伸",
+        "text"
+      ],
+      [
+        "cad.scale",
+        "缩放",
+        "text"
+      ],
+      [
+        "cad.array",
+        "阵列",
+        "text"
+      ],
+      [
+        "cad.erase",
+        "删除",
+        "icon"
+      ],
+      [
+        "cad.explode",
+        "分解",
+        "icon"
+      ],
+      [
+        "cad.matchprop",
+        "特性匹配",
+        "icon"
+      ],
+      [
+        "cad.extend",
+        "延伸",
+        "icon"
+      ],
+      [
+        "cad.align",
+        "对齐",
+        "icon"
+      ],
+      [
+        "edit.join",
+        "合并",
+        "icon"
+      ]
+    ],
+    "注释": [
+      [
+        "cad.mtext",
+        "文字",
+        "big"
+      ],
+      [
+        "cad.dimlin",
+        "线性标注",
+        "text"
+      ],
+      [
+        "cad.leader",
+        "引线",
+        "text"
+      ],
+      [
+        "cad.table",
+        "表格",
+        "text"
+      ],
+      [
+        "cad.dimali",
+        "对齐标注",
+        "icon"
+      ],
+      [
+        "cad.dimang",
+        "角度标注",
+        "icon"
+      ],
+      [
+        "cad.dimrad",
+        "半径标注",
+        "icon"
+      ],
+      [
+        "cad.dimdia",
+        "直径标注",
+        "icon"
+      ],
+      [
+        "cad.textedit",
+        "编辑文字",
+        "icon"
+      ],
+      [
+        "cad.mleaderalign",
+        "引线对齐",
+        "icon"
+      ]
+    ],
+    "块": [
+      [
+        "cad.block",
+        "插入块",
+        "big"
+      ],
+      [
+        "cad.blockdef",
+        "创建块",
+        "text"
+      ],
+      [
+        "cad.bedit",
+        "编辑块",
+        "text"
+      ],
+      [
+        "cad.attedit",
+        "编辑属性",
+        "text"
+      ],
+      [
+        "cad.wblock",
+        "写块",
+        "icon"
+      ],
+      [
+        "cad.attdef",
+        "定义属性",
+        "icon"
+      ],
+      [
+        "cad.base",
+        "基点",
+        "icon"
+      ]
+    ],
+    "实用工具": [
+      [
+        "cad.measuregeom",
+        "测量",
+        "big"
+      ],
+      [
+        "cad.dist",
+        "距离",
+        "text"
+      ],
+      [
+        "cad.area",
+        "面积",
+        "text"
+      ],
+      [
+        "cad.props",
+        "特性",
+        "text"
+      ],
+      [
+        "cad.qselect",
+        "快速选择",
+        "icon"
+      ],
+      [
+        "cad.id",
+        "点坐标",
+        "icon"
+      ],
+      [
+        "cad.list",
+        "列表",
+        "icon"
+      ],
+      [
+        "cad.selectsimilar",
+        "选择相似",
+        "icon"
+      ]
+    ],
+    "剪贴板": [
+      [
+        "edit.paste",
+        "粘贴",
+        "big"
+      ],
+      [
+        "edit.copy",
+        "复制",
+        "text"
+      ],
+      [
+        "edit.cut",
+        "剪切",
+        "text"
+      ],
+      [
+        "edit.pastespec",
+        "原位粘贴",
+        "icon"
+      ],
+      [
+        "edit.copybase",
+        "带基点复制",
+        "icon"
+      ],
+      [
+        "edit.pasteblock",
+        "粘贴为块",
+        "icon"
+      ]
+    ]
+  },
+  "art": {
+    "cad.line": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M4 20 20 4\"/><rect x=\"2.8\" y=\"18.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/><rect x=\"18.8\" y=\"2.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.pline": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 20h8a7 7 0 0 0 0-14H5\"/><rect x=\"1.8\" y=\"18.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/><rect x=\"3.8\" y=\"4.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/><rect x=\"9.8\" y=\"11.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.circle": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"8\"/><path d=\"M12 12 18 6\" stroke=\"#69c8eb\"/><rect x=\"10.8\" y=\"10.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/><rect x=\"16.8\" y=\"4.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.arc": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 20A17 17 0 0 1 20 3\"/><rect x=\"1.8\" y=\"18.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/><rect x=\"18.8\" y=\"1.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.rect": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><rect x=\"3\" y=\"5\" width=\"18\" height=\"14\"/><rect x=\"1.8\" y=\"17.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/><rect x=\"19.8\" y=\"3.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.hatch": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\"/><path d=\"M3 10 10 3M3 16 16 3M4 21 21 4M10 21 21 10M16 21 21 16\"/><path d=\"M3 3h18v18\" stroke=\"#69c8eb\"/></g>",
+    "cad.spline": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 19 7 2 17 22 21 5\" stroke-dasharray=\"2 2\" opacity=\".65\"/><path d=\"M3 19C9-5 15 29 21 5\"/><rect x=\"1.8\" y=\"17.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/><rect x=\"19.8\" y=\"3.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.ellipse": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><ellipse cx=\"12\" cy=\"12\" rx=\"9\" ry=\"6\"/><rect x=\"10.8\" y=\"10.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/><rect x=\"19.8\" y=\"10.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.polygon": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"m12 3 9 6-3 11H6L3 9z\"/><rect x=\"10.8\" y=\"1.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.region": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 4h13v6h5v10H3z\" fill=\"#69c8eb\" stroke=\"none\"/><path d=\"M3 4h13v6h5v10H3z\"/></g>",
+    "cad.mline": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 20V5h18\"/><path d=\"M8 20V10h13\" stroke=\"#69c8eb\"/></g>",
+    "cad.boundary": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 3h18v18H3z\" stroke-dasharray=\"2 2\" opacity=\".65\"/><path d=\"M6 17V7h11v10z\" stroke=\"#69c8eb\"/><rect x=\"4.8\" y=\"5.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.revcloud": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M6 20a4 4 0 0 1-3-7 4 4 0 0 1 3-7 4 4 0 0 1 6-3 4 4 0 0 1 7 3 4 4 0 0 1 2 7 4 4 0 0 1-4 7 4 4 0 0 1-6 1 4 4 0 0 1-5-1z\"/></g>",
+    "cad.move": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><rect x=\"9\" y=\"9\" width=\"6\" height=\"6\"/><path d=\"M12 2v6m-3-3 3-3 3 3M12 22v-6m-3 3 3 3 3-3M2 12h6m-3-3-3 3 3 3M22 12h-6m3-3 3 3-3 3\" stroke=\"#69c8eb\"/></g>",
+    "cad.copy": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 3h11v11H3z\" stroke-dasharray=\"2 2\" opacity=\".65\"/><rect x=\"10\" y=\"10\" width=\"11\" height=\"11\"/><path d=\"M5 17v4h4\" stroke=\"#69c8eb\"/></g>",
+    "cad.rotate": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><rect x=\"7\" y=\"8\" width=\"10\" height=\"10\"/><path d=\"M3 12a9 9 0 1 1 16-6m-5 0h5V1\" stroke=\"#69c8eb\"/></g>",
+    "cad.trim": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 12h8\"/><path d=\"M9 21 15 3\" stroke=\"#69c8eb\"/><path d=\"M15 12h6\" stroke-dasharray=\"2 2\" opacity=\".65\"/><path d=\"m17 9 4 6m0-6-4 6\" stroke=\"#ffd17a\"/></g>",
+    "cad.offset": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M4 20V5h16\"/><path d=\"M9 20V10h11\" stroke=\"#69c8eb\"/><path d=\"m5 17 3-3v3z\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.mirror": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"m3 19 6-14v14z\"/><path d=\"M12 2v20\" stroke-dasharray=\"2 2\" opacity=\".65\"/><path d=\"m21 19-6-14v14z\" stroke=\"#69c8eb\"/></g>",
+    "cad.fillet": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M4 21V4h17\" stroke-dasharray=\"2 2\" opacity=\".65\"/><path d=\"M4 21v-9a8 8 0 0 1 8-8h9\"/><path d=\"M4 12a8 8 0 0 1 8-8\" stroke=\"#69c8eb\"/></g>",
+    "cad.stretch": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 6h11v12H3z\" stroke-dasharray=\"2 2\" opacity=\".65\"/><path d=\"M3 6h18v12H3z\"/><path d=\"M12 12h8m-3-3 3 3-3 3\" stroke=\"#69c8eb\"/><rect x=\"19.8\" y=\"4.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/><rect x=\"19.8\" y=\"16.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.scale": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 12h9v9H3z\" stroke-dasharray=\"2 2\" opacity=\".65\"/><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\"/><path d=\"m12 12 7-7m-5 0h5v5\" stroke=\"#69c8eb\"/></g>",
+    "cad.array": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><rect x=\"2\" y=\"2\" width=\"4\" height=\"4\"/><rect x=\"2\" y=\"9\" width=\"4\" height=\"4\"/><rect x=\"2\" y=\"16\" width=\"4\" height=\"4\"/><rect x=\"9\" y=\"2\" width=\"4\" height=\"4\"/><rect x=\"9\" y=\"9\" width=\"4\" height=\"4\"/><rect x=\"9\" y=\"16\" width=\"4\" height=\"4\"/><rect x=\"16\" y=\"2\" width=\"4\" height=\"4\"/><rect x=\"16\" y=\"9\" width=\"4\" height=\"4\"/><rect x=\"16\" y=\"16\" width=\"4\" height=\"4\"/><path d=\"M16 16h4v4h-4z\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.erase": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M5 7h14M9 4h6M7 7l1 14h8l1-14M10 10v8M14 10v8\"/><path d=\"M4 4h16\" stroke=\"#ffd17a\"/></g>",
+    "cad.explode": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><rect x=\"8\" y=\"8\" width=\"8\" height=\"8\"/><path d=\"M6 6 2 2m0 4V2h4M18 6l4-4m-4 0h4v4M6 18l-4 4m0-4v4h4M18 18l4 4m-4 0h4v-4\" stroke=\"#69c8eb\"/></g>",
+    "cad.matchprop": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"m3 18 9-9 4 4-9 9z\" fill=\"#ffd17a\" stroke=\"none\"/><path d=\"m12 9 5-6 4 4-5 6\"/><path d=\"M3 5h6M3 9h4\" stroke=\"#69c8eb\"/></g>",
+    "cad.extend": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 12h8M18 3v18\"/><path d=\"M11 12h7\" stroke-dasharray=\"2 2\" opacity=\".65\"/><path d=\"m14 9 4 3-4 3\" stroke=\"#69c8eb\"/></g>",
+    "cad.align": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><rect x=\"3\" y=\"4\" width=\"6\" height=\"6\"/><path d=\"M15 12h6v6h-6z\" stroke-dasharray=\"2 2\" opacity=\".65\"/><path d=\"M9 8l7 7M3 21h18\" stroke=\"#69c8eb\"/></g>",
+    "edit.join": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 18 10 12m4 0 7-6\"/><path d=\"M10 12h4\" stroke=\"#69c8eb\"/><rect x=\"8.8\" y=\"10.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/><rect x=\"12.8\" y=\"10.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.mtext": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M4 21 10 3h4l6 18h-3l-2-6H9l-2 6zm6-9h4l-2-6z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M3 23h18\" stroke=\"#69c8eb\"/></g>",
+    "cad.dimlin": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 4v16M21 4v16M3 10h18\"/><path d=\"m3 10 5-3v6zm18 0-5-3v6z\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.leader": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 19 11 8h10\"/><path d=\"m3 19 2-6 4 4z\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.table": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"16\"/><path d=\"M3 4h18v5H3z\" fill=\"#69c8eb\" stroke=\"none\"/><path d=\"M3 9h18M3 14h18M9 4v16M15 4v16\"/></g>",
+    "cad.dimali": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M4 18 18 4M2 14l6 6M14 2l6 6\"/><path d=\"m8 16-4 2 2-4m10-8 2-2-4 2\" stroke=\"#69c8eb\"/></g>",
+    "cad.dimang": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M4 20V4M4 20h16\"/><path d=\"M4 11a9 9 0 0 1 9 9m-3-3 3 3 3-3\" stroke=\"#ffd17a\"/></g>",
+    "cad.dimrad": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 12 18 6m-5 0h5v5\" stroke=\"#69c8eb\"/></g>",
+    "cad.dimdia": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M6 18 18 6m-5 0h5v5m-12 2v5h5\" stroke=\"#69c8eb\"/></g>",
+    "cad.textedit": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M4 21 10 3h4l6 18h-3l-2-6H9l-2 6zm6-9h4l-2-6z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"m14 21 7-7 2 2-7 7z\" fill=\"#ffd17a\" stroke=\"none\"/></g>",
+    "cad.mleaderalign": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 19 11 8h10M3 12l5-6h13\"/><path d=\"M21 4v18\" stroke=\"#69c8eb\"/></g>",
+    "cad.block": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"m3 8 9-5 9 5v9l-9 5-9-5zM3 8l9 5 9-5m-9 5v9\"/><path d=\"m3 8 9-5 9 5-9 5z\" fill=\"#69c8eb\" stroke=\"none\"/><path d=\"M2 21h7m-4-4 4 4-4 4\" stroke=\"#69c8eb\"/></g>",
+    "cad.blockdef": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"m3 8 9-5 9 5v9l-9 5-9-5zM3 8l9 5 9-5m-9 5v9\"/><path d=\"m3 8 9-5 9 5-9 5z\" fill=\"#69c8eb\" stroke=\"none\"/><path d=\"m18 2 1.3 4 4.2.1-3.3 2.5 1.2 4-3.4-2.5-3.4 2.5 1.3-4-3.4-2.5 4.2-.1z\" fill=\"#ffd17a\" stroke=\"none\"/></g>",
+    "cad.bedit": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"m3 8 9-5 9 5v9l-9 5-9-5zM3 8l9 5 9-5m-9 5v9\"/><path d=\"m3 8 9-5 9 5-9 5z\" fill=\"#69c8eb\" stroke=\"none\"/><path d=\"m14 21 7-7 2 2-7 7z\" fill=\"#ffd17a\" stroke=\"none\"/></g>",
+    "cad.attedit": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 4h10l9 9-9 9L3 12z\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"7\" cy=\"8\" r=\"1.5\"/><path d=\"m13 19 7-7\" stroke=\"#69c8eb\"/></g>",
+    "cad.wblock": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"m3 8 9-5 9 5v9l-9 5-9-5zM3 8l9 5 9-5m-9 5v9\"/><path d=\"m3 8 9-5 9 5-9 5z\" fill=\"#69c8eb\" stroke=\"none\"/><path d=\"M16 19h6m-3-3 3 3-3 3\" stroke=\"#69c8eb\"/></g>",
+    "cad.attdef": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 4h10l9 9-9 9L3 12z\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"7\" cy=\"8\" r=\"1.5\"/><path d=\"M16 12v7m-3-3h6\" stroke=\"#69c8eb\"/></g>",
+    "cad.base": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M12 2v20M2 12h20\"/><circle cx=\"12\" cy=\"12\" r=\"5\"/><rect x=\"10.8\" y=\"10.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.measuregeom": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"m2 16 15-13 5 5L7 21z\" fill=\"#ffd17a\" stroke=\"none\"/><path d=\"m7 13 3 3m0-6 3 3m0-6 3 3\"/></g>",
+    "cad.dist": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 5v14M21 5v14M3 12h18\"/><path d=\"m3 12 5-3v6zm18 0-5-3v6z\" fill=\"#ffd17a\" stroke=\"none\"/></g>",
+    "cad.area": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 18 6 5l14 3-2 12z\" fill=\"#69c8eb\" stroke=\"none\"/><path d=\"M3 18 6 5l14 3-2 12z\"/><path d=\"M6 5l12 15\" stroke-dasharray=\"2 2\" opacity=\".65\"/></g>",
+    "cad.props": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\"/><path d=\"M6 7h12M6 12h12M6 17h12\"/><rect x=\"8.8\" y=\"5.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/><rect x=\"13.8\" y=\"10.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/><rect x=\"6.8\" y=\"15.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.qselect": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M3 4h18l-7 9v7l-4-2v-5z\" fill=\"#69c8eb\" stroke=\"none\"/><path d=\"M3 4h18l-7 9v7l-4-2v-5z\"/></g>",
+    "cad.id": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M12 2v20M2 12h20\"/><circle cx=\"12\" cy=\"12\" r=\"5\"/><rect x=\"10.8\" y=\"10.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.list": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M7 5h14M7 12h14M7 19h14\"/><rect x=\"1.8\" y=\"3.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/><rect x=\"1.8\" y=\"10.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/><rect x=\"1.8\" y=\"17.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "cad.selectsimilar": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><rect x=\"3\" y=\"3\" width=\"9\" height=\"9\"/><path d=\"M12 12h9v9h-9z\" stroke=\"#69c8eb\"/></g>",
+    "edit.paste": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M4 5h16v16H4z\" fill=\"#ffd17a\" stroke=\"none\"/><path d=\"M8 9h13v13H8z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M8 3h8v4H8z\"/></g>",
+    "edit.copy": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><rect x=\"3\" y=\"3\" width=\"12\" height=\"14\"/><path d=\"M9 9h12v12H9z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M11 13h8m-8 4h8\" stroke=\"#69c8eb\"/></g>",
+    "edit.cut": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"18\" cy=\"18\" r=\"3\"/><path d=\"M8 16 19 3M16 16 5 3\"/></g>",
+    "edit.pastespec": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M4 3h11l5 5v13H4z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M15 3v5h5\"/><path d=\"M9 13h8m-4-4v8\" stroke=\"#69c8eb\"/><rect x=\"11.8\" y=\"11.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
+    "edit.copybase": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><rect x=\"3\" y=\"3\" width=\"11\" height=\"11\"/><path d=\"M10 10h11v11H10z\" stroke-dasharray=\"2 2\" opacity=\".65\"/><path d=\"M15 10v10m-5-5h10\" stroke=\"#69c8eb\"/></g>",
+    "edit.pasteblock": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"m3 8 9-5 9 5v9l-9 5-9-5zM3 8l9 5 9-5m-9 5v9\"/><path d=\"m3 8 9-5 9 5-9 5z\" fill=\"#69c8eb\" stroke=\"none\"/><path d=\"M2 3h7v5H2z\" fill=\"#ffd17a\" stroke=\"none\"/><path d=\"M5 8v7\" stroke=\"#69c8eb\"/></g>"
+  }
+}
