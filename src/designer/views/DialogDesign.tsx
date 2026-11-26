@@ -8,9 +8,11 @@ type Entry = { id: string; title: string; product: Product; source: string; mode
 type Catalog = { rows: Entry[]; scanned: number; errors: string[] };
 const names: Record<Product,string> = {hy3d:"HY3D",hymd:"HyMdTauri"};
 const font: Entry = {id:"hy3d-font-v2",title:"字体替换 / V2 设计候选",product:"hy3d",source:"public/hy3d-font-manager/index.html",mode:"prototype"};
+const printCandidate = (product:Product):Entry => ({id:product+"-print-workbench",title:"统一打印工作台 / 设计候选",product,source:"public/unified-print-workbench/index.html",mode:"prototype"});
 const fallback: Record<Product,Entry[]> = {
-  hy3d:[font,{id:"hy3d-font-report",title:"字体替换 / 原生字体报告",product:"hy3d",source:"ui/font_report.js",mode:"native"}],
+  hy3d:[printCandidate("hy3d"),font,{id:"hy3d-font-report",title:"字体替换 / 原生字体报告",product:"hy3d",source:"ui/font_report.js",mode:"native"}],
   hymd:[
+    printCandidate("hymd"),
     {id:"hymd-about",title:"关于",product:"hymd",source:"src/overlays/AboutDialog.tsx",mode:"native"},
     {id:"hymd-confirm",title:"未保存文档确认",product:"hymd",source:"src/overlays/ConfirmSave.tsx",mode:"native"},
     {id:"hymd-license",title:"注册 / 授权",product:"hymd",source:"src/overlays/LicenseDialog.tsx",mode:"native"},
@@ -93,7 +95,8 @@ export function ProductDialogDesign({entry}:{entry:Entry}){
     setSrc("");setStatus("");setError("");
     if(entry.mode==="source")return;
     if(entry.mode==="prototype"){
-      setSrc(import.meta.env.BASE_URL+"hy3d-font-manager/index.html");setStatus("独立交互候选 · 示例数据");return;
+      const route=entry.id===p+"-print-workbench"?"unified-print-workbench/index.html?product="+p:"hy3d-font-manager/index.html";
+      setSrc(import.meta.env.BASE_URL+route);setStatus("独立交互候选 · 示例数据");return;
     }
     const start=async()=>{
       try{
