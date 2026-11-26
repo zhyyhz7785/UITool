@@ -67,3 +67,51 @@ html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face but
 }
 html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face .ribbon-icon-only .btn-label { display:none; }
 html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face .big .btn-label { text-align:center; }
+
+/* Same density language as the approved layer group. Scope: six regular groups only. */
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-group:has(.hy-rib-dense) {
+  flex:0 0 auto; padding-left:4px; padding-right:4px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense {
+  display:flex; flex-direction:row; align-items:flex-start; justify-content:flex-start;
+  gap:2px; min-width:max-content; padding-top:2px; box-sizing:border-box;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense-stack {
+  display:flex; flex-direction:column; align-items:stretch; flex:0 0 auto; gap:1px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense button.hy-rib-dense-btn {
+  display:flex; flex-direction:row; align-items:center; justify-content:flex-start;
+  width:var(--dense-w); min-width:var(--dense-w); max-width:var(--dense-w);
+  height:26px; min-height:26px; box-sizing:border-box; padding:1px 2px; gap:3px;
+  font-size:12px; line-height:14px; white-space:nowrap; border-radius:3px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .hy-rib-dense-btn .btn-glyph,
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .hy-rib-dense-btn .ic {
+  width:20px; height:20px; flex:0 0 20px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .hy-rib-dense-btn .btn-label {
+  min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense button[data-dense-kind="icon"] {
+  justify-content:center;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense button[data-dense-kind="icon"] .btn-label { display:none; }
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense button[data-dense-kind="big"] {
+  flex-direction:column; justify-content:center; height:80px; min-height:80px; padding:2px; gap:3px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .hy-rib-dense-btn[data-dense-kind="big"] .btn-glyph,
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .hy-rib-dense-btn[data-dense-kind="big"] .ic {
+  width:32px; height:32px; flex:0 0 32px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense button[data-dense-kind="big"] .btn-label { white-space:normal; text-align:center; }
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .ribbon-split {
+  display:flex; align-items:center; gap:0; flex:0 0 auto;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .ribbon-split.is-big { flex-direction:column; height:80px; }
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .ribbon-split.is-big button[data-dense-kind="big"] { height:64px; min-height:64px; }
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .ribbon-split-arrow {
+  width:12px; min-width:12px; max-width:12px; height:26px; min-height:26px; padding:0; justify-content:center;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .ribbon-split.is-big .ribbon-split-arrow {
+  width:48px; max-width:48px; height:16px; min-height:16px;
+}

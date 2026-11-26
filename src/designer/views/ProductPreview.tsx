@@ -205,7 +205,7 @@ export function ProductPreview({ product }: { product: ProductId }) {
           <Segmented
             value={previewStyle}
             options={[
-              { value: "layer", label: "图层设计" },
+              { value: "layer", label: "Ribbon 设计" },
               { value: "a5", label: "HY Ribbon / A5" },
               { value: "original", label: "原始界面" }
             ]}
