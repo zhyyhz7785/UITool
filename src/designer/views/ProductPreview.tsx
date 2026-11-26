@@ -205,7 +205,7 @@ export function ProductPreview({ product }: { product: ProductId }) {
           <Segmented
             value={previewStyle}
             options={[
-              { value: "a5", label: "A5 Ribbon" },
+              { value: "a5", label: "HY Ribbon / A5" },
               { value: "original", label: "原始界面" }
             ]}
             onChange={(v) => {
