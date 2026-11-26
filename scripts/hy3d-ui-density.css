@@ -130,6 +130,11 @@ html[data-uitool-density-design="1"] #bw-root .bw-mark {
   width:var(--ud-icon);height:var(--ud-icon);background:transparent;
   border:1px solid var(--text-2);border-radius:2px;box-shadow:inset 3px 3px 0 var(--accent-soft);
 }
+/* The dock already has a 图块 tab. Hide the repeated heading only when
+ * the shared dock menu is mounted and retains the native close action. */
+html[data-uitool-density-design="1"][data-uitool-dock-design="1"] #right-dock-body #bw-root > .bw-title {
+  display:none;
+}
 html[data-uitool-density-design="1"] #bw-root .bw-tabs {background:var(--bg-panel);}
 html[data-uitool-density-design="1"] #bw-root .bw-tab {
   box-sizing:border-box;height:var(--bw-tab);padding:0 2px;font:inherit;font-weight:400;
