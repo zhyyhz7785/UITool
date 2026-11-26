@@ -134,15 +134,57 @@ html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .hy-rib-
 }
 
 
-/* Command families: retain the original button and a narrow independent arrow. */
-html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .uitool-family-split {
-  flex:0 0 auto; align-self:flex-start;
+/* Fixed face geometry: 20px glyph + 24px (two Han characters) + gap/padding.
+   No ellipses, no width changes after pinning a different command. */
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense button.hy-rib-dense-btn {
+  border-width:1px; border-style:solid;
 }
-html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .uitool-family-arrow {
-  color:var(--text-2); border-radius:2px; font-size:11px; line-height:1;
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .hy-rib-dense-btn .btn-label {
+  width:24px; min-width:24px; max-width:24px; flex:0 0 24px;
+  white-space:nowrap; text-overflow:clip; text-align:center;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense button[data-dense-kind="big"] {
+  align-items:center; justify-content:flex-start; padding-top:15px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense button[data-dense-kind="big"] .btn-label {
+  height:14px; flex:0 0 14px; line-height:14px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-layer-face .uitool-layer-short-label .btn-label {
+  width:24px; min-width:24px; max-width:24px; flex:0 0 24px;
+  white-space:nowrap; text-align:center; text-overflow:clip;
+}
+/* Real sibling button overlaid at the bottom right of the square glyph.
+   Small glyph starts at (3,3), big glyph at (8,16). The corner button
+   consumes no layout space and never triggers the main command. */
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .uitool-family-split {
+  position:relative; display:inline-flex; flex:0 0 auto; align-self:flex-start;
+  --family-corner-bg:#ffd17a; --family-corner-fg:#28313c;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"][data-theme="light"] .hy-rib-dense .uitool-family-split {
+  --family-corner-bg:#2167b7; --family-corner-fg:#ffffff;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense button.uitool-family-arrow {
+  position:absolute; z-index:1; top:14px; left:14px;
+  width:9px; min-width:9px; max-width:9px; height:9px; min-height:9px; max-height:9px;
+  display:grid; place-items:center; box-sizing:border-box; margin:0; padding:0;
+  border:0; border-radius:1px; background:var(--family-corner-bg); color:var(--family-corner-fg);
+  cursor:pointer; box-shadow:0 0 0 1px var(--bg-panel);
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .uitool-family-split.is-big > button.uitool-family-arrow {
+  top:37px; left:29px;
+  width:11px; min-width:11px; max-width:11px; height:11px; min-height:11px; max-height:11px;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .uitool-family-arrow::before {
+  content:""; width:0; height:0; border-left:3px solid transparent;
+  border-right:3px solid transparent; border-top:3px solid currentColor;
 }
 html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .uitool-family-arrow:hover,
-html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .uitool-family-arrow[aria-expanded="true"] { background:var(--bg-hover); color:var(--text); }
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .uitool-family-arrow[aria-expanded="true"] {
+  background:#69c8eb; color:#17212a; box-shadow:0 0 0 1px var(--text-2);
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .uitool-family-arrow:focus-visible {
+  outline:2px solid var(--accent); outline-offset:1px;
+}
 html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .uitool-command-family {
   position:fixed; z-index:20000; display:flex; flex-direction:column; gap:4px;
   min-width:min(240px,calc(100vw - 8px)); max-width:calc(100vw - 8px);
