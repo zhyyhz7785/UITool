@@ -154,9 +154,21 @@ html[data-uitool-density-design="1"] #bw-root :is(.bw-grid,.bw-filters) {
 html[data-uitool-density-design="1"] #bw-root .bw-filters {grid-template-columns:repeat(3,minmax(0,1fr));}
 html[data-uitool-density-design="1"] #bw-root :is(.bw-search,.bw-list,.bw-actions,.bw-row,.bw-name,.bw-field) {gap:var(--bw-gap);}
 html[data-uitool-density-design="1"] #bw-root .bw-name {grid-template-columns:minmax(0,1fr) calc(var(--bw-control) + 4px);}
-html[data-uitool-density-design="1"] #bw-root :is(.bw-grid,.bw-list,.bw-actions,.bw-field,.bw-row,.bw-check,.bw-tiny) + :is(.bw-grid,.bw-row,.bw-field,.bw-check,.bw-btn,.bw-hint,.bw-more) {
+/* Only vertical flow containers may add inter-section spacing.
+   A field/button inside a grid or flex row is a sibling too: its spacing
+   belongs to the parent gap, never a per-child top margin. */
+html[data-uitool-density-design="1"] #bw-root :is(.bw-page,.bw-sec,.bw-more > div) > :is(.bw-grid,.bw-list,.bw-actions,.bw-field,.bw-row,.bw-check,.bw-tiny) + :is(.bw-grid,.bw-row,.bw-field,.bw-check,.bw-btn,.bw-hint,.bw-more) {
   margin-top:var(--bw-gap);
 }
+html[data-uitool-density-design="1"] #bw-root :is(.bw-grid,.bw-filters,.bw-foot,.bw-name,.bw-row,.bw-actions,.bw-list) > :is(.bw-field,.bw-btn,.bw-tile,.bw-cmd) {
+  margin:0;min-width:0;
+}
+html[data-uitool-density-design="1"] #bw-root .bw-grid {align-items:stretch;}
+/* If one field label wraps at a narrow width, keep the actual input edges
+   aligned at the bottom of that grid row without clipping either label. */
+html[data-uitool-density-design="1"] #bw-root .bw-grid > .bw-field > :is(input,select) {margin-top:auto;}
+html[data-uitool-density-design="1"] #bw-root .bw-row > :is(.bw-tiny,strong) {min-width:0;overflow-wrap:anywhere;}
+html[data-uitool-density-design="1"] #bw-root .bw-pill:empty {display:none;}
 html[data-uitool-density-design="1"] #bw-root :is(.bw-btn,.bw-tile) {
   box-sizing:border-box;border-radius:var(--ud-radius);font:inherit;font-weight:400;min-width:0;
   color:var(--text);background:var(--bg-ctl);border:1px solid var(--border);
