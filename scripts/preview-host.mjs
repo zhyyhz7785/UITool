@@ -174,8 +174,16 @@ function serveHy3d() {
         if (url.searchParams.get("style") === "a5") {
           try {
             // Validate native source before sending the adapted page; no silent fallback.
-            a5RibbonSource(readFileSync(path.join(root, "skins", "hy-ribbon", "layout.js"), "utf8"));
-            previewHtml = a5Html(previewHtml);
+            const native = readFileSync(path.join(root, "skins", "hy-ribbon", "layout.js"), "utf8");
+            if (/\bnativeCadProfile:\s*true\b/.test(native)) {
+              // Product now owns the CAD profile. Select the real skin before boot;
+              // do not run the old A5 source rewrite or add its CSS.
+              if (!/<\/head\s*>/i.test(previewHtml)) throw new Error("缺少 head 入口");
+              previewHtml = previewHtml.replace(/<\/head\s*>/i, '<script>try{localStorage.setItem("hy3d.ui.skin","hy-ribbon")}catch(e){}</script></head>');
+            } else {
+              a5RibbonSource(native);
+              previewHtml = a5Html(previewHtml);
+            }
           } catch (error) {
             res.statusCode = 502;
             res.setHeader("content-type", "text/plain; charset=utf-8");
