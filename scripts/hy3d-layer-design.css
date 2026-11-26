@@ -115,3 +115,11 @@ html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .ribbon-
 html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense .ribbon-split.is-big .ribbon-split-arrow {
   width:48px; max-width:48px; height:16px; min-height:16px;
 }
+
+/* Narrow previews keep the layer baseline and all group headers accessible. */
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #ribbon-panels {
+  overflow-x:auto;
+}
+html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .hy-rib-dense-stack > .hy-rib-dense-btn {
+  align-self:flex-start;
+}
