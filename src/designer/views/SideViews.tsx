@@ -7,6 +7,7 @@ import { switchScheme } from "@tpl/workbench/schemes";
 import { Button, IconButton } from "@tpl/workbench/ui";
 import { useMemo, useState } from "react";
 import { CadCommandIconsView } from "./CadCommandIcons";
+import { DialogDesignSection, openDialogDesign } from "./DialogDesign";
 import { exportProject, openDesign, saveDesign } from "../actions";
 import { ColorInput, Field, filterIcons, IconPicker, Section, Segmented, TextField } from "../controls";
 import { packageName, projectSummary, validateDoc } from "../export";
@@ -55,6 +56,7 @@ export function PresetsView() {
                 className={"ut-card" + (cfg.workType === type.id ? " on" : "")}
                 onClick={() => {
                   if (!scheme) return;
+                  openDialogDesign(null);
                   design.setConfig(() => buildConfig(type.id, scheme.id, design.get().doc.config.app));
                   design.select(null);
                   wb.notify("success", `已打开「${type.name}」`);
@@ -67,10 +69,11 @@ export function PresetsView() {
           })}
         </div>
       </Section>
+      <DialogDesignSection />
       <Section title="打开已有设计">
         <div className="ut-note">打开 .uitool.json 或工程里的 ui.config.json。旧预设只要文件里带着自己的布局，就按原样打开。有未保存修改时不会覆盖。</div>
         <div className="ut-row">
-          <Button onClick={() => void openDesign(wb)}>打开设计…</Button>
+          <Button onClick={() => { openDialogDesign(null); void openDesign(wb); }}>打开设计…</Button>
           <Button
             onClick={() => {
               design.revertUnsaved();
