@@ -31,33 +31,73 @@ html[data-uitool-theme-design="1"][data-palette="blender-dark"][data-theme="dark
   --sb-thumb-hover: #696969;
 }
 html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] {
+  /* AutoCAD 2026, user reference 2026-11-26, 2048x1095 RGB screenshot.
+   * Flat surfaces sampled directly; states not shown reuse sampled colors.
+   * No approximate blue tint or global filter. */
   color-scheme: dark;
-  --bg-window: #1b2533;
-  --bg-header: #253449;
-  --bg-panel: #253449;
-  --bg-ribbon: #253449;
-  --bg-raised: #304259;
-  --bg-input: #1e2b3b;
-  --bg-ctl: #304259;
-  --bg-hover: #394d65;
-  --bg-active: #405873;
-  --border: #3c4e65;
-  --border-strong: #536b85;
-  --sash: #3c4e65;
-  --sash-hover: #86baff;
-  --text: #e9eff7;
-  --text-2: #b2c0d3;
-  --text-3: #91a4be;
-  --accent: #86baff;
-  --accent-hover: #a2ccff;
-  --accent-press: #679ee7;
-  --accent-soft: #354e70;
-  --selection-bg: #354e70;
-  --selection-text: #e2eeff;
-  --selection-hover: #405c80;
-  --selection-border: #668db9;
-  --sb-thumb: #506780;
-  --sb-thumb-hover: #6b829b;
+  --bg-window: #222933;
+  --bg-header: #222933;
+  --bg-panel: #3b4453;
+  --bg-ribbon: #3b4453;
+  --bg-raised: #2e3440;
+  --bg-input: #4e5a6e;
+  --bg-ctl: #3b4453;
+  --bg-hover: #4e5a6e;
+  --bg-active: #4e5a6e;
+  --border: #2e3440;
+  --border-strong: #191c23;
+  --sash: #191c23;
+  --sash-hover: #608fbf;
+  --text: #d9d9d9;
+  --text-2: #d9d9d9;
+  --text-3: #adb0b4;
+  --accent: #608fbf;
+  --accent-hover: #608fbf;
+  --accent-press: #608fbf;
+  --accent-soft: #4e5a6e;
+  --selection-bg: #4e5a6e;
+  --selection-text: #f5f5f5;
+  --selection-hover: #4e5a6e;
+  --selection-border: #608fbf;
+  --sb-thumb: #4e5a6e;
+  --sb-thumb-hover: #608fbf;
+  --uit-acad-command-face: #b2b2b2;
+  --uit-acad-command-ink: #474747;
+}
+/* Match the actual regions, not just the palette. Native skins sometimes
+ * map file tabs and title bars to different legacy tokens. */
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] :is(#titlebar-row,#menubar,#filetabs,#ribbon-tabs,.ribbon-tabs,#vp-layouts) {
+  background-color:var(--bg-header);
+}
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] :is(#ribbon,#ribbon-panels,#left-dock,#right-dock,#statusbar,#dock-workspace-bar) {
+  background-color:var(--bg-panel);
+}
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] :is(#titlebar-row .ribbon-tab.active,#ribbon-tabs .ribbon-tab.active,#filetabs .filetab.active) {
+  background-color:var(--bg-panel);color:var(--selection-text);
+}
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] #statusbar :is(#sb-toggles,#uitool-status-extra) > button.active {
+  background-color:var(--accent);border-color:var(--accent);color:var(--selection-text);
+}
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] #statusbar #sb-model {
+  background-color:var(--bg-header);
+}
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] #statusbar #sb-model > button.active {
+  background-color:var(--bg-panel);color:var(--selection-text);
+}
+/* The screenshot shows a floating command face over a black drawing:
+ * #b2b2b2 is its observed composite, not an inferred opacity. The candidate
+ * uses that solid face to keep text legible over any drawing. */
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] #cmdbar.floating .cmd-prompt-row {
+  background-color:var(--uit-acad-command-face);color:var(--uit-acad-command-ink);
+}
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] #cmdbar.floating .cmd-prompt-row :is(#cmd-input,.cmd-prompt-label,#uitool-cmd-more,#cmdbar-ime-lock) {
+  color:var(--uit-acad-command-ink);
+}
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] #cmdbar.floating .cmd-prompt-row :is(#uitool-cmd-more,#cmdbar-ime-lock):hover {
+  background-color:var(--bg-panel);color:var(--text);
+}
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] #cmdbar.floating .cmd-prompt-row #cmdbar-ime-lock[aria-pressed="true"] {
+  background-color:var(--bg-panel);color:var(--text);
 }
 html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="light"] {
   color-scheme: light;
