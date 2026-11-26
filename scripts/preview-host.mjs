@@ -21,6 +21,8 @@ const A5_CSS = path.join(HERE, "hy3d-a5-preview.css");
 const THEME_DESIGN_CSS = path.join(HERE, "hy3d-theme-design.css");
 const QAT_HISTORY_JS = path.join(HERE, "hy3d-qat-history.js");
 const DIALOG_LAUNCH_JS = path.join(HERE, "hy3d-dialog-launch.js");
+const TABLE_DESIGN_JS = path.join(HERE, "hy3d-table-design.js");
+const TABLE_DESIGN_CSS = path.join(HERE, "hy3d-table-design.css");
 const LAYER_CSS = path.join(HERE, "hy3d-layer-design.css");
 const LAYER_SCENE = path.join(HERE, "hy3d-layer-scene.js");
 const DOCK_DESIGN_CSS = path.join(HERE, "hy3d-dock-design.css");
@@ -212,6 +214,13 @@ function serveHy3d() {
         }
         return;
       }
+      if (raw === "/__uitool-table-design.js" || raw === "/__uitool-table-design.css") {
+        const js = raw.endsWith(".js");
+        res.setHeader("content-type", MIME[js ? ".js" : ".css"]);
+        res.setHeader("cache-control", "no-store");
+        createReadStream(js ? TABLE_DESIGN_JS : TABLE_DESIGN_CSS).pipe(res);
+        return;
+      }
       if (raw === "/__uitool-dialog-launch.js") {
         res.setHeader("content-type", MIME[".js"]);
         res.setHeader("cache-control", "no-store");
@@ -390,6 +399,11 @@ function serveHy3d() {
           }
           previewHtml = previewHtml.replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-theme-design.css"><script>document.documentElement.dataset.uitoolThemeDesign="1"</script></head>')
             .replace(/<\/body\s*>/i, '<script src="/__uitool-qat-history.js"></script></body>');
+        }
+        if (["layer", "a5"].includes(url.searchParams.get("style"))) {
+          previewHtml = previewHtml
+            .replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-table-design.css"></head>')
+            .replace(/<\/body\s*>/i, '<script src="/__uitool-table-design.js"></script></body>');
         }
         const dialogId = url.searchParams.get("dialog");
         if (dialogId && HY3D_DIALOGS.some(x => x.id === dialogId)) {
