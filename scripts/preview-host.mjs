@@ -6,9 +6,11 @@ import { createReadStream, existsSync, readdirSync, readFileSync, statSync } fro
 import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { a5Html, a5RibbonSource } from "./hy3d-a5-preview.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const EXPLORER_FIXTURE = path.join(HERE, "hy3d-explorer-fixture.js");
+const A5_CSS = path.join(HERE, "hy3d-a5-preview.css");
 const MIRROR_UI = path.resolve(HERE, "..", ".product-sources", "hy3d", "ui");
 const MIRROR_HYMD = path.resolve(HERE, "..", ".product-sources", "hymd");
 const WORKTREE_UI = "E:\\Code\\_shared\\worktrees\\hy3d\\cl\\ui";
@@ -97,6 +99,23 @@ function serveHy3d() {
         res.end();
         return;
       }
+      if (raw === "/__uitool-a5.css") {
+        res.setHeader("content-type", MIME[".css"]);
+        res.setHeader("cache-control", "no-store");
+        createReadStream(A5_CSS).pipe(res);
+        return;
+      }
+      if (raw === "/__uitool-a5-layout.js") {
+        res.setHeader("content-type", MIME[".js"]);
+        res.setHeader("cache-control", "no-store");
+        try {
+          res.end(a5RibbonSource(readFileSync(path.join(root, "skins", "hy-ribbon", "layout.js"), "utf8")));
+        } catch (error) {
+          res.statusCode = 502;
+          res.end("// UITool A5 source incompatible: " + JSON.stringify(String(error)));
+        }
+        return;
+      }
       if (raw === "/__uitool-explorer-fixture.js") {
         res.setHeader("content-type", MIME[".js"]);
         res.setHeader("cache-control", "no-store");
@@ -132,7 +151,20 @@ function serveHy3d() {
           res.end("UITool: HY3D host.js entry not found; preview fixture cannot be installed.");
           return;
         }
-        res.end(html.replace(hostScript, (tag) => tag + '\n<script src="/__uitool-explorer-fixture.js"></script>'));
+        let previewHtml = html.replace(hostScript, (tag) => tag + '\n<script src="/__uitool-explorer-fixture.js"></script>');
+        if (url.searchParams.get("style") === "a5") {
+          try {
+            // Validate native source before sending the adapted page; no silent fallback.
+            a5RibbonSource(readFileSync(path.join(root, "skins", "hy-ribbon", "layout.js"), "utf8"));
+            previewHtml = a5Html(previewHtml);
+          } catch (error) {
+            res.statusCode = 502;
+            res.setHeader("content-type", "text/plain; charset=utf-8");
+            res.end("UITool A5 预览与当前 HY3D 前端不兼容。切换原始预览，或同步产品前端镜像。\n" + String(error));
+            return;
+          }
+        }
+        res.end(previewHtml);
         return;
       }
       createReadStream(target).pipe(res);
