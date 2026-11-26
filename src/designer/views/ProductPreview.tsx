@@ -68,7 +68,8 @@ export function ProductPreview({ product }: { product: ProductId }) {
   const [stage, setStage] = useState({ w: 800, h: 600 });
   const [reloadKey, setReloadKey] = useState(0);
   const [explorerScene, setExplorerScene] = useState<"sample" | "empty">("sample");
-  const frameSrc = product === "hy3d" ? `${page.src}&explorer=${explorerScene}` : page.src;
+  const [previewStyle, setPreviewStyle] = useState<"a5" | "original">("a5");
+  const frameSrc = product === "hy3d" ? `${page.src}&explorer=${explorerScene}&style=${previewStyle}` : page.src;
 
   const show = product === "hy3d" ? up === true : preview;
   const scale = fit ? Math.min(1, stage.w / NATIVE.w, stage.h / NATIVE.h) : 1;
@@ -148,7 +149,7 @@ export function ProductPreview({ product }: { product: ProductId }) {
   useEffect(() => {
     if (!show || !selecting) return;
     ask("regions");
-  }, [show, selecting, fit, stage.w, stage.h, reloadKey, skin, scheme]);
+  }, [show, selecting, fit, stage.w, stage.h, reloadKey, skin, scheme, previewStyle, explorerScene]);
 
   const start = async () => {
     setBusy(true);
@@ -201,6 +202,20 @@ export function ProductPreview({ product }: { product: ProductId }) {
           {fit ? ` · ${Math.round(scale * 100)}%` : ""}
         </span>
         {product === "hy3d" && (
+          <Segmented
+            value={previewStyle}
+            options={[
+              { value: "a5", label: "A5 Ribbon" },
+              { value: "original", label: "原始界面" }
+            ]}
+            onChange={(v) => {
+              setRegions([]);
+              setUi(null);
+              setPreviewStyle(v === "original" ? "original" : "a5");
+            }}
+          />
+        )}
+        {product === "hy3d" && (
           <select
             className="wb-select"
             aria-label="资源管理器预览场景"
@@ -212,7 +227,7 @@ export function ProductPreview({ product }: { product: ProductId }) {
             <option value="empty">资源：未打开目录</option>
           </select>
         )}
-        {skins.length > 0 && (
+        {skins.length > 0 && !(product === "hy3d" && previewStyle === "a5") && (
           <select
             className="wb-select"
             value={skin}

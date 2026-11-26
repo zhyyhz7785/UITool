@@ -1,0 +1,147 @@
+/* A5 final HTML reference: native controls, no new command handlers.
+   Scoped to UITool preview + HY Ribbon; the original page has neither marker. */
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] {
+  --titlebar-h: 38px;
+  --filetabs-h: 34px;
+  --status-h: 30px;
+  --ribbon-h: 118px;
+  --hy-head-h: 20px;
+  --hy-cmd-gap: 2px;
+  --hy-cmd-fs: 11px;
+  --hy-cmd-lh: 14px;
+  --uit-a5-rows: 3;
+  --uit-a5-row: 27px;
+  --r-sm: 4px;
+  --r-md: 6px;
+}
+html[data-uitool-a5="1"][data-skin="hy-ribbon"][data-uitool-a5-rows="2"] {
+  --ribbon-h: 100px;
+  --uit-a5-rows: 2;
+  --uit-a5-row: 33px;
+}
+html[data-uitool-a5="1"][data-skin="hy-ribbon"][data-theme="dark"] {
+  --bg-window: #17191d;
+  --bg-panel: #1e2126;
+  --bg-raised: #262a31;
+  --bg-header: #1e2126;
+  --bg-input: #17191d;
+  --bg-ctl: #262a31;
+  --bg-hover: #2b3038;
+  --bg-active: #263b59;
+  --border: #333840;
+  --text: #e7eaf0;
+  --text-2: #929baa;
+  --accent: #7cafff;
+  --accent-soft: #263b59;
+  --cad-bg: #0b0f14;
+}
+html[data-uitool-a5="1"][data-skin="hy-ribbon"][data-theme="light"] {
+  --bg-window: #f3f5f8;
+  --bg-panel: #ffffff;
+  --bg-raised: #eef1f5;
+  --bg-header: #ffffff;
+  --bg-input: #f3f5f8;
+  --bg-hover: #e9edf3;
+  --bg-active: #e3efff;
+  --border: #d8dee7;
+  --text: #20252d;
+  --text-2: #687385;
+  --accent: #246bd7;
+  --accent-soft: #e3efff;
+}
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] #app.bp-short:not(.panel-ribbon-off):not(.toolbar-side):not(.ribbon-minimized) {
+  --ribbon-h: 118px !important;
+}
+html[data-uitool-a5="1"][data-skin="hy-ribbon"][data-uitool-a5-rows="2"] #app.bp-short:not(.panel-ribbon-off):not(.toolbar-side):not(.ribbon-minimized) {
+  --ribbon-h: 100px !important;
+}
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] #titlebar-row { gap: 4px; background: var(--bg-window); }
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .ribbon-tab { line-height: 38px; padding: 0 11px; }
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] #ribbon-tabs { height: 100%; }
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .winctl button { width: 32px; height: 30px; }
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .hy-dock-toggle { width: 29px; height: 27px; border-radius: 4px; }
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] #cmd-search { height: 28px; border-radius: 6px; }
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] #ribbon { background: var(--bg-panel); }
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] #ribbon-panels { padding: 3px 4px; }
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .hy-rib-group {
+  flex: 1 0 auto;
+  min-width: max-content;
+  padding: 0 5px 2px;
+}
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .hy-rib-head {
+  order: 2;
+  height: 20px;
+  flex: 0 0 20px;
+  font-size: 11px;
+  border-top: 1px solid var(--border);
+}
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .hy-rib-cmds {
+  order: 1;
+  display: grid;
+  grid-template-rows: repeat(var(--uit-a5-rows), var(--uit-a5-row));
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  align-content: center;
+  justify-content: center;
+  align-items: stretch;
+  gap: 2px;
+}
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .hy-rib-cmd {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 82px;
+  min-width: 0;
+  height: var(--uit-a5-row);
+  gap: 4px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .hy-rib-cmd .btn-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  white-space: nowrap;
+}
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .hy-rib-cmd .btn-glyph,
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .hy-rib-cmd .ic {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .hy-rib-cmds > .hy-rib-cmd:first-child {
+  grid-row: 1 / span var(--uit-a5-rows);
+  flex-direction: column;
+  justify-content: center;
+  width: 62px;
+  height: 100%;
+  gap: 5px;
+}
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .hy-rib-cmds > .hy-rib-cmd:first-child .btn-glyph,
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .hy-rib-cmds > .hy-rib-cmd:first-child .ic {
+  width: 23px;
+  height: 23px;
+  flex: 0 0 23px;
+  color: var(--accent);
+}
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .hy-rib-cmds > .hy-rib-layer {
+  grid-row: 1 / span var(--uit-a5-rows);
+  align-self: stretch;
+  width: 118px;
+  min-width: 118px;
+  max-width: 118px;
+  height: 100%;
+  border-radius: 5px;
+}
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .hy-ribbon-fly {
+  width: min(740px, calc(100vw - 12px));
+  border-radius: 8px;
+  padding: 10px;
+}
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .hy-fly-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .hy-rib-tile { border-radius: 4px; }
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .explorer-titlebar { min-height: 35px; }
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .explorer-icon-btn { border-radius: 4px; }
+html[data-uitool-a5="1"][data-skin="hy-ribbon"] .cad-property-value input:focus-visible { outline: 1px solid var(--accent); }
