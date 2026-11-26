@@ -7,7 +7,7 @@ type Product = "hy3d" | "hymd";
 type Entry = { id: string; title: string; product: Product; source: string; mode: "native" | "prototype" | "source" };
 type Catalog = { rows: Entry[]; scanned: number; errors: string[] };
 const names: Record<Product,string> = {hy3d:"HY3D",hymd:"HyMdTauri"};
-const advancedText: Entry = {id:"hy3d-mtext-advanced",title:"高级文字编辑器 / Markdown",product:"hy3d",source:"scripts/mtext-preview/product/text_window.html",mode:"native"};
+const advancedText: Entry = {id:"hy3d-mtext-advanced",title:"高级文字编辑器 / HyMdTauri 原生",product:"hy3d",source:"HyMdTauri2/src/editor/hymd/HymdEditor.tsx",mode:"native"};
 const font: Entry = {id:"hy3d-font-v2",title:"字体替换 / V2 设计候选",product:"hy3d",source:"public/hy3d-font-manager/index.html",mode:"prototype"};
 const printCandidate = (product:Product):Entry => ({id:product+"-print-workbench",title:"统一打印工作台 / 设计候选",product,source:"public/unified-print-workbench/index.html",mode:"prototype"});
 const fallback: Record<Product,Entry[]> = {
@@ -102,14 +102,15 @@ export function ProductDialogDesign({entry}:{entry:Entry}){
     const start=async()=>{
       try{
         setStatus("正在启动独立预览…");
-        const route=p==="hy3d"?"start":"dialog-lab";
-        const r=await fetch("/__uitool/preview/"+route+"?product="+p,{method:"POST"});
+        const provider=entry.id===advancedText.id?"hymd":p;
+        const route=provider==="hy3d"?"start":"dialog-lab";
+        const r=await fetch("/__uitool/preview/"+route+"?product="+provider,{method:"POST"});
         const result=await r.json() as {up?:boolean;preview?:boolean;error?:string};
-        if(!r.ok||!result.up||(p==="hy3d"&&!result.preview))throw Error(result.error||"未能连接 UITool 专用前端，请同步产品工作树");
+        if(!r.ok||!result.up||(provider==="hy3d"&&!result.preview))throw Error(result.error||"未能连接 UITool 专用前端，请同步产品工作树");
         if(cancelled)return;
         if(entry.id===advancedText.id){
-          const url="http://127.0.0.1:1450/__uitool-mtext/text_window.html";
-          setSrc(url);setStatus("HY3D #2237 固定源码 · 等待 SDK 装载");return;
+          setSrc("http://127.0.0.1:1461/?dialog="+encodeURIComponent(entry.id));
+          setStatus("HyMdTauri 原生编辑器 · 等待组件装载");return;
         }
         setSrc(p==="hy3d"?"http://127.0.0.1:1450/index.html?uitool=1&style=layer&explorer=sample&dialog="+encodeURIComponent(entry.id):"http://127.0.0.1:1461/?dialog="+encodeURIComponent(entry.id));
         setStatus(p==="hy3d"?"等待原生弹窗…":"原生组件实验页 · 示例数据");
@@ -121,11 +122,12 @@ export function ProductDialogDesign({entry}:{entry:Entry}){
   useEffect(()=>{
     const receive=(event:MessageEvent)=>{
       if(event.source===frame.current?.contentWindow&&entry.id===p+"-print-workbench"&&entry.mode==="prototype"&&event.origin==="null"&&event.data?.source==="uitool-print-candidate"&&event.data?.action==="close"){openDialogDesign(null);return;}
-      if(p!=="hy3d"||event.origin!=="http://127.0.0.1:1450"||event.source!==frame.current?.contentWindow)return;
+      const origin=entry.id===advancedText.id?"http://127.0.0.1:1461":"http://127.0.0.1:1450";
+      if(p!=="hy3d"||event.origin!==origin||event.source!==frame.current?.contentWindow)return;
       const d=event.data;
       if(d?.source!=="uitool-dialog"||d.id!==entry.id)return;
       if(d.status==="error")setError(String(d.message||"弹窗未打开"));
-      else setStatus(String(d.message||""));
+      else {setError("");setStatus(String(d.message||""));}
     };
     window.addEventListener("message",receive);return ()=>window.removeEventListener("message",receive);
   },[entry.id,entry.mode,p]);

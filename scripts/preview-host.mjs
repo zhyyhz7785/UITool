@@ -11,7 +11,6 @@ import { layerDesignHtml, layerDesignSource } from "./hy3d-layer-design.mjs";
 import { statusDesignSource } from "./hy3d-status-design.mjs";
 import { commandRowsSource } from "./hy3d-command-rows.mjs";
 import { dialogCatalog, HY3D_DIALOGS, startHymdDialogLab } from "./dialog-design.mjs";
-import { serveMtextPreview } from "./mtext-preview.mjs";
 import { settingsDesignSource } from "./hy3d-settings-design.mjs";
 import { hatchDesignSource } from "./hy3d-hatch-design.mjs";
 import { applyCommandIcons, appendCadSymbols, loadCadPack } from "./hy3d-cad-icons.mjs";
@@ -144,7 +143,6 @@ function serveHy3d() {
         res.end();
         return;
       }
-      if (serveMtextPreview(raw, req, res, root)) return;
       if (raw === "/__uitool-hatch-design.css") {
         res.setHeader("content-type", MIME[".css"]);
         res.setHeader("cache-control", "no-store");

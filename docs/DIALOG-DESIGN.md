@@ -9,8 +9,13 @@
 
 静态核对入口与源码接口；编译、Windows 实机和功能验收 NOT RUN。
 
-## HY3D 高级文字编辑器（MTEXT / Markdown）
+## HY3D 高级文字编辑器（MTEXT / HyMdTauri 原生）
 
-弹窗设计 → HY3D → 高级文字编辑器 / Markdown。使用 HY3D PR #2237 的 `9151e8fa71bd4acbfe1c345580020dc364dedd39` 固定源码快照（`scripts/mtext-preview/product/`，保留 HTML/JS/CSS 原样），不是手绘原型。1450 独立浏览器预览仅用 `fixture.js` 替代宿主 IPC，内存工程说明示例，完成/取消只展示模拟结果。原始 SDK、字体资源和转换桥从现有 HY3D UI 镜像读取，按 Git blob SHA 核对；不复制大型 SDK，不访问真实图纸或写入产品。缺少/版本不符时直接显示原因。若已有旧 1450 服务，需要正常重启 UITool。源码调整保留在 UITool，后续经审定再同步 HY3D。
+入口仍在弹窗设计 → HY3D → 高级文字编辑器 / HyMdTauri 原生。替换 #44 的固定 HY3D 界面快照：直接通过 HyMdTauri 的 1460 Vite 工作树及隔离的 1461 实验页加载原生组件，不复制、不重写编辑器、鼠标菜单或排版算法。源码核对基准 HyMdTauri2 main 77bc7301ae2c865567fdf4581504190a7ba03b10；实际运行使用本机已同步工作树。
 
-本入口支持检查实际富文本工具栏、右侧排版折叠/拖动、纸张、分栏和源码切换；不代表真实 CAD 保存或 Windows 窗口已验收。
+- `HymdEditor.tsx`：原生正文；左键拖选触发 `MarkdownSelectionBar`，右键调用 `openEditorCommandSurface`，原生插入和块级分栏/比例拖动保留。
+- `LayoutPreviewPane.tsx`：原生页面设置、纸型/横纵、四边边距及联动、栏数/栏距、标尺、真实分页、缩放和页码。纸张设置通过原生视图胶片状态保存到内存，不用 CSS 多栏模拟。
+- `AppRuntimeProvider` 与 `openMarkdownDraft`：提供内存文档、原生命令运行时。两模式使用同一个文档，切换前 flush，IME 输入中不切换。仅适配入口和最少的正文/排版切换条；不改变产品代码、存盘协议或授权。
+- 1461 浏览器隔离环境，没有真实图纸、原生 Tauri IPC；untitled 文档与视图胶片不落盘。产品依赖由原有预览工作树提供，若缺少服务/组件则明确报告。删除旧快照及专用 1450 路由。仅 UITool 审定，未同步 HY3D。
+
+Windows 实机、构建、功能验收 NOT RUN。
