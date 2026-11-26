@@ -2,6 +2,8 @@
 import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
 import path from "node:path";
 import http from "node:http";
+import { fileURLToPath } from "node:url";
+const MTEXT_LAB = fileURLToPath(new URL("./hymd-mtext-lab.js", import.meta.url));
 export const HY3D_DIALOGS = [
   ["font-report","字体替换 / 原生字体报告","font_report.js",null],
   ["options","设置","settings-shell.js","app.options"],
@@ -23,7 +25,7 @@ export const HYMD_DIALOGS = [
   ["license","注册 / 授权","src/overlays/LicenseDialog.tsx"],
   ["context","右键菜单 / 子菜单","src/ui/ContextMenu.tsx"],
 ].map(([id,title,source])=>({id:"hymd-"+id,title,source,product:"hymd",mode:"native"}));
-const MTEXT={id:"hy3d-mtext-advanced",title:"高级文字编辑器 / Markdown",source:"scripts/mtext-preview/product/text_window.html",product:"hy3d",mode:"native"};
+const MTEXT={id:"hy3d-mtext-advanced",title:"高级文字编辑器 / HyMdTauri 原生",source:"HyMdTauri2/src/editor/hymd/HymdEditor.tsx",product:"hy3d",mode:"native"};
 const FONT={id:"hy3d-font-v2",title:"字体替换 / V2 设计候选",source:"public/hy3d-font-manager/index.html",product:"hy3d",mode:"prototype"};
 export function dialogCatalog(product,root) {
   const print={id:product+"-print-workbench",title:"统一打印工作台 / 设计候选",source:"public/unified-print-workbench/index.html",product,mode:"prototype"};
@@ -88,7 +90,10 @@ try{
  skin.applyPersistedSkin?.();
  const id=${JSON.stringify(id)};
  let Component;
- if(id==="hymd-about"){
+ if(id==="hy3d-mtext-advanced"){
+   const lab=await import("/__uitool-hymd-mtext.js");
+   Component=await lab.createMtextLab(R,info);
+ }else if(id==="hymd-about"){
    const m=await import("/src/overlays/AboutDialog.tsx");
    function Trigger(){const a=m.useAbout();R.useEffect(()=>a.show(),[]);return h("button",{onClick:a.show},"重新打开关于");}
    Component=()=>h(m.AboutProvider,null,h(Trigger));
@@ -106,10 +111,10 @@ try{
    Component=()=>{const [menu,setMenu]=R.useState(sample);return h(R.Fragment,null,h("button",{onClick:()=>setMenu(sample())},"重新打开菜单"),h(m.ContextMenu,{menu,onClose:()=>setMenu(null)}));};
  }
  if(!Component)throw Error("没有对应的原生组件适配");
- class Boundary extends R.Component {constructor(p){super(p);this.state={error:""};}static getDerivedStateFromError(e){return {error:String(e?.message||e)};}render(){return this.state.error?h("p",{role:"alert"},"原生组件加载失败："+this.state.error):this.props.children;}}
+ class Boundary extends R.Component {constructor(p){super(p);this.state={error:""};}static getDerivedStateFromError(e){return {error:String(e?.message||e)};}componentDidCatch(e){if(id==="hy3d-mtext-advanced")parent.postMessage({source:"uitool-dialog",id,status:"error",message:String(e?.message||e)},"*");}render(){return this.state.error?h("p",{role:"alert"},"原生组件加载失败："+this.state.error):this.props.children;}}
  createRoot(document.getElementById("root")).render(h(Boundary,null,h(Component)));
- info.textContent="原生组件 · 示例数据 · 不连接真实文档";
-}catch(e){info.textContent="原生组件加载失败："+String(e?.message||e);}
+ if(id!=="hy3d-mtext-advanced")info.textContent="原生组件 · 示例数据 · 不连接真实文档";
+}catch(e){info.textContent="原生组件加载失败："+String(e?.message||e);if(new URLSearchParams(location.search).get("dialog")==="hy3d-mtext-advanced")parent.postMessage({source:"uitool-dialog",id:"hy3d-mtext-advanced",status:"error",message:info.textContent},"*");}
 `;
   return '<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HyMd 弹窗设计</title><body><div id="state" style="padding:8px" role="status">正在加载真实组件…</div><div id="root" style="padding:12px"></div><script type="module">'+code.replaceAll("</script","<\\/script")+'</script></body></html>';
 }
@@ -119,9 +124,12 @@ export async function startHymdDialogLab(){
     if(req.socket.remoteAddress!=="127.0.0.1"||!["GET","HEAD"].includes(req.method)){res.writeHead(403);res.end();return;}
     let url;
     try{url=new URL(req.url,"http://127.0.0.1:1461");if(url.origin!=="http://127.0.0.1:1461")throw Error();}catch{res.writeHead(400);res.end();return;}
+    if(url.pathname==="/__uitool-hymd-mtext.js"){
+      res.writeHead(200,{"content-type":"text/javascript; charset=utf-8","cache-control":"no-store","x-content-type-options":"nosniff"});res.end(readFileSync(MTEXT_LAB));return;
+    }
     if(url.pathname==="/"){
       const id=url.searchParams.get("dialog");
-      if(!HYMD_DIALOGS.some(x=>x.id===id)){res.writeHead(404);res.end("未知弹窗");return;}
+      if(id!==MTEXT.id&&!HYMD_DIALOGS.some(x=>x.id===id)){res.writeHead(404);res.end("未知弹窗");return;}
       try{const mods=await modulePaths();res.setHeader("content-type","text/html; charset=utf-8");res.setHeader("cache-control","no-store");res.end(labHtml(id,mods));}
       catch(e){res.writeHead(502,{"content-type":"text/plain; charset=utf-8"});res.end(String(e));}
       return;
