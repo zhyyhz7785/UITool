@@ -1,0 +1,76 @@
+/* Unified side-dock design. Only installed after the actual source anchors are found.
+   The native file-tab observer can recreate duplicate controls; hide, never remove them. */
+html[data-uitool-dock-design="1"] #filetabs .cad-resource-toggle,
+html[data-uitool-dock-design="1"] #filetabs .cad-props-toggle,
+html[data-uitool-dock-design="1"] #filetabs .cad-dock-toggles,
+html[data-uitool-dock-design="1"] #left-dock > .cad-explorer-head,
+html[data-uitool-dock-design="1"] #left-dock > .explorer-narrow-label,
+html[data-uitool-dock-design="1"] #explorer-tabs > .cad-explorer-more,
+html[data-uitool-dock-design="1"] #explorer-tabs > .explorer-tab:not([data-tab="files"]):not([data-tab="project"]):not([data-tab="history"]):not([data-tab="search"]),
+html[data-uitool-dock-design="1"] #dock-workspace-bar .dock-workspace-actions,
+html[data-uitool-dock-design="1"] #dock-workspace-bar [data-dock-tab="more"] {
+  display:none !important;
+}
+html[data-uitool-dock-design="1"] #explorer-tabs,
+html[data-uitool-dock-design="1"] #dock-workspace-bar {
+  display:flex; flex:0 0 auto; align-items:center; box-sizing:border-box;
+  min-height:30px; height:30px; gap:0; padding:0 4px; flex-wrap:nowrap;
+  border-bottom:1px solid var(--border); background:var(--bg-panel);
+  overflow:hidden;
+}
+html[data-uitool-dock-design="1"] #dock-workspace-bar .dock-workspace-tabs {
+  flex:1 1 auto; min-width:0; gap:0; align-items:stretch; overflow-x:auto;
+  scrollbar-width:none;
+}
+html[data-uitool-dock-design="1"] #explorer-tabs > .explorer-tab[data-tab="files"],
+html[data-uitool-dock-design="1"] #explorer-tabs > .explorer-tab[data-tab="project"],
+html[data-uitool-dock-design="1"] #explorer-tabs > .explorer-tab[data-tab="history"],
+html[data-uitool-dock-design="1"] #explorer-tabs > .explorer-tab[data-tab="search"],
+html[data-uitool-dock-design="1"] #dock-workspace-bar .dock-workspace-tabs > button:not([data-dock-tab="more"]) {
+  display:flex; align-items:center; justify-content:center;
+  height:29px; min-height:29px; min-width:0; flex:0 1 auto;
+  box-sizing:border-box; padding:0 8px; border:0; border-bottom:2px solid transparent;
+  border-radius:0; background:transparent; color:var(--text-2); font:inherit; font-size:12px;
+  white-space:nowrap; cursor:pointer;
+}
+html[data-uitool-dock-design="1"] #explorer-tabs > [data-tab="files"] { order:0; }
+html[data-uitool-dock-design="1"] #explorer-tabs > [data-tab="project"] { order:1; }
+html[data-uitool-dock-design="1"] #explorer-tabs > [data-tab="history"] { order:2; }
+html[data-uitool-dock-design="1"] #explorer-tabs > [data-tab="search"] { order:3; }
+html[data-uitool-dock-design="1"] #explorer-tabs > .explorer-tab.active,
+html[data-uitool-dock-design="1"] #dock-workspace-bar .dock-workspace-tabs > button[aria-selected="true"] {
+  color:var(--text); background:var(--accent-soft); border-bottom-color:var(--accent);
+}
+html[data-uitool-dock-design="1"] #explorer-tabs > .explorer-tab:hover,
+html[data-uitool-dock-design="1"] #dock-workspace-bar .dock-workspace-tabs > button:hover { background:var(--bg-hover); }
+html[data-uitool-dock-design="1"] .uitool-dock-more {
+  order:20; flex:0 0 26px; width:26px; height:26px; margin-left:auto; padding:0;
+  display:grid; place-items:center; color:var(--text-2); background:transparent;
+  border:0; border-radius:4px; cursor:pointer;
+}
+html[data-uitool-dock-design="1"] .uitool-dock-more:hover,
+html[data-uitool-dock-design="1"] .uitool-dock-more[aria-expanded="true"] { color:var(--text); background:var(--bg-hover); }
+html[data-uitool-dock-design="1"] .uitool-dock-more svg { width:16px; height:16px; fill:currentColor; }
+html[data-uitool-dock-design="1"] .uitool-dock-menu {
+  position:fixed; z-index:20000; min-width:144px; max-width:calc(100vw - 12px);
+  max-height:calc(100vh - 12px); overflow:auto; padding:4px; box-sizing:border-box;
+  background:var(--bg-raised); color:var(--text); border:1px solid var(--border);
+  border-radius:6px; box-shadow:0 5px 16px #0004;
+}
+html[data-uitool-dock-design="1"] .uitool-dock-menu[hidden] { display:none !important; }
+html[data-uitool-dock-design="1"] .uitool-dock-menu button {
+  width:100%; min-height:26px; display:flex; align-items:center; text-align:left;
+  gap:8px; border:0; padding:4px 8px; border-radius:3px; background:transparent;
+  color:var(--text); font:inherit; font-size:12px; cursor:pointer;
+}
+html[data-uitool-dock-design="1"] .uitool-dock-menu button:hover,
+html[data-uitool-dock-design="1"] .uitool-dock-menu button:focus-visible { background:var(--bg-hover); outline:1px solid var(--accent); outline-offset:-1px; }
+html[data-uitool-dock-design="1"] .uitool-dock-menu hr { border:0; border-top:1px solid var(--border); margin:3px 4px; }
+html[data-uitool-dock-design="1"] .uitool-dock-more:focus-visible { outline:1px solid var(--accent); outline-offset:-1px; }
+/* Native icon-dock / narrow mode keeps its collapsed layout. */
+html[data-uitool-dock-design="1"] #right-dock.is-icon-dock #dock-workspace-bar { height:auto; flex-direction:column; padding:2px 0; }
+html[data-uitool-dock-design="1"] #right-dock.is-icon-dock .dock-workspace-tabs { flex-direction:column; flex:none; }
+html[data-uitool-dock-design="1"] #right-dock.is-icon-dock #dock-workspace-bar .dock-workspace-tabs > button { width:28px; font-size:0; padding:0; }
+html[data-uitool-dock-design="1"] #right-dock.is-icon-dock #dock-workspace-bar .dock-workspace-tabs > button::first-letter { font-size:12px; }
+html[data-uitool-dock-design="1"] #right-dock.is-icon-dock .uitool-dock-more { margin-left:0; }
+html[data-uitool-dock-design="1"] #app.bp-800 #left-dock > .explorer-narrow-label { display:flex !important; }
