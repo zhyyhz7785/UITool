@@ -12,6 +12,7 @@ import { statusDesignSource } from "./hy3d-status-design.mjs";
 import { commandRowsSource } from "./hy3d-command-rows.mjs";
 import { dialogCatalog, HY3D_DIALOGS, startHymdDialogLab } from "./dialog-design.mjs";
 import { settingsDesignSource } from "./hy3d-settings-design.mjs";
+import { hatchDesignSource } from "./hy3d-hatch-design.mjs";
 import { applyCommandIcons, appendCadSymbols, loadCadPack } from "./hy3d-cad-icons.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -30,6 +31,8 @@ const DOCK_DESIGN_JS = path.join(HERE, "hy3d-dock-design.js");
 const STATUS_DESIGN_CSS = path.join(HERE, "hy3d-status-design.css");
 const SETTINGS_DESIGN_CSS = path.join(HERE, "hy3d-settings-design.css");
 const DENSITY_DESIGN_CSS = path.join(HERE, "hy3d-ui-density.css");
+const HATCH_CSS = path.join(HERE, "hy3d-hatch-design.css");
+const HATCH_SAMPLES = path.join(HERE, "hy3d-hatch-samples.json");
 const STATUS_DESIGN_JS = path.join(HERE, "hy3d-status-design.js");
 const MIRROR_UI = path.resolve(HERE, "..", ".product-sources", "hy3d", "ui");
 const MIRROR_HYMD = path.resolve(HERE, "..", ".product-sources", "hymd");
@@ -138,6 +141,23 @@ function serveHy3d() {
       if (!local(req)) {
         res.statusCode = 403;
         res.end();
+        return;
+      }
+      if (raw === "/__uitool-hatch-design.css") {
+        res.setHeader("content-type", MIME[".css"]);
+        res.setHeader("cache-control", "no-store");
+        createReadStream(HATCH_CSS).pipe(res);
+        return;
+      }
+      if (raw === "/__uitool-hatch-design.js") {
+        res.setHeader("content-type", MIME[".js"]);
+        res.setHeader("cache-control", "no-store");
+        try {
+          res.end(hatchDesignSource(readFileSync(path.join(root, "cmds", "hatchedit-dialog.js"), "utf8"), readFileSync(HATCH_SAMPLES, "utf8")));
+        } catch (error) {
+          res.statusCode = 502;
+          res.end("// UITool hatch design incompatible: " + JSON.stringify(String(error)));
+        }
         return;
       }
       if (raw === "/__uitool-ui-density.css") {
@@ -350,6 +370,12 @@ function serveHy3d() {
               .replace(statusApp, '<script src="/__uitool-status-app.js"></script>')
               .replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-status-design.css"><script>document.documentElement.dataset.uitoolStatusDesign="1"</script></head>')
               .replace(/<\/body\s*>/i, '<script src="/__uitool-status-design.js"></script></body>');
+            // Reuse the actual five-tab workbench, only for the Ribbon design candidate.
+            const hatchScript = /<script\b[^>]*\bsrc\s*=\s*["'](?:\.\/)?cmds\/hatchedit-dialog\.js["'][^>]*>\s*<\/script\s*>/i;
+            if (!hatchScript.test(previewHtml)) throw new Error("缺少图案填充入口");
+            hatchDesignSource(readFileSync(path.join(root, "cmds", "hatchedit-dialog.js"), "utf8"), readFileSync(HATCH_SAMPLES, "utf8"));
+            previewHtml = previewHtml.replace(hatchScript, '<script src="/__uitool-hatch-design.js"></script>')
+              .replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-hatch-design.css"><script>document.documentElement.dataset.uitoolHatchDesign="1"</script></head>');
             settingsDesignSource(readFileSync(path.join(root, "settings-shell.js"), "utf8"));
             const settingsShell = /<script\b[^>]*\bsrc\s*=\s*["'](?:\.\/)?settings-shell\.js["'][^>]*>\s*<\/script\s*>/i;
             if (!settingsShell.test(previewHtml)) throw new Error("缺少设置窗口 settings-shell.js 入口");
