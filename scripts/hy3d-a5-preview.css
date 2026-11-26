@@ -19,36 +19,7 @@ html[data-uitool-a5="1"][data-skin="hy-ribbon"][data-uitool-a5-rows="2"] {
   --uit-a5-rows: 2;
   --uit-a5-row: 33px;
 }
-html[data-uitool-a5="1"][data-skin="hy-ribbon"][data-theme="dark"] {
-  --bg-window: #17191d;
-  --bg-panel: #1e2126;
-  --bg-raised: #262a31;
-  --bg-header: #1e2126;
-  --bg-input: #17191d;
-  --bg-ctl: #262a31;
-  --bg-hover: #2b3038;
-  --bg-active: #263b59;
-  --border: #333840;
-  --text: #e7eaf0;
-  --text-2: #929baa;
-  --accent: #7cafff;
-  --accent-soft: #263b59;
-  --cad-bg: #0b0f14;
-}
-html[data-uitool-a5="1"][data-skin="hy-ribbon"][data-theme="light"] {
-  --bg-window: #f3f5f8;
-  --bg-panel: #ffffff;
-  --bg-raised: #eef1f5;
-  --bg-header: #ffffff;
-  --bg-input: #f3f5f8;
-  --bg-hover: #e9edf3;
-  --bg-active: #e3efff;
-  --border: #d8dee7;
-  --text: #20252d;
-  --text-2: #687385;
-  --accent: #246bd7;
-  --accent-soft: #e3efff;
-}
+/* Colors are owned by hy3d-theme-design.css, shared across candidate layouts. */
 html[data-uitool-a5="1"][data-skin="hy-ribbon"] #app.bp-short:not(.panel-ribbon-off):not(.toolbar-side):not(.ribbon-minimized) {
   --ribbon-h: 118px !important;
 }

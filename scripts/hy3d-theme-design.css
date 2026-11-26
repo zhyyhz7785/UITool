@@ -1,0 +1,98 @@
+/* HY3D candidate palette: independent of layout and density.
+ * Native Skin owns data-palette/data-theme and persistence. Original product
+ * reference is untouched; do not override drawing/ACI or viewport tokens. */
+html[data-uitool-theme-design="1"][data-palette="blender-dark"][data-theme="dark"] {
+  color-scheme: dark;
+  --bg-window: #181818;
+  --bg-header: #202020;
+  --bg-panel: #202020;
+  --bg-ribbon: #202020;
+  --bg-raised: #2b2b2b;
+  --bg-input: #181818;
+  --bg-ctl: #2b2b2b;
+  --bg-hover: #333333;
+  --bg-active: #393939;
+  --border: #383838;
+  --border-strong: #515151;
+  --sash: #383838;
+  --sash-hover: #7cafff;
+  --text: #e7e7e7;
+  --text-2: #aaaaaa;
+  --text-3: #929292;
+  --accent: #7cafff;
+  --accent-hover: #9bc2ff;
+  --accent-press: #6295e4;
+  --accent-soft: #293b55;
+  --selection-bg: #293b55;
+  --selection-text: #d5e5ff;
+  --selection-hover: #324964;
+  --selection-border: #55769f;
+  --sb-thumb: #505050;
+  --sb-thumb-hover: #696969;
+}
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] {
+  color-scheme: dark;
+  --bg-window: #1b2533;
+  --bg-header: #253449;
+  --bg-panel: #253449;
+  --bg-ribbon: #253449;
+  --bg-raised: #304259;
+  --bg-input: #1e2b3b;
+  --bg-ctl: #304259;
+  --bg-hover: #394d65;
+  --bg-active: #405873;
+  --border: #3c4e65;
+  --border-strong: #536b85;
+  --sash: #3c4e65;
+  --sash-hover: #86baff;
+  --text: #e9eff7;
+  --text-2: #b2c0d3;
+  --text-3: #91a4be;
+  --accent: #86baff;
+  --accent-hover: #a2ccff;
+  --accent-press: #679ee7;
+  --accent-soft: #354e70;
+  --selection-bg: #354e70;
+  --selection-text: #e2eeff;
+  --selection-hover: #405c80;
+  --selection-border: #668db9;
+  --sb-thumb: #506780;
+  --sb-thumb-hover: #6b829b;
+}
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="light"] {
+  color-scheme: light;
+  --bg-window: #f3f5f8;
+  --bg-header: #ffffff;
+  --bg-panel: #ffffff;
+  --bg-ribbon: #ffffff;
+  --bg-raised: #eef1f5;
+  --bg-input: #f3f5f8;
+  --bg-ctl: #f7f8fa;
+  --bg-hover: #e9edf3;
+  --bg-active: #e3efff;
+  --border: #d8dee7;
+  --border-strong: #acb8c7;
+  --sash: #d8dee7;
+  --sash-hover: #246bd7;
+  --text: #20252d;
+  --text-2: #687385;
+  --text-3: #687385;
+  --accent: #246bd7;
+  --accent-hover: #1d5dbd;
+  --accent-press: #194f9e;
+  --accent-soft: #e3efff;
+  --selection-bg: #e3efff;
+  --selection-text: #1d55a2;
+  --selection-hover: #d5e6fa;
+  --selection-border: #9bbbe7;
+  --sb-thumb: #b7c0cc;
+  --sb-thumb-hover: #939fad;
+  --uitool-ribbon-icon: #586879;
+}
+/* Only currentColor on the command artwork is softened, not labels, swatches,
+ * corner dropdowns or explicit semantic blue/yellow marks inside the SVG.
+ * Cover filled layer sheets as well as inline and sprite-backed command icons. */
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="light"]
+:is(#ribbon-panels, .hy-ribbon-fly, .uitool-command-family) .btn-glyph .ic {
+  color: var(--uitool-ribbon-icon);
+}
