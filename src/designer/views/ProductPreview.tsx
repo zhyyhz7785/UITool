@@ -67,6 +67,8 @@ export function ProductPreview({ product }: { product: ProductId }) {
   const [fit, setFit] = useState(false);
   const [stage, setStage] = useState({ w: 800, h: 600 });
   const [reloadKey, setReloadKey] = useState(0);
+  const [explorerScene, setExplorerScene] = useState<"sample" | "empty">("sample");
+  const frameSrc = product === "hy3d" ? `${page.src}&explorer=${explorerScene}` : page.src;
 
   const show = product === "hy3d" ? up === true : preview;
   const scale = fit ? Math.min(1, stage.w / NATIVE.w, stage.h / NATIVE.h) : 1;
@@ -198,6 +200,18 @@ export function ProductPreview({ product }: { product: ProductId }) {
           {Math.round(box.w)} × {Math.round(box.h)}
           {fit ? ` · ${Math.round(scale * 100)}%` : ""}
         </span>
+        {product === "hy3d" && (
+          <select
+            className="wb-select"
+            aria-label="资源管理器预览场景"
+            title="仅 UITool 预览：示例目录在内存中，切换时重置示例"
+            value={explorerScene}
+            onChange={(e) => setExplorerScene(e.target.value === "empty" ? "empty" : "sample")}
+          >
+            <option value="sample">资源：示例文件与工程</option>
+            <option value="empty">资源：未打开目录</option>
+          </select>
+        )}
         {skins.length > 0 && (
           <select
             className="wb-select"
@@ -260,7 +274,7 @@ export function ProductPreview({ product }: { product: ProductId }) {
                 ref={frameRef}
                 className="ut-product-frame"
                 title={page.name}
-                src={page.src}
+                src={frameSrc}
                 style={{ pointerEvents: selecting ? "none" : "auto" }}
                 onLoad={() => {
                   ask("skins");
