@@ -23,10 +23,11 @@ export const HYMD_DIALOGS = [
   ["license","注册 / 授权","src/overlays/LicenseDialog.tsx"],
   ["context","右键菜单 / 子菜单","src/ui/ContextMenu.tsx"],
 ].map(([id,title,source])=>({id:"hymd-"+id,title,source,product:"hymd",mode:"native"}));
+const MTEXT={id:"hy3d-mtext-advanced",title:"高级文字编辑器 / Markdown",source:"scripts/mtext-preview/product/text_window.html",product:"hy3d",mode:"native"};
 const FONT={id:"hy3d-font-v2",title:"字体替换 / V2 设计候选",source:"public/hy3d-font-manager/index.html",product:"hy3d",mode:"prototype"};
 export function dialogCatalog(product,root) {
   const print={id:product+"-print-workbench",title:"统一打印工作台 / 设计候选",source:"public/unified-print-workbench/index.html",product,mode:"prototype"};
-  const fixed=product==="hy3d"?[print,FONT,...HY3D_DIALOGS]:[print,...HYMD_DIALOGS];
+  const fixed=product==="hy3d"?[print,MTEXT,FONT,...HY3D_DIALOGS]:[print,...HYMD_DIALOGS];
   const known=new Set(fixed.map(x=>x.source));
   const rows=[...fixed];
   const errors=[];

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>多行文字</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" id="palette-css" href="palettes/blender-dark/palette.css" />
+  <link rel="stylesheet" href="owned_window.css" />
+  <link rel="stylesheet" href="text_window.css" />
+  <style>
+    html, body, #mtext-editor { height: 100%; margin: 0; }
+    #mtext-editor { display: flex; flex-direction: column; }
+    .mte-mount { flex: 1; min-height: 0; }
+  </style>
+</head>
+<body>
+  <div id="mtext-editor" class="hydoc-shell">
+    <div class="hydoc-title" data-tauri-drag-region>
+      <span id="tw-title" data-tauri-drag-region>多行文字</span>
+      <button type="button" id="tw-close" data-tauri-drag-region="false" aria-label="关闭">×</button>
+    </div>
+    <div id="mtext-quickbar" class="mte-quickbar" role="toolbar" aria-label="多行文字常用工具" hidden>
+      <div class="mte-tool-group" aria-label="编辑">
+        <button type="button" data-mtext-act="undo" title="撤销（Ctrl+Z）" aria-label="撤销">↶</button>
+        <button type="button" data-mtext-act="redo" title="重做（Ctrl+Y）" aria-label="重做">↷</button>
+      </div>
+      <div class="mte-tool-group" aria-label="字体">
+        <button type="button" data-mtext-act="font" title="选中文字后设置字体">字体</button>
+        <button type="button" data-mtext-act="height" title="设置当前多行文字字高">字高</button>
+        <button type="button" data-mtext-act="width" title="选中文字后设置宽度因子">字宽</button>
+        <button type="button" data-mtext-act="oblique" title="选中文字后设置倾斜角">倾斜</button>
+      </div>
+      <div class="mte-tool-group" aria-label="字符格式">
+        <button type="button" data-mtext-act="bold" title="粗体（Ctrl+B）" aria-label="粗体"><strong>B</strong></button>
+        <button type="button" data-mtext-act="italic" title="斜体（Ctrl+I）" aria-label="斜体"><em>I</em></button>
+        <button type="button" data-mtext-act="under" title="下划线" aria-label="下划线"><span class="mte-under">U</span></button>
+        <button type="button" data-mtext-act="over" title="上划线" aria-label="上划线"><span class="mte-over">O</span></button>
+        <button type="button" data-mtext-act="strike" title="删除线" aria-label="删除线"><span class="mte-strike">S</span></button>
+        <button type="button" data-mtext-act="clear" title="清除选区格式">清除</button>
+      </div>
+      <div class="mte-tool-group" aria-label="段落">
+        <button type="button" data-mtext-act="left" title="左对齐">左</button>
+        <button type="button" data-mtext-act="center" title="居中">中</button>
+        <button type="button" data-mtext-act="right" title="右对齐">右</button>
+        <button type="button" data-mtext-act="justify" title="两端对齐">两端</button>
+        <button type="button" data-mtext-act="ul" title="项目符号列表">• 列表</button>
+        <button type="button" data-mtext-act="ol" title="编号列表">1. 列表</button>
+      </div>
+      <div class="mte-tool-group" aria-label="工程文字">
+        <button type="button" data-mtext-act="stack" title="堆叠分数">堆叠</button>
+        <button type="button" data-mtext-act="sup" title="上标">x²</button>
+        <button type="button" data-mtext-act="sub" title="下标">x₂</button>
+        <button type="button" data-mtext-act="colbreak" title="插入分栏符">分栏符</button>
+      </div>
+      <div class="mte-tool-group" aria-label="查找">
+        <button type="button" data-mtext-act="find" title="查找和替换">查找替换</button>
+      </div>
+    </div>
+    <div id="mtext-ruler" class="mte-ruler" role="group" aria-label="标尺：拖动右端调整文字框宽度，拖动分栏标记调整栏间距" hidden></div>
+    <div id="mtext-md-actions" class="mte-md-actions" hidden>
+      <span class="mte-md-caption">Markdown · 高级排版</span>
+      <button type="button" id="md-layout">排版</button>
+      <button type="button" id="md-source">源码</button>
+      <button type="button" id="md-copy" title="复制完整 Markdown 源文">复制 Markdown</button>
+      <button type="button" id="md-cancel">取消</button>
+      <button type="button" id="md-save" class="mte-md-primary">完成</button>
+    </div>
+    <p id="tw-note" role="status" hidden></p>
+    <div class="mte-placeholder" aria-label="多行文字"><div class="hymd-paper mte-sheet"></div></div>
+    <div class="mte-mount"></div>
+  </div>
+  <div id="mtext-ask" hidden>
+    <p>保存对文字的修改吗？</p>
+    <button type="button" data-act="save">保存</button>
+    <button type="button" data-act="discard">放弃</button>
+    <button type="button" data-act="cancel">取消</button>
+  </div>
+  <script src="owned_theme.js"></script>
+  <script src="host.js"></script>
+  <script src="text_sdk_session.js"></script>
+  <script src="md_workspace.js"></script>
+  <script src="text_window.js"></script>
+</body>
+</html>

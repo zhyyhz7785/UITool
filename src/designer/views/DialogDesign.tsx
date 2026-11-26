@@ -7,10 +7,11 @@ type Product = "hy3d" | "hymd";
 type Entry = { id: string; title: string; product: Product; source: string; mode: "native" | "prototype" | "source" };
 type Catalog = { rows: Entry[]; scanned: number; errors: string[] };
 const names: Record<Product,string> = {hy3d:"HY3D",hymd:"HyMdTauri"};
+const advancedText: Entry = {id:"hy3d-mtext-advanced",title:"高级文字编辑器 / Markdown",product:"hy3d",source:"scripts/mtext-preview/product/text_window.html",mode:"native"};
 const font: Entry = {id:"hy3d-font-v2",title:"字体替换 / V2 设计候选",product:"hy3d",source:"public/hy3d-font-manager/index.html",mode:"prototype"};
 const printCandidate = (product:Product):Entry => ({id:product+"-print-workbench",title:"统一打印工作台 / 设计候选",product,source:"public/unified-print-workbench/index.html",mode:"prototype"});
 const fallback: Record<Product,Entry[]> = {
-  hy3d:[printCandidate("hy3d"),font,{id:"hy3d-font-report",title:"字体替换 / 原生字体报告",product:"hy3d",source:"ui/font_report.js",mode:"native"}],
+  hy3d:[printCandidate("hy3d"),advancedText,font,{id:"hy3d-font-report",title:"字体替换 / 原生字体报告",product:"hy3d",source:"ui/font_report.js",mode:"native"}],
   hymd:[
     printCandidate("hymd"),
     {id:"hymd-about",title:"关于",product:"hymd",source:"src/overlays/AboutDialog.tsx",mode:"native"},
@@ -106,6 +107,10 @@ export function ProductDialogDesign({entry}:{entry:Entry}){
         const result=await r.json() as {up?:boolean;preview?:boolean;error?:string};
         if(!r.ok||!result.up||(p==="hy3d"&&!result.preview))throw Error(result.error||"未能连接 UITool 专用前端，请同步产品工作树");
         if(cancelled)return;
+        if(entry.id===advancedText.id){
+          const url="http://127.0.0.1:1450/__uitool-mtext/text_window.html";
+          setSrc(url);setStatus("HY3D #2237 固定源码 · 等待 SDK 装载");return;
+        }
         setSrc(p==="hy3d"?"http://127.0.0.1:1450/index.html?uitool=1&style=layer&explorer=sample&dialog="+encodeURIComponent(entry.id):"http://127.0.0.1:1461/?dialog="+encodeURIComponent(entry.id));
         setStatus(p==="hy3d"?"等待原生弹窗…":"原生组件实验页 · 示例数据");
       }catch(e){if(!cancelled){setStatus("");setError(String(e instanceof Error?e.message:e));}}

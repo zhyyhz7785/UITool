@@ -1,0 +1,45 @@
+/* 配色 Blender 黑。只覆盖 token，不改分区。只有深色。 */
+html[data-palette="blender-dark"][data-theme="dark"] {
+  --bg-window: #1d1d1d;
+  --bg-header: #303030;
+  --bg-panel: #2b2b2b;
+  --bg-raised: #3d3d3d;
+  --bg-input: #1d1d1d;
+  --bg-canvas: #303030;
+  --bg-ctl: #303030;
+  --bg-hover: rgba(255, 255, 255, 0.08);
+  --bg-active: rgba(255, 255, 255, 0.12);
+  --border: #242424;
+  --border-strong: #3d3d3d;
+  --sash: #242424;
+  --sash-hover: #4772b3;
+  --text: #e6e6e6;
+  --text-2: #a6a6a6;
+  --text-3: #7a7a7a;
+  --text-on-accent: #ffffff;
+  --accent: #4772b3;
+  --accent-hover: #5b88c7;
+  --accent-press: #3a5f96;
+  --accent-soft: rgba(71, 114, 179, 0.28);
+  --cad-bg: #303030;
+  --cad-grid-minor: #3a3a3a;
+  --cad-grid-major: #474747;
+  --cad-line: #e6e6e6;
+  --cad-axis-x: #973141;
+  --cad-axis-y: #5d8618;
+  --cad-dim-line: #a6a6a6;
+  --cad-text: #e6e6e6;
+  --cad-sel: #ffa028;
+  --cad-hover: #e6e6e6;
+  --cad-grip: #e6e6e6;
+  --cad-grip-hot: #ff8500;
+  --cad-cursor: #e6e6e6;
+  --cad-track: #8bdc00;
+  --cad-mark: #ff8500;
+  --cad-leader: #ffa028;
+  --cad-rubber: #4772b3;
+  --cad-window: #4772b3;
+  --cad-window-fill: rgba(71, 114, 179, 0.15);
+  --cad-crossing: #8bdc00;
+  --cad-crossing-fill: rgba(139, 220, 0, 0.15);
+}
