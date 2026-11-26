@@ -6,6 +6,7 @@ import { ICON_AREAS, ICON_STYLES, type IconStyleId, type ToolItem, type UiConfig
 import { switchScheme } from "@tpl/workbench/schemes";
 import { Button, IconButton } from "@tpl/workbench/ui";
 import { useMemo, useState } from "react";
+import { CadCommandIconsView } from "./CadCommandIcons";
 import { exportProject, openDesign, saveDesign } from "../actions";
 import { ColorInput, Field, filterIcons, IconPicker, Section, Segmented, TextField } from "../controls";
 import { packageName, projectSummary, validateDoc } from "../export";
@@ -290,6 +291,11 @@ export function ThemeView() {
 const SAMPLES = ["new", "open", "save", "undo", "search", "settings", "play", "files"];
 
 export function IconsView() {
+  const workType = useDesign((s) => s.doc.config.workType);
+  return workType === "cad2d" ? <CadCommandIconsView /> : <GenericIconsView />;
+}
+
+function GenericIconsView() {
   const wb = useWorkbench();
   const cfg = useDesign((s) => s.doc.config);
   const [q, setQ] = useState("");

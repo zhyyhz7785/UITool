@@ -1,39 +1,40 @@
-// 按 scripts/hy3d-icons.json 把图标名写进 commands.json，缺的符号补进 icons.svg。只写授权工作树。
+// Explicit write-back only, to the authorized HY3D linked worktree.
+// Handles commands.json includes as well as the old single-file schema.
 import fs from "node:fs";
 import path from "node:path";
-import { canWriteProduct, hy3dWriteRoot } from "./path-policy.mjs";
+import { canWriteProduct, hy3dWriteRoot, atomicWrite } from "./path-policy.mjs";
+import { applyCommandIcons, appendCadSymbols, loadCadPack } from "./hy3d-cad-icons.mjs";
 
-const mapPath = new URL("./hy3d-icons.json", import.meta.url);
-const root = hy3dWriteRoot();
-const cmdPath = process.env.HY3D_COMMANDS ? path.resolve(process.env.HY3D_COMMANDS) : path.join(root, "ui", "commands.json");
-const svgPath = process.env.HY3D_ICONS ? path.resolve(process.env.HY3D_ICONS) : path.join(root, "ui", "icons.svg");
-if (!canWriteProduct(cmdPath) || !canWriteProduct(svgPath)) throw new Error("图标生成只能写入已授权的 hy3d 开发工作树");
-const map = JSON.parse(fs.readFileSync(mapPath, "utf8"));
-const doc = JSON.parse(fs.readFileSync(cmdPath, "utf8"));
-const ids = doc.commands.map((c) => c.id);
-if (Object.keys(map).length !== ids.length) throw new Error("对照表 " + Object.keys(map).length + " != " + ids.length);
-for (const c of doc.commands) {
-  const row = map[c.id];
-  if (!row || !row.name) throw new Error("缺图标 " + c.id);
-  c.icon = row.name;
+const root = path.join(hy3dWriteRoot(), "ui");
+const pack = loadCadPack();
+const seen = new Set(), ids = new Set(), writes = [];
+function visit(rel) {
+  const file = path.resolve(root, rel);
+  const sub = path.relative(root, file);
+  if (!sub || sub.startsWith("..") || path.isAbsolute(sub) || !canWriteProduct(file))
+    throw new Error("拒绝写入未授权路径：" + file);
+  if (seen.has(file)) throw new Error("命令 include 重复：" + rel);
+  seen.add(file);
+  const doc = JSON.parse(fs.readFileSync(file, "utf8"));
+  for (const child of doc.include || []) visit(child);
+  const rows = Array.isArray(doc) ? doc : doc.commands || [];
+  for (const c of rows) {
+    if (ids.has(c.id)) throw new Error("命令重复：" + c.id);
+    ids.add(c.id);
+  }
+  applyCommandIcons(doc, pack, { strict: true });
+  if (rows.length) writes.push([file, JSON.stringify(doc, null, 2) + "\n"]);
 }
-fs.writeFileSync(cmdPath, JSON.stringify(doc, null, 2) + "\n");
-
-let svg = fs.readFileSync(svgPath, "utf8");
-const have = new Set([...svg.matchAll(/id="i-([^"]+)"/g)].map((m) => m[1]));
-const seen = new Set();
-let extra = "";
-for (const row of Object.values(map)) {
-  if (have.has(row.name) || seen.has(row.name)) continue;
-  if (!row.body) throw new Error("没有符号也没有图形 " + row.name);
-  seen.add(row.name);
-  extra += `<symbol id="i-${row.name}" viewBox="0 0 24 24">${row.body}</symbol>\n`;
+visit("commands.json");
+const stale = Object.keys(pack.commands).filter(id => !ids.has(id));
+if (stale.length) throw new Error("命令版本与图标包不一致：" + stale.join(", "));
+const svgFile = path.join(root, "icons.svg");
+if (!canWriteProduct(svgFile)) throw new Error("未授权写入 " + svgFile);
+writes.push([svgFile, appendCadSymbols(fs.readFileSync(svgFile, "utf8"), pack)]);
+// Full preflight before the first write; individual file replacements are atomicWrite.
+if (!process.argv.includes("--apply")) {
+  console.log("仅预检：", ids.size, "命令", writes.length, "文件；加 --apply 才写入");
+} else {
+  for (const [file, content] of writes) atomicWrite(file, content);
+  console.log("已写入授权工作树：", ids.size, "命令", writes.length, "文件");
 }
-if (extra) {
-  if (!svg.includes("</svg>")) throw new Error("icons.svg 没有结尾");
-  svg = svg.replace("</svg>", extra + "</svg>");
-  fs.writeFileSync(svgPath, svg);
-}
-const after = new Set([...svg.matchAll(/id="i-([^"]+)"/g)].map((m) => m[1]));
-for (const c of doc.commands) if (!after.has(c.icon)) throw new Error("符号缺失 " + c.icon);
-console.log("icons", ids.length, "added", seen.size);
