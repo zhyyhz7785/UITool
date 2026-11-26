@@ -16,6 +16,7 @@ export function denseRibbonSource(source) {
   return source.replace(anchor, () =>
     "  var UITOOL_RIBBON = " + JSON.stringify(design) + ";\n" + runtime +
     "\n  function buildPanels(cur) {\n" +
+    "    closeFamily(false);\n" +
     "    buildLayerPanels(cur);\n" +
     "    try { enhanceDense(cur); } catch (error) {\n" +
     "      if (api && api.ribbonPanels) api.ribbonPanels.dataset.uitoolDenseStatus = 'fallback';\n" +

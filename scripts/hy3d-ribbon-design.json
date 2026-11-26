@@ -374,5 +374,102 @@
     "edit.pastespec": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M4 3h11l5 5v13H4z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M15 3v5h5\"/><path d=\"M9 13h8m-4-4v8\" stroke=\"#69c8eb\"/><rect x=\"11.8\" y=\"11.8\" width=\"2.4\" height=\"2.4\" fill=\"#69c8eb\" stroke=\"none\"/></g>",
     "edit.copybase": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><rect x=\"3\" y=\"3\" width=\"11\" height=\"11\"/><path d=\"M10 10h11v11H10z\" stroke-dasharray=\"2 2\" opacity=\".65\"/><path d=\"M15 10v10m-5-5h10\" stroke=\"#69c8eb\"/></g>",
     "edit.pasteblock": "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.45\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"m3 8 9-5 9 5v9l-9 5-9-5zM3 8l9 5 9-5m-9 5v9\"/><path d=\"m3 8 9-5 9 5-9 5z\" fill=\"#69c8eb\" stroke=\"none\"/><path d=\"M2 3h7v5H2z\" fill=\"#ffd17a\" stroke=\"none\"/><path d=\"M5 8v7\" stroke=\"#69c8eb\"/></g>"
+  },
+  "families": {
+    "cad.circle": [
+      "cad.circle.ttt"
+    ],
+    "cad.arc": [
+      "cad.arc.sce",
+      "cad.arc.sca",
+      "cad.arc.scl",
+      "cad.arc.sea",
+      "cad.arc.sed",
+      "cad.arc.ser",
+      "cad.arc.cse",
+      "cad.arc.csa",
+      "cad.arc.csl",
+      "cad.arc.con"
+    ],
+    "cad.rect": [
+      "cad.polygon"
+    ],
+    "cad.hatch": [
+      "cad.solid",
+      "cad.donut",
+      "cad.gradient",
+      "cad.hatchedit"
+    ],
+    "cad.trim": [
+      "cad.extend",
+      "cad.break",
+      "cad.breakatpoint"
+    ],
+    "cad.fillet": [
+      "cad.chamfer"
+    ],
+    "cad.array": [
+      "cad.arraypolar",
+      "cad.arraypath"
+    ],
+    "cad.mtext": [
+      "cad.text",
+      "cad.textedit",
+      "cad.textstyle"
+    ],
+    "cad.dimlin": [
+      "cad.dimali",
+      "cad.dimang",
+      "cad.dimarc",
+      "cad.dimbase",
+      "cad.dimcont",
+      "cad.dimdia",
+      "cad.dimord",
+      "cad.qdim",
+      "cad.dim",
+      "cad.dimrad",
+      "cad.dimedit",
+      "cad.dimtedit",
+      "cad.dimreassociate"
+    ],
+    "cad.leader": [
+      "cad.qleader",
+      "cad.mleaderalign",
+      "cad.mleaderedit",
+      "cad.mleadercollect"
+    ],
+    "cad.block": [
+      "cad.blockpalette",
+      "cad.blockdef",
+      "cad.bedit",
+      "cad.wblock"
+    ],
+    "cad.attedit": [
+      "cad.attdef",
+      "cad.attsync",
+      "cad.attdisp"
+    ],
+    "cad.measuregeom": [
+      "cad.dist",
+      "cad.area",
+      "cad.id"
+    ],
+    "cad.qselect": [
+      "cad.select",
+      "cad.selall",
+      "cad.deselect",
+      "cad.select.box",
+      "cad.select.circle",
+      "cad.select.invert",
+      "cad.selinvert",
+      "cad.select.cycle"
+    ],
+    "edit.paste": [
+      "edit.pastespec",
+      "edit.pasteblock"
+    ],
+    "edit.copy": [
+      "edit.copybase"
+    ]
   }
 }
