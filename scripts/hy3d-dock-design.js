@@ -126,4 +126,45 @@
   window.addEventListener("resize", function () { close(false); });
   document.addEventListener("hy-skin-applied", function () { close(false); });
   root.dataset.uitoolDockDesign = "1";
+  // Use measured viewport bounds instead of duplicating native width variables:
+  // dragging, icon docks and responsive breakpoints can temporarily override them.
+  var app = document.getElementById("app");
+  var workspace = document.getElementById("workspace");
+  var viewport = document.getElementById("viewport-frame");
+  var cmdbar = document.getElementById("cmdbar");
+  if (app && workspace && viewport && cmdbar &&
+      workspace.parentElement === app && cmdbar.parentElement === app &&
+      window.CSS && CSS.supports("grid-template-rows", "subgrid") &&
+      window.ResizeObserver) {
+    root.dataset.uitoolDockSpan = "1";
+    function syncCommandBounds() {
+      var a = app.getBoundingClientRect();
+      var v = viewport.getBoundingClientRect();
+      if (v.width <= 0) return;
+      var inset = Math.max(0, v.left - a.left) + "px";
+      var width = v.width + "px";
+      if (app.style.getPropertyValue("--uitool-cmd-inset") !== inset)
+        app.style.setProperty("--uitool-cmd-inset", inset);
+      if (app.style.getPropertyValue("--uitool-cmd-width") !== width)
+        app.style.setProperty("--uitool-cmd-width", width);
+    }
+    syncCommandBounds();
+    var pending = false;
+    function scheduleBounds() {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(function () { pending = false; syncCommandBounds(); });
+    }
+    var resize = new ResizeObserver(scheduleBounds);
+    [app, workspace, viewport, document.getElementById("left-dock"),
+      document.getElementById("right-dock"), document.getElementById("palette-tabs"),
+      document.getElementById("split-left"), document.getElementById("split-right")]
+      .filter(Boolean).forEach(function (node) { resize.observe(node); });
+    // Mode switches may move tracks without changing total width.
+    new MutationObserver(scheduleBounds).observe(app, {attributes:true, attributeFilter:["class"]});
+    document.addEventListener("hy-skin-applied", scheduleBounds);
+    window.addEventListener("resize", scheduleBounds);
+  } else {
+    console.error("UITool 侧栏拉通：布局接口或 row subgrid 不支持，保留原布局。");
+  }
 })();
