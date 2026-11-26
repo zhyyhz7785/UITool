@@ -8,6 +8,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { a5Html, a5RibbonSource } from "./hy3d-a5-preview.mjs";
 import { layerDesignHtml, layerDesignSource } from "./hy3d-layer-design.mjs";
+import { statusDesignSource } from "./hy3d-status-design.mjs";
 import { applyCommandIcons, appendCadSymbols, loadCadPack } from "./hy3d-cad-icons.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -18,6 +19,8 @@ const LAYER_CSS = path.join(HERE, "hy3d-layer-design.css");
 const LAYER_SCENE = path.join(HERE, "hy3d-layer-scene.js");
 const DOCK_DESIGN_CSS = path.join(HERE, "hy3d-dock-design.css");
 const DOCK_DESIGN_JS = path.join(HERE, "hy3d-dock-design.js");
+const STATUS_DESIGN_CSS = path.join(HERE, "hy3d-status-design.css");
+const STATUS_DESIGN_JS = path.join(HERE, "hy3d-status-design.js");
 const MIRROR_UI = path.resolve(HERE, "..", ".product-sources", "hy3d", "ui");
 const MIRROR_HYMD = path.resolve(HERE, "..", ".product-sources", "hymd");
 const WORKTREE_UI = "E:\\Code\\_shared\\worktrees\\hy3d\\cl\\ui";
@@ -125,6 +128,23 @@ function serveHy3d() {
       if (!local(req)) {
         res.statusCode = 403;
         res.end();
+        return;
+      }
+      if (raw === "/__uitool-status-design.css" || raw === "/__uitool-status-design.js") {
+        res.setHeader("content-type", MIME[raw.endsWith(".css") ? ".css" : ".js"]);
+        res.setHeader("cache-control", "no-store");
+        createReadStream(raw.endsWith(".css") ? STATUS_DESIGN_CSS : STATUS_DESIGN_JS).pipe(res);
+        return;
+      }
+      if (raw === "/__uitool-status-app.js") {
+        res.setHeader("content-type", MIME[".js"]);
+        res.setHeader("cache-control", "no-store");
+        try {
+          res.end(statusDesignSource(readFileSync(path.join(root, "app.js"), "utf8")));
+        } catch (error) {
+          res.statusCode = 502;
+          res.end("// UITool status design incompatible: " + JSON.stringify(String(error)));
+        }
         return;
       }
       if (raw === "/__uitool-dock-design.css" || raw === "/__uitool-dock-design.js") {
@@ -241,6 +261,14 @@ function serveHy3d() {
             previewHtml = previewHtml
               .replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-dock-design.css"></head>')
               .replace(/<\/body\s*>/i, '<script src="/__uitool-dock-design.js"></script></body>');
+            // Source adaptation is candidate-only; validate before serving the page.
+            statusDesignSource(readFileSync(path.join(root, "app.js"), "utf8"));
+            const statusApp = /<script\b[^>]*\bsrc\s*=\s*["'](?:\.\/)?app\.js["'][^>]*>\s*<\/script\s*>/i;
+            if (!statusApp.test(previewHtml)) throw new Error("缺少底栏 app.js 入口");
+            previewHtml = previewHtml
+              .replace(statusApp, '<script src="/__uitool-status-app.js"></script>')
+              .replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-status-design.css"><script>document.documentElement.dataset.uitoolStatusDesign="1"</script></head>')
+              .replace(/<\/body\s*>/i, '<script src="/__uitool-status-design.js"></script></body>');
           } catch (error) {
             res.statusCode = 502;
             res.setHeader("content-type", "text/plain; charset=utf-8");
