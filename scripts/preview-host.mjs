@@ -7,11 +7,14 @@ import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { a5Html, a5RibbonSource } from "./hy3d-a5-preview.mjs";
+import { layerDesignHtml, layerDesignSource } from "./hy3d-layer-design.mjs";
 import { applyCommandIcons, appendCadSymbols, loadCadPack } from "./hy3d-cad-icons.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const EXPLORER_FIXTURE = path.join(HERE, "hy3d-explorer-fixture.js");
 const A5_CSS = path.join(HERE, "hy3d-a5-preview.css");
+const LAYER_CSS = path.join(HERE, "hy3d-layer-design.css");
+const LAYER_SCENE = path.join(HERE, "hy3d-layer-scene.js");
 const MIRROR_UI = path.resolve(HERE, "..", ".product-sources", "hy3d", "ui");
 const MIRROR_HYMD = path.resolve(HERE, "..", ".product-sources", "hymd");
 const WORKTREE_UI = "E:\\Code\\_shared\\worktrees\\hy3d\\cl\\ui";
@@ -101,6 +104,23 @@ function serveHy3d() {
         res.end();
         return;
       }
+      if (raw === "/__uitool-layer.css" || raw === "/__uitool-layer-scene.js") {
+        res.setHeader("content-type", MIME[raw.endsWith(".css") ? ".css" : ".js"]);
+        res.setHeader("cache-control", "no-store");
+        createReadStream(raw.endsWith(".css") ? LAYER_CSS : LAYER_SCENE).pipe(res);
+        return;
+      }
+      if (raw === "/__uitool-layer-layout.js") {
+        res.setHeader("content-type", MIME[".js"]);
+        res.setHeader("cache-control", "no-store");
+        try {
+          res.end(layerDesignSource(readFileSync(path.join(root, "skins", "hy-ribbon", "layout.js"), "utf8")));
+        } catch (error) {
+          res.statusCode = 502;
+          res.end("// UITool layer design incompatible: " + JSON.stringify(String(error)));
+        }
+        return;
+      }
       if (raw === "/__uitool-a5.css") {
         res.setHeader("content-type", MIME[".css"]);
         res.setHeader("cache-control", "no-store");
@@ -171,6 +191,17 @@ function serveHy3d() {
           return;
         }
         let previewHtml = html.replace(hostScript, (tag) => tag + '\n<script src="/__uitool-explorer-fixture.js"></script>');
+        if (url.searchParams.get("style") === "layer") {
+          try {
+            layerDesignSource(readFileSync(path.join(root, "skins", "hy-ribbon", "layout.js"), "utf8"));
+            previewHtml = layerDesignHtml(previewHtml);
+          } catch (error) {
+            res.statusCode = 502;
+            res.setHeader("content-type", "text/plain; charset=utf-8");
+            res.end("UITool 图层设计需要已包含 HY3D #2206 的原生 HY Ribbon 前端镜像。请同步镜像，或切换 HY Ribbon / A5 查看原界面。\n" + String(error));
+            return;
+          }
+        }
         if (url.searchParams.get("style") === "a5") {
           try {
             // Validate native source before sending the adapted page; no silent fallback.
