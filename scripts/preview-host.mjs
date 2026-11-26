@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import { a5Html, a5RibbonSource } from "./hy3d-a5-preview.mjs";
 import { layerDesignHtml, layerDesignSource } from "./hy3d-layer-design.mjs";
 import { statusDesignSource } from "./hy3d-status-design.mjs";
+import { commandRowsSource } from "./hy3d-command-rows.mjs";
 import { settingsDesignSource } from "./hy3d-settings-design.mjs";
 import { applyCommandIcons, appendCadSymbols, loadCadPack } from "./hy3d-cad-icons.mjs";
 
@@ -197,6 +198,17 @@ function serveHy3d() {
         }
         return;
       }
+      if (raw === "/__uitool-command-rows.js") {
+        res.setHeader("content-type", MIME[".js"]);
+        res.setHeader("cache-control", "no-store");
+        try {
+          res.end(commandRowsSource(readFileSync(path.join(root, "cmdbar_resize.js"), "utf8")));
+        } catch (error) {
+          res.statusCode = 502;
+          res.end("// UITool command rows incompatible: " + JSON.stringify(String(error)));
+        }
+        return;
+      }
       if (raw === "/__uitool-theme-design.css") {
         res.setHeader("content-type", MIME[".css"]);
         res.setHeader("cache-control", "no-store");
@@ -338,6 +350,17 @@ function serveHy3d() {
         // Theme is independent of the Ribbon layout and density. Load the same
         // palette for both candidate paths, including native-profile A5.
         if (["layer", "a5"].includes(url.searchParams.get("style"))) {
+          try {
+            commandRowsSource(readFileSync(path.join(root, "cmdbar_resize.js"), "utf8"));
+            const resizeScript = /<script\b[^>]*\bsrc\s*=\s*["'](?:\.\/)?cmdbar_resize\.js["'][^>]*>\s*<\/script\s*>/i;
+            if (!resizeScript.test(previewHtml)) throw Error("缺少 cmdbar_resize.js 入口");
+            previewHtml = previewHtml.replace(resizeScript, '<script src="/__uitool-command-rows.js"></script>');
+          } catch (error) {
+            res.statusCode = 502;
+            res.setHeader("content-type", "text/plain; charset=utf-8");
+            res.end("UITool 命令栏设计与当前镜像不兼容。可切换原始预览。\n" + String(error));
+            return;
+          }
           previewHtml = previewHtml.replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-theme-design.css"><script>document.documentElement.dataset.uitoolThemeDesign="1"</script></head>');
         }
         res.end(withHy3dAppIcon(previewHtml));
