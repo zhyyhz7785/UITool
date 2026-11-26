@@ -115,6 +115,7 @@ export function ProductDialogDesign({entry}:{entry:Entry}){
   },[entry.id,entry.mode,p,reload]);
   useEffect(()=>{
     const receive=(event:MessageEvent)=>{
+      if(event.source===frame.current?.contentWindow&&entry.id===p+"-print-workbench"&&entry.mode==="prototype"&&event.origin==="null"&&event.data?.source==="uitool-print-candidate"&&event.data?.action==="close"){openDialogDesign(null);return;}
       if(p!=="hy3d"||event.origin!=="http://127.0.0.1:1450"||event.source!==frame.current?.contentWindow)return;
       const d=event.data;
       if(d?.source!=="uitool-dialog"||d.id!==entry.id)return;
@@ -122,7 +123,7 @@ export function ProductDialogDesign({entry}:{entry:Entry}){
       else setStatus(String(d.message||""));
     };
     window.addEventListener("message",receive);return ()=>window.removeEventListener("message",receive);
-  },[entry.id,p]);
+  },[entry.id,entry.mode,p]);
   return <div className="ut-preview">
     <div className="ut-preview-bar ut-dialog-design-bar">
       <Button onClick={()=>openDialogDesign(null)}>返回产品</Button>
