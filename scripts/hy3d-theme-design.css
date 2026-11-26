@@ -1,6 +1,6 @@
 /* HY3D candidate palette: independent of layout and density.
  * Native Skin owns data-palette/data-theme and persistence. Original product
- * reference is untouched; do not override drawing/ACI or viewport tokens. */
+ * reference is untouched; do not override drawing/ACI tokens. Model-space background is black in every candidate theme. */
 html[data-uitool-theme-design="1"][data-palette="blender-dark"][data-theme="dark"] {
   color-scheme: dark;
   --bg-window: #181818;
@@ -31,48 +31,33 @@ html[data-uitool-theme-design="1"][data-palette="blender-dark"][data-theme="dark
   --sb-thumb-hover: #696969;
 }
 html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] {
-  /* AutoCAD 2026 reference screenshot: dark chrome, slate-blue work panels,
-   * lighter controls. Keep model-space colors under the native CAD palette. */
   color-scheme: dark;
-  --bg-window: #222933;
-  --bg-header: #222933;
-  --bg-panel: #3b4453;
-  --bg-ribbon: #3b4453;
-  --bg-raised: #2e3440;
-  --bg-input: #4e5a6e;
-  --bg-ctl: #454f61;
-  --bg-hover: #465163;
-  --bg-active: #52637a;
-  --border: #2e3440;
-  --border-strong: #59677b;
-  --sash: #2e3440;
-  --sash-hover: #80b4e8;
-  --text: #d9d9d9;
-  --text-2: #b8c4d3;
-  --text-3: #a0aec0;
-  --accent: #80b4e8;
-  --accent-hover: #a1cbf4;
-  --accent-press: #608fbf;
-  --accent-soft: #4b627e;
-  --selection-bg: #4b627e;
-  --selection-text: #f5f5f5;
-  --selection-hover: #526f91;
-  --selection-border: #80b4e8;
-  --sb-thumb: #59677b;
-  --sb-thumb-hover: #71849c;
-}
-/* The reference separates the darker title/menu/tab strips from the
- * brighter Ribbon and dock body. Scope these color-only overrides to Blue. */
-html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"]
-:is(#titlebar-row, #menubar, #filetabs, .ribbon-tabs) {
-  background-color: var(--bg-header);
-}
-html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"]
-:is(#ribbon, #ribbon-panels) {
-  background-color: var(--bg-ribbon);
-}
-html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] #statusbar {
-  background-color: var(--bg-panel);
+  --bg-window: #1b2533;
+  --bg-header: #253449;
+  --bg-panel: #253449;
+  --bg-ribbon: #253449;
+  --bg-raised: #304259;
+  --bg-input: #1e2b3b;
+  --bg-ctl: #304259;
+  --bg-hover: #394d65;
+  --bg-active: #405873;
+  --border: #3c4e65;
+  --border-strong: #536b85;
+  --sash: #3c4e65;
+  --sash-hover: #86baff;
+  --text: #e9eff7;
+  --text-2: #b2c0d3;
+  --text-3: #91a4be;
+  --accent: #86baff;
+  --accent-hover: #a2ccff;
+  --accent-press: #679ee7;
+  --accent-soft: #354e70;
+  --selection-bg: #354e70;
+  --selection-text: #e2eeff;
+  --selection-hover: #405c80;
+  --selection-border: #668db9;
+  --sb-thumb: #506780;
+  --sb-thumb-hover: #6b829b;
 }
 html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="light"] {
   color-scheme: light;
@@ -111,3 +96,111 @@ html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="light"]
 :is(#ribbon-panels, .hy-ribbon-fly, .uitool-command-family) .btn-glyph .ic {
   color: var(--uitool-ribbon-icon);
 }
+
+/* Shared model-space background, independent of chrome. Preserve the grid
+ * image and actual paper-sheet surface; the original comparison is untouched. */
+html[data-uitool-theme-design="1"] {
+  --cad-bg: #000000 !important;
+  --viewport-bg: #000000 !important;
+}
+html[data-uitool-theme-design="1"] :is(#viewport-frame,#viewport) {
+  background-color:#000 !important;
+}
+/* Two arrow-marked chrome rows, not the command panel. Set both grid tracks
+ * and their content, and preserve the native hidden-filetabs state. */
+html[data-uitool-theme-design="1"][data-skin="hy-ribbon"] {
+  --titlebar-h:30px !important;
+  --h-title:30px !important;
+  --uit-filetabs-h:26px;
+}
+html[data-uitool-theme-design="1"][data-skin="hy-ribbon"][data-density="compact"] {
+  --titlebar-h:28px !important;
+  --h-title:28px !important;
+  --uit-filetabs-h:24px;
+}
+html[data-uitool-theme-design="1"][data-skin="hy-ribbon"] #app:not(.filetabs-off) {
+  --filetabs-h:var(--uit-filetabs-h) !important;
+}
+html[data-uitool-theme-design="1"][data-skin="hy-ribbon"] #titlebar-row {
+  height:var(--titlebar-h);min-height:0;padding-block:0;gap:4px;
+}
+html[data-uitool-theme-design="1"][data-skin="hy-ribbon"] #titlebar-row .ribbon-tab {
+  height:100%;min-height:0;line-height:var(--titlebar-h);padding-block:0;
+}
+html[data-uitool-theme-design="1"][data-skin="hy-ribbon"] #titlebar-row :is(.winctl button,.hy-dock-toggle,#cmd-search) {
+  height:calc(var(--titlebar-h) - 4px);min-height:0;
+}
+html[data-uitool-theme-design="1"][data-skin="hy-ribbon"] #titlebar-row .uitool-hy3d-app-icon {
+  width:24px;height:24px;
+}
+html[data-uitool-theme-design="1"][data-skin="hy-ribbon"] #filetabs {
+  height:var(--filetabs-h);min-height:0;padding-block:0;
+}
+html[data-uitool-theme-design="1"][data-skin="hy-ribbon"] #filetabs :is(.filetab,.filetab-add) {
+  height:100%;min-height:0;padding-block:0;line-height:normal;
+}
+/* HyMdTauri sash convention: native directional cursor, delayed hover
+ * accent, immediate drag feedback. Never substitute the CAD crosshair. */
+html[data-uitool-theme-design="1"] :is(#split-left,#split-right,#view-split-sash) {cursor:col-resize;}
+html[data-uitool-theme-design="1"] #cmdbar-grip {cursor:row-resize;transition:background-color .1s ease-out;}
+html[data-uitool-theme-design="1"] #cmdbar-grip:hover {transition-delay:300ms;}
+html[data-uitool-theme-design="1"] #cmdbar-grip.dragging {transition-delay:0ms;}
+html[data-uitool-theme-design="1"] :is(.cmdbar-float-head,#settings-drag,.cmd-hist-float-head) {cursor:grab;}
+html[data-uitool-theme-design="1"] :is(.cmdbar-float-head,#settings-drag,.cmd-hist-float-head):active {cursor:grabbing;}
+html[data-uitool-theme-design="1"] :is(.cmdbar-float-head,#settings-drag,.cmd-hist-float-head) button {cursor:pointer;}
+html[data-uitool-theme-design="1"] #settings-resize {cursor:nwse-resize;}
+/* The command input consumes one complete row. Long history lines scroll,
+ * never grow the command bar or change the count of logical output rows. */
+html[data-uitool-theme-design="1"] #cmdbar {
+  padding-block:0;border-top:0;box-shadow:inset 0 1px var(--border);
+}
+html[data-uitool-theme-design="1"] #cmdbar.floating {
+  height:calc(var(--cmdbar-h) + 26px);
+  max-height:calc(var(--cmdbar-h) + 26px);
+  box-shadow:0 8px 24px #0005;
+}
+html[data-uitool-theme-design="1"] #cmdbar .cmdbar-float-head {
+  box-sizing:border-box;height:24px;min-height:24px;padding-block:0;
+}
+html[data-uitool-theme-design="1"] #cmdbar .cmd-prompt-row {
+  height:var(--cmd-h);min-height:var(--cmd-h);max-height:var(--cmd-h);gap:4px;
+}
+html[data-uitool-theme-design="1"] #cmdbar .cmd-history {
+  line-height:var(--cmd-h);white-space:pre;word-break:normal;overflow:auto;
+  scrollbar-width:thin;
+}
+html[data-uitool-theme-design="1"] #cmdbar .cmd-hist-line {
+  min-height:var(--cmd-h);line-height:var(--cmd-h);
+}
+html[data-uitool-theme-design="1"] #cmdbar:not(.floating) .cmdbar-undock {
+  position:static;flex:0 0 22px;
+}
+html[data-uitool-theme-design="1"] #uitool-cmd-more {
+  width:24px;height:22px;flex:0 0 24px;display:grid;place-items:center;
+  padding:0;border:1px solid transparent;border-radius:4px;
+  background:transparent;color:var(--text-2);cursor:pointer;
+}
+html[data-uitool-theme-design="1"] #uitool-cmd-more:is(:hover,[aria-expanded="true"]) {
+  color:var(--text);background:var(--bg-hover);border-color:var(--border);
+}
+html[data-uitool-theme-design="1"] #uitool-cmd-more svg {width:16px;height:16px;}
+html[data-uitool-theme-design="1"] #uitool-cmd-more[aria-expanded="true"] svg {transform:rotate(180deg);}
+html[data-uitool-theme-design="1"] #uitool-cmd-menu {
+  position:fixed;z-index:20010;width:208px;max-width:calc(100vw - 12px);
+  max-height:calc(100vh - 12px);overflow:auto;box-sizing:border-box;
+  padding:5px;background:var(--bg-raised);color:var(--text);
+  border:1px solid var(--border-strong,var(--border));border-radius:5px;
+  box-shadow:0 5px 16px #0005;font:12px var(--font-ui);
+}
+html[data-uitool-theme-design="1"] #uitool-cmd-menu[hidden] {display:none !important;}
+html[data-uitool-theme-design="1"] #uitool-cmd-menu .uitool-cmd-rows {display:grid;grid-template-columns:repeat(6,1fr);gap:2px;}
+html[data-uitool-theme-design="1"] #uitool-cmd-menu button {
+  height:26px;min-width:0;padding:0 6px;border:1px solid transparent;border-radius:3px;
+  background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer;
+}
+html[data-uitool-theme-design="1"] #uitool-cmd-menu .uitool-cmd-rows button {text-align:center;padding:0;}
+html[data-uitool-theme-design="1"] #uitool-cmd-menu > button {display:block;width:100%;}
+html[data-uitool-theme-design="1"] #uitool-cmd-menu button[aria-pressed="true"] {background:var(--accent-soft);border-color:var(--accent);}
+html[data-uitool-theme-design="1"] #uitool-cmd-menu button:hover {background:var(--bg-hover);}
+html[data-uitool-theme-design="1"] :is(#uitool-cmd-menu button,#uitool-cmd-more):focus-visible {outline:1px solid var(--accent);outline-offset:-1px;}
+html[data-uitool-theme-design="1"] #uitool-cmd-menu .uitool-cmd-caption {padding:5px 6px;color:var(--text-2);}
