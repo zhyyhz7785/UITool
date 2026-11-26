@@ -206,3 +206,19 @@
 .ut-appicon-chip { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 24px; border-radius: 3px; }
 .ut-appicon-chip.dark { background: #1e1e1e; }
 .ut-appicon-chip.light { background: #f3f3f3; }
+
+/* Product dialog design catalog: compact, independent of the draft config. */
+.ut-dialog-design-tools {display:flex;align-items:center;gap:4px;min-width:0;}
+.ut-dialog-design-tools .wb-select {flex:0 0 auto;max-width:45%;}
+.ut-dialog-design-tools .wb-input {min-width:0;}
+.ut-dialog-product {margin-top:6px;min-width:0;}
+.ut-dialog-product-head {display:flex;align-items:center;justify-content:space-between;gap:4px;font-weight:600;padding:4px 6px;border-bottom:1px solid var(--vscode-base-border);}
+.ut-dialog-product .ut-dialog-row {min-height:24px;}
+.ut-dialog-product .ut-dialog-row .ut-grow {min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ut-dialog-kind {flex:none;font-size:11px;color:inherit;opacity:.65;}
+.ut-dialog-product details {padding:3px 6px;}
+.ut-dialog-product summary {cursor:pointer;color:var(--vscode-descriptionForeground);}
+.ut-dialog-design-bar {gap:6px;min-width:0;}
+.ut-dialog-design-bar button {flex-shrink:0;white-space:nowrap;}
+.ut-dialog-design-bar .ut-grow {min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ut-dialog-design-info {display:flex;flex-wrap:wrap;gap:4px 12px;padding:4px 8px;font-size:11px;color:var(--vscode-descriptionForeground);overflow-wrap:anywhere;border-bottom:1px solid var(--vscode-base-border);}
