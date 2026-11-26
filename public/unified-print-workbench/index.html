@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN" data-uitool-theme-design="1" data-palette="acad-b" data-theme="dark" data-density="compact">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HY · 统一打印工作台</title>
+<style>
+html[data-uitool-theme-design="1"][data-palette="blender-dark"][data-theme="dark"] {
+  color-scheme: dark;
+  --bg-window: #181818;
+  --bg-header: #202020;
+  --bg-panel: #202020;
+  --bg-ribbon: #202020;
+  --bg-raised: #2b2b2b;
+  --bg-input: #181818;
+  --bg-ctl: #2b2b2b;
+  --bg-hover: #333333;
+  --bg-active: #393939;
+  --border: #383838;
+  --border-strong: #515151;
+  --sash: #383838;
+  --sash-hover: #7cafff;
+  --text: #e7e7e7;
+  --text-2: #aaaaaa;
+  --text-3: #929292;
+  --accent: #7cafff;
+  --accent-hover: #9bc2ff;
+  --accent-press: #6295e4;
+  --accent-soft: #293b55;
+  --selection-bg: #293b55;
+  --selection-text: #d5e5ff;
+  --selection-hover: #324964;
+  --selection-border: #55769f;
+  --sb-thumb: #505050;
+  --sb-thumb-hover: #696969;
+}
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] {
+  /* AutoCAD 2026, user reference 2026-11-26, 2048x1095 RGB screenshot.
+   * Flat surfaces sampled directly; states not shown reuse sampled colors.
+   * No approximate blue tint or global filter. */
+  color-scheme: dark;
+  --bg-window: #222933;
+  --bg-header: #222933;
+  --bg-panel: #3b4453;
+  --bg-ribbon: #3b4453;
+  --bg-raised: #2e3440;
+  --bg-input: #4e5a6e;
+  --bg-ctl: #3b4453;
+  --bg-hover: #4e5a6e;
+  --bg-active: #4e5a6e;
+  --border: #2e3440;
+  --border-strong: #191c23;
+  --sash: #191c23;
+  --sash-hover: #608fbf;
+  --text: #d9d9d9;
+  --text-2: #d9d9d9;
+  --text-3: #adb0b4;
+  --accent: #608fbf;
+  --accent-hover: #608fbf;
+  --accent-press: #608fbf;
+  --accent-soft: #4e5a6e;
+  --selection-bg: #4e5a6e;
+  --selection-text: #f5f5f5;
+  --selection-hover: #4e5a6e;
+  --selection-border: #608fbf;
+  --sb-thumb: #4e5a6e;
+  --sb-thumb-hover: #608fbf;
+  --uit-acad-command-face: #b2b2b2;
+  --uit-acad-command-ink: #474747;
+}
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="light"] {
+  color-scheme: light;
+  --bg-window: #f3f5f8;
+  --bg-header: #ffffff;
+  --bg-panel: #ffffff;
+  --bg-ribbon: #ffffff;
+  --bg-raised: #eef1f5;
+  --bg-input: #f3f5f8;
+  --bg-ctl: #f7f8fa;
+  --bg-hover: #e9edf3;
+  --bg-active: #e3efff;
+  --border: #d8dee7;
+  --border-strong: #acb8c7;
+  --sash: #d8dee7;
+  --sash-hover: #246bd7;
+  --text: #20252d;
+  --text-2: #687385;
+  --text-3: #687385;
+  --accent: #246bd7;
+  --accent-hover: #1d5dbd;
+  --accent-press: #194f9e;
+  --accent-soft: #e3efff;
+  --selection-bg: #e3efff;
+  --selection-text: #1d55a2;
+  --selection-hover: #d5e6fa;
+  --selection-border: #9bbbe7;
+  --sb-thumb: #b7c0cc;
+  --sb-thumb-hover: #939fad;
+  --uitool-ribbon-icon: #586879;
+}
+:root{--ctl:24px;--gap:6px;--pad:8px;--font:12px;--side:286px;--radius:4px;--warn:#d4a45f}
+html[data-density="comfortable"]{--ctl:30px;--gap:9px;--pad:12px;--font:13px;--side:316px}
+html[data-theme="light"]{--warn:#9a5c08}
+*{box-sizing:border-box}html,body{height:100%;margin:0}body{font:var(--font)/1.45 "Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg-window);color:var(--text)}
+button,input,select{font:inherit;color:inherit;min-width:0}button,input:not([type=checkbox]),select{height:var(--ctl);border:1px solid var(--border-strong);border-radius:var(--radius);background:var(--bg-input);padding:0 7px}
+button{background:var(--bg-ctl);cursor:pointer;white-space:nowrap}button:hover:not(:disabled){background:var(--bg-hover)}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button[aria-pressed=true]{background:var(--selection-bg);border-color:var(--selection-border);color:var(--selection-text)}button:disabled,select:disabled,input:disabled{opacity:.55;cursor:not-allowed}input[type=checkbox]{accent-color:var(--accent);margin:0}
+[hidden]{display:none!important}.app{height:100%;display:flex;flex-direction:column;min-width:0;min-height:0}.bar,.sourcebar,.footer,.tools{display:flex;align-items:center;gap:var(--gap);padding:5px var(--pad);background:var(--bg-header);flex-shrink:0;min-width:0}.bar,.sourcebar,.tools{border-bottom:1px solid var(--border-strong)}.bar{flex-wrap:wrap}.brand{display:flex;align-items:center;gap:6px;font-weight:600;white-space:nowrap}.brand svg,.ico svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.spacer{flex:1;min-width:0}.muted{color:var(--text-3);font-size:11px}.modes{display:flex;gap:2px}.modes button{min-width:72px}.sourcebar{overflow-x:auto;background:var(--bg-panel)}.sourcebar button{flex:none}.sourcebar .muted{white-space:nowrap}.work{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) var(--side)}.preview{min-width:0;min-height:0;display:flex;flex-direction:column;background:#000}.tools{background:var(--bg-panel);flex-wrap:wrap}.tools input{width:42px;text-align:center}.ico{display:inline-flex;align-items:center;justify-content:center;min-width:var(--ctl);padding:0 5px}.stage{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:16px;gap:8px}.sheet{display:block;background:white;flex:none;box-shadow:0 2px 10px #0008;overflow:hidden}.sheet svg{display:block;width:100%;height:100%}.stage-note{color:#c4c4c4;font-size:11px;flex:none;text-align:center}.thumbbar{display:flex;gap:6px;overflow-x:auto;padding:6px var(--pad);background:var(--bg-panel);border-top:1px solid var(--border-strong);flex-shrink:0}.thumb{display:flex;align-items:center;gap:5px;height:38px;flex:none;padding:3px 6px}.mini{display:block;width:19px;height:26px;background:#fff;border:1px solid #b9b9b9;position:relative}.mini:after{content:"";position:absolute;inset:5px 3px;background:repeating-linear-gradient(#777 0 1px,transparent 1px 4px)}.settings{min-height:0;overflow:auto;background:var(--bg-panel);border-left:1px solid var(--border-strong);scrollbar-width:thin}.settings-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:6px var(--pad);background:var(--bg-header);border-bottom:1px solid var(--border-strong);font-weight:600}.group{padding:var(--gap) var(--pad);border-bottom:1px solid var(--border-strong);display:grid;gap:var(--gap)}.group h2{font:inherit;font-weight:600;margin:0;color:var(--text)}.field{display:grid;grid-template-columns:78px minmax(0,1fr);align-items:center;gap:6px}.field>label{color:var(--text-2)}.field input,.field select{width:100%}.pair{display:flex;align-items:center;gap:4px;min-width:0}.pair>*{flex:1;min-width:0}.check{display:flex;align-items:center;gap:6px;cursor:pointer}.checks{display:flex;flex-wrap:wrap;gap:var(--gap) 12px}.group details>summary{cursor:pointer;font-weight:600}.detail-body{display:grid;gap:var(--gap);margin-top:var(--gap)}.warning{color:var(--warn);font-size:11px;overflow-wrap:anywhere}.footer{border-top:1px solid var(--border-strong);flex-wrap:wrap}.foot-text{flex:1;min-width:150px;overflow-wrap:anywhere}.foot-text strong{font-weight:600}.primary{background:var(--accent);border-color:var(--accent);color:#141d29;font-weight:600}.primary:hover:not(:disabled){background:var(--accent-hover)}html[data-theme=light] .primary{color:white}.foot-actions{display:flex;gap:4px;flex-wrap:wrap}.notice{padding:5px var(--pad);background:var(--bg-raised);border-top:1px solid var(--border-strong);color:var(--text-2);font-size:11px;overflow-wrap:anywhere}
+dialog{max-width:min(440px,calc(100vw - 20px));max-height:80vh;border:1px solid var(--border-strong);border-radius:5px;background:var(--bg-panel);color:var(--text);padding:12px}dialog::backdrop{background:#0007}dialog pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;max-height:48vh;overflow:auto}dialog h2{margin:0 0 8px;font-size:14px}dialog .foot-actions{justify-content:flex-end}
+@media(max-width:680px){:root,html[data-density=comfortable]{--side:242px}.work{grid-template-columns:minmax(0,1fr) var(--side)}.field{grid-template-columns:68px minmax(0,1fr)}.bar .brand{width:100%}.stage{padding:8px}.sourcebar .muted{display:none}}
+@media(max-width:490px){.work{display:flex;flex-direction:column;overflow:auto}.preview{min-height:260px;flex:1 0 260px}.settings{flex:none;border-left:0;border-top:1px solid var(--border-strong);overflow:visible}.stage{min-height:160px}.footer{gap:4px}}
+</style></head>
+<body><main class="app">
+<header class="bar"><span class="brand"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V3h10v5M7 17H4V8h16v9h-3M7 14h10v7H7zM16 11h1"/></svg>统一打印工作台</span><div class="modes" role="group" aria-label="打印模式"><button id="general" aria-pressed="true">一般打印</button><button id="pro" aria-pressed="false">专业打印</button></div><span class="spacer"></span><select id="theme" aria-label="主题"><option value="blue">蓝色 · AutoCAD</option><option value="black">黑色</option><option value="white">白色</option></select><select id="density" aria-label="显示密度"><option value="compact">紧凑</option><option value="comfortable">宽松</option></select><button id="info" title="查看当前打印任务">任务</button></header>
+<nav class="sourcebar" aria-label="示例来源"><span class="muted">示例</span><button data-source="pdf">PDF</button><button data-source="image">图片</button><button data-source="word">Word / MD</button><button data-source="ppt">PPT</button><button data-source="cad">CAD 图纸</button><span class="spacer"></span><span class="muted" id="sourceName"></span></nav>
+<div class="work"><section class="preview" aria-label="纸面预览"><div class="tools"><button class="ico" id="prev" title="上一页" aria-label="上一页">‹</button><input id="page" type="number" min="1" value="1" aria-label="当前页"><span id="total"></span><button class="ico" id="next" title="下一页" aria-label="下一页">›</button><button class="ico" id="minus" aria-label="缩小">−</button><span id="zoom" title="相对适合页面或宽度的缩放倍数">100%</span><button class="ico" id="plus" aria-label="放大">＋</button><button id="fitPage">整页</button><button id="fitWidth">宽度</button><span class="spacer"></span><button id="thumbToggle" aria-expanded="true">页面</button></div>
+<div class="stage" id="stage"><div class="sheet" id="sheet"></div><span class="stage-note" id="paperCaption"></span></div><div class="thumbbar" id="thumbbar" aria-label="页面导航"></div></section>
+<aside class="settings" aria-label="打印设置"><div class="settings-head"><span>打印设置</span><span class="muted" id="modeLabel">一般</span></div>
+<section class="group"><h2>输出</h2><div class="field"><label for="destination">设备</label><select id="destination"><option value="pdf">PDF（矢量优先）</option><option value="printer" disabled>系统打印机 · 未接入</option></select></div><div class="field"><label for="range">页码</label><select id="range"><option value="all">全部页面</option><option value="current">当前页</option><option value="custom">指定页码</option></select></div><div class="field" id="customRow" hidden><label for="custom">范围</label><input id="custom" placeholder="1-3, 5" value="1-2"></div><div class="field"><label for="copies">份数</label><input id="copies" type="number" min="1" max="99" value="1"></div></section>
+<section class="group"><h2>纸张</h2><div class="field"><label for="paper">规格</label><select id="paper"><option>A5</option><option>A4</option><option>A3</option><option>A2</option><option>A1</option><option>A0</option><option>B4</option><option>B3</option><option>B2</option><option>B1</option><option>Letter</option><option>Legal</option><option>Tabloid</option><option>自定义</option></select></div><div class="field" id="paperCustom" hidden><label for="paperW">宽 × 高 mm</label><div class="pair"><input id="paperW" type="number" min="1" value="297" aria-label="纸宽毫米"><span>×</span><input id="paperH" type="number" min="1" value="420" aria-label="纸高毫米"></div></div><div class="field"><label for="orientation">方向</label><select id="orientation"><option value="portrait">纵向</option><option value="landscape">横向</option></select></div><div class="field" id="fitRow"><label for="fit">适配</label><select id="fit"><option value="fit">适合可印区</option><option value="actual">实际大小</option><option value="shrink">仅缩小</option></select></div><div class="field"><label for="color">颜色</label><select id="color"><option value="color">彩色</option><option value="gray">灰度（文档示例）</option><option value="mono">黑白</option></select></div><label class="check"><input type="checkbox" id="center" checked>居中打印</label></section>
+<section class="group" id="cadGroup" hidden><h2>CAD 工程出图</h2><div class="field"><label for="space">来源</label><select id="space"><option value="model">模型空间</option><option value="layout1">布局 1 · 总图</option><option value="layout2">布局 2 · 详图</option></select></div><div class="field"><label for="area">图形范围</label><select id="area"><option value="extents">图形范围</option><option value="display">当前显示</option><option value="window">窗口</option><option value="layout">当前布局</option></select></div><div class="field" id="windowRow" hidden><label>窗口</label><button id="pickWindow">采用示例角点…</button></div><div class="field"><label for="scale">工程比例</label><input id="scale" list="scales" value="1:100"><datalist id="scales"><option value="fit">布满</option><option value="1:1"><option value="1:20"><option value="1:50"><option value="1:100"><option value="1:200"><option value="1:500"></datalist></div><div class="field"><label for="style">打印样式</label><select id="style"><option value="">无</option><option value="monochrome.ctb">monochrome.ctb（示例）</option><option value="custom.ctb">custom.ctb（示例）</option><option disabled>STB · 暂不支持</option></select></div><label class="check"><input id="lineweights" type="checkbox" checked>打印对象线宽</label></section>
+<section class="group" id="professional" hidden><details id="more"><summary>高级设置</summary><div class="detail-body"><div class="field"><label for="margin">边距 mm</label><input id="margin" type="number" min="0" step="1" value="5"></div><div id="offsetRow" hidden class="field"><label for="offsetX">偏移 X / Y</label><div class="pair"><input id="offsetX" type="number" value="0" aria-label="X 偏移毫米"><input id="offsetY" type="number" value="0" aria-label="Y 偏移毫米"></div></div><div class="field"><label for="order">顺序</label><select id="order"><option value="normal">正序</option><option value="reverse">逆序</option></select></div><label class="check"><input id="showPrintable" type="checkbox">显示示例可印区</label><div class="field"><label for="duplex">单双面</label><select id="duplex" disabled><option>单面 · 驱动未接入</option><option>双面长边</option><option>双面短边</option></select></div><div class="field"><label for="dpi">渲染质量</label><select id="dpi" disabled><option>矢量优先 · 未接入</option><option>300 DPI</option><option>600 DPI</option><option>1200 DPI</option></select></div><div class="field"><label for="imposition">每张页数</label><select id="imposition" disabled><option>1 · 多页拼版未接入</option><option>2</option><option>4</option></select></div><label class="check"><input type="checkbox" disabled>透明效果（待能力验证）</label><span class="muted">禁用项不写入有效任务；真实能力由产品宿主提供。</span></div></details></section>
+<section class="group"><button id="reset">恢复快速打印默认设置</button><span id="errors" role="alert" class="warning"></span><span class="muted" id="effective"></span></section></aside></div>
+<div class="notice" role="status" id="notice">交互设计候选 · 全部为示例数据，不连接打印机，不生成真实 PDF。</div>
+<footer class="footer"><div class="foot-text"><strong id="summary"></strong><div class="muted">白色纸面预览 · 预览缩放不改变工程比例</div></div><div class="foot-actions"><button id="publish" hidden>批量发布</button><button id="system" disabled title="真实系统打印尚未接入">系统打印</button><button id="export">导出 PDF</button><button id="cancel">返回</button><button class="primary" id="print">打印</button></div></footer>
+</main><dialog id="taskDialog"><h2 id="taskTitle">打印任务（演示）</h2><pre id="taskBody"></pre><div class="foot-actions"><button id="closeTask">关闭</button></div></dialog>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const sources={pdf:{name:"工程说明.pdf",count:4},image:{name:"现场照片组",count:3},word:{name:"施工组织设计.docx / MD",count:7},ppt:{name:"工程方案.pptx",count:6},cad:{name:"钢结构厂房.dwg / dxf",count:3}};
+const sizes={A5:[148,210],A4:[210,297],A3:[297,420],A2:[420,594],A1:[594,841],A0:[841,1189],B4:[250,353],B3:[353,500],B2:[500,707],B1:[707,1000],Letter:[215.9,279.4],Legal:[215.9,355.6],Tabloid:[279.4,431.8]};
+const fields=["destination","range","custom","copies","paper","paperW","paperH","orientation","fit","color","center","space","area","scale","style","lineweights","margin","offsetX","offsetY","order","showPrintable"];
+const saved=new Map();
+let source=new URLSearchParams(location.search).get("product")==="hy3d"?"cad":"pdf",mode=source==="cad"?"pro":"general",page=1,zoomMode="page",factor=1,windowPoints=null,revision=0,lastKey="",prepared=null;
+const count=()=>sources[source].count;
+const cad=()=>source==="cad";
+const val=id=>$(id).type==="checkbox"?$(id).checked:$(id).value;
+function defaults(kind){return {destination:"pdf",range:"all",custom:"1-2",copies:"1",paper:kind==="cad"?"A3":"A4",paperW:"297",paperH:"420",orientation:kind==="cad"||kind==="ppt"?"landscape":"portrait",fit:"fit",color:kind==="cad"?"mono":"color",center:true,space:"model",area:"extents",scale:"1:100",style:"",lineweights:true,margin:"5",offsetX:"0",offsetY:"0",order:"normal",showPrintable:false};}
+function snapshot(){return Object.fromEntries(fields.map(id=>[id,val(id)]));}
+function apply(v){for(const id of fields){if($(id).type==="checkbox")$(id).checked=!!v[id];else $(id).value=v[id];}}
+function changeSource(kind){if(kind===source)return;saved.set(source,{values:snapshot(),page,windowPoints});source=kind;const old=saved.get(kind);apply(old?.values||defaults(kind));page=old?.page||1;windowPoints=old?.windowPoints||null;render();}
+function pages(){if(val("range")==="current")return [page];if(val("range")==="all")return Array.from({length:count()},(_,i)=>i+1);const set=new Set();for(const part of val("custom").trim().split(/[,，]/)){const m=/^(\d+)(?:\s*[-–]\s*(\d+))?$/.exec(part.trim());if(!m)return null;const a=Number(m[1]),b=Number(m[2]||m[1]);if(a<1||b<a||b>count())return null;for(let i=a;i<=b;i++)set.add(i);}return [...set].sort((a,b)=>a-b);}
+function paperSize(){let s=val("paper")==="自定义"?[Number(val("paperW")),Number(val("paperH"))]:sizes[val("paper")];if(!s||s.some(n=>!Number.isFinite(n)||n<=0||n>5000))return null;let [a,b]=s.slice().sort((x,y)=>x-y);return val("orientation")==="landscape"?[b,a]:[a,b];}
+function scaleValue(){let t=val("scale").trim().replace("：",":");if(!t||/^(fit|布满)$/i.test(t))return "fit";const m=/^(\d+(?:\.\d+)?)\s*[:/]\s*(\d+(?:\.\d+)?)$/.exec(t);return m&&Number.isFinite(+m[1])&&Number.isFinite(+m[2])&&+m[1]>0&&+m[2]>0&&Number.isFinite(+m[1]/+m[2])&&+m[1]/+m[2]>0?m[1]+":"+m[2]:null;}
+function number(id){return val(id).trim()===""?NaN:Number(val(id));}
+function job(){const errors=[],p=pages(),size=paperSize(),copies=number("copies"),margin=number("margin"),scale=scaleValue(),ox=number("offsetX"),oy=number("offsetY");if(!p?.length)errors.push("页码无效");if(!size)errors.push("纸张尺寸无效（1–5000 mm）");if(!Number.isInteger(copies)||copies<1||copies>99)errors.push("份数须为 1–99 的整数");if(!Number.isFinite(margin)||margin<0||size&&margin*2>=Math.min(...size))errors.push("边距超出纸张");if(cad()&&!scale)errors.push("比例须为正数比或 fit");if(cad()&&!val("center")&&(!Number.isFinite(ox)||!Number.isFinite(oy)))errors.push("偏移须为有限数值");if(cad()&&val("area")==="window"&&!windowPoints)errors.push("请先选择示例窗口");if(cad()&&val("area")==="layout"&&val("space")==="model")errors.push("请先选择布局");const ordered=p&&val("order")==="reverse"?p.slice().reverse():p;const data={contractVersion:1,source,sourceRevision:"uitool-demo:"+source,destination:"pdf",range:val("range"),pages:ordered,copies,paper:val("paper"),paperMm:size,landscape:val("orientation")==="landscape",color:val("color"),center:val("center"),margin};if(cad())data.cad={space:val("space"),area:val("area")==="display"?"window":val("area"),window:val("area")==="display"?[[0,0],[24000,12000]]:val("area")==="window"?windowPoints:null,scale,plotstyle:val("style"),lineweights:val("lineweights"),offset:val("center")?[0,0]:[ox,oy]};else data.fit=val("fit");return {data,errors};}
+function pageSvg(size,n,valid){const w=size[0],h=size[1],safe=Math.min(w,h),m=valid?Number(val("margin")):5;const px=Math.max(0,Math.min(m,w/4,h/4)),pw=w-2*px,ph=h-2*px;let content="";const ink=val("color")==="color"&&val("style")!=="monochrome.ctb"?"#345a79":"#242424";if(cad()){let lines="";for(let i=0;i<7;i++){const x=28+i*40;lines+='<path d="M'+x+' 33V142" stroke-dasharray="3 2"/><rect x="'+(x-2)+'" y="46" width="4" height="4"/><rect x="'+(x-2)+'" y="115" width="4" height="4"/>';}content='<g fill="none" stroke="'+ink+'" stroke-width="'+(val("lineweights")?"0.85":"0.4")+'"><rect x="7" y="7" width="286" height="186"/><rect x="28" y="48" width="240" height="69"/><path d="M28 52H268M28 113H268M28 48L68 117L108 48L148 117L188 48L228 117L268 48M28 31H268M28 27V35M268 27V35"/>'+lines+'<rect x="174" y="162" width="119" height="31"/><path d="M174 174H293M174 183H293M237 162V193"/></g><g fill="#242424" font-size="5"><text x="128" y="27">24000</text><text x="181" y="171">结构平面图</text><text x="241" y="180">S-0'+n+'</text><text x="181" y="180">比例（参数）</text><text x="241" y="190">'+(scaleValue()||"—")+'</text></g>';}else if(source==="image"){content='<rect x="18" y="20" width="264" height="150" fill="'+(val("color")==="color"?"#d8e4e9":"#ddd")+'"/><path d="M18 146L75 85L118 124L180 58L282 142V170H18Z" fill="'+(val("color")==="color"?"#8199a7":"#888")+'"/><text x="18" y="185" fill="#222" font-size="8">现场照片 · '+n+'</text>';}else{const title=source==="ppt"?"工程方案汇报":source==="word"?"施工组织设计":"工程说明";let lines="";for(let i=0;i<12;i++)lines+='<path d="M22 '+(55+i*9)+'H'+(i%4===3?192:278)+'" stroke="#777" stroke-width="1.5"/>';content='<text x="22" y="30" font-size="12" font-weight="600" fill="'+ink+'">'+title+'</text><path d="M22 39H278" stroke="'+ink+'"/>'+lines+'<text x="150" y="185" text-anchor="middle" fill="#222" font-size="7">'+n+'</text>';}return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+w+' '+h+'"><rect width="'+w+'" height="'+h+'" fill="white"/><svg x="'+px+'" y="'+px+'" width="'+pw+'" height="'+ph+'" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid meet">'+content+'</svg>'+(val("showPrintable")?'<rect x="'+px+'" y="'+px+'" width="'+pw+'" height="'+ph+'" fill="none" stroke="#777" stroke-width="'+safe/300+'" stroke-dasharray="2 2"/>':"")+'</svg>';}
+function resize(){const s=paperSize()||[210,297],r=$("stage");const aw=Math.max(40,r.clientWidth-34),ah=Math.max(40,r.clientHeight-58);const base=zoomMode==="width"?aw/s[0]:Math.min(aw/s[0],ah/s[1]);const k=base*factor;$("sheet").style.width=Math.round(s[0]*k)+"px";$("sheet").style.height=Math.round(s[1]*k)+"px";$("zoom").textContent=Math.round(factor*100)+"%";$("fitPage").setAttribute("aria-pressed",String(zoomMode==="page"));$("fitWidth").setAttribute("aria-pressed",String(zoomMode==="width"));}
+function render(){page=Math.max(1,Math.min(count(),page));$("page").value=String(page);$("page").max=String(count());$("total").textContent="/ "+count();$("prev").disabled=page===1;$("next").disabled=page===count();$("sourceName").textContent=sources[source].name;document.querySelectorAll("[data-source]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.source===source)));for(const m of ["general","pro"])$(m).setAttribute("aria-pressed",String(mode===m));$("modeLabel").textContent=mode==="pro"?"专业":"一般";$("professional").hidden=mode!=="pro";$("cadGroup").hidden=mode!=="pro"||!cad();$("fitRow").hidden=cad();$("offsetRow").hidden=!cad();$("offsetX").disabled=$("offsetY").disabled=val("center");$("customRow").hidden=val("range")!=="custom";$("paperCustom").hidden=val("paper")!=="自定义";$("windowRow").hidden=val("area")!=="window";$("publish").hidden=!cad()||mode!=="pro";$("color").options[1].disabled=cad();if(cad()&&val("color")==="gray")$("color").value="mono";
+const {data,errors}=job(),key=JSON.stringify(data);if(errors.length){prepared=null;lastKey="";}else if(key!==lastKey){lastKey=key;prepared={revision:++revision,sourceRevision:data.sourceRevision,task:data,pages:data.pages.map(n=>({number:n,widthMm:data.paperMm[0],heightMm:data.paperMm[1],payload:"demo-only"}))};}
+$("errors").textContent=errors.join("；");$("effective").textContent=cad()?"有效 CAD 比例："+(scaleValue()||"无效")+" · 边距 "+val("margin")+" mm":"有效边距："+val("margin")+" mm";$("summary").textContent=errors.length?"参数待修正":data.pages.length+" 页 · "+val("paper")+" · "+(data.landscape?"横向":"纵向")+(cad()?" · "+data.cad.scale:"")+" · "+data.copies+" 份";
+for(const id of ["export","print","publish"])$(id).disabled=!!errors.length;$("pickWindow").textContent=windowPoints?"已选示例窗口 · 重选":"采用示例角点…";$("sheet").innerHTML=pageSvg(data.paperMm||[210,297],page,!errors.length);$("paperCaption").textContent="第 "+page+" 页 · "+(data.paperMm?data.paperMm.join(" × ")+" mm":"无效纸张")+" · 示意图，非实际出图比例";
+const thumb=$("thumbbar");thumb.replaceChildren();for(let i=1;i<=count();i++){const b=document.createElement("button");b.className="thumb";b.setAttribute("aria-pressed",String(page===i));const mini=document.createElement("span");mini.className="mini";mini.setAttribute("aria-hidden","true");b.append(mini,document.createTextNode(cad()?["模型","总图","详图"][i-1]:"第 "+i+" 页"));b.onclick=()=>{page=i;render();};thumb.append(b);}resize();}
+function showTask(action){const {data,errors}=job();if(errors.length&&action!=="查看任务")return;$("taskTitle").textContent=action+" · 仅交互演示";$("taskBody").textContent=JSON.stringify({mode,job:data,prepared:prepared?{revision:prepared.revision,pages:prepared.pages}:null,errors,output:"未连接产品后端，不写文件、不送打印队列"},null,2);$("taskDialog").showModal();}
+apply(defaults(source));for(const id of fields){$(id).addEventListener("input",()=>{if(id==="space"&&cad()){if(val("space")==="model"){$("area").value="extents";}else{$("area").value="layout";$("scale").value="1:1";}}render();});}
+document.querySelectorAll("[data-source]").forEach(b=>b.onclick=()=>changeSource(b.dataset.source));for(const m of ["general","pro"])$(m).onclick=()=>{mode=m;render();};
+$("prev").onclick=()=>{page--;render();};$("next").onclick=()=>{page++;render();};$("page").onchange=()=>{page=Math.trunc(Number(val("page")))||1;render();};$("minus").onclick=()=>{factor=Math.max(.25,factor-.15);resize();};$("plus").onclick=()=>{factor=Math.min(3,factor+.15);resize();};$("fitPage").onclick=()=>{zoomMode="page";factor=1;resize();};$("fitWidth").onclick=()=>{zoomMode="width";factor=1;resize();};$("thumbToggle").onclick=()=>{$("thumbbar").hidden=!$("thumbbar").hidden;$("thumbToggle").setAttribute("aria-expanded",String(!$("thumbbar").hidden));resize();};
+$("theme").onchange=()=>{document.documentElement.dataset.palette=val("theme")==="black"?"blender-dark":"acad-b";document.documentElement.dataset.theme=val("theme")==="white"?"light":"dark";};$("density").onchange=()=>{document.documentElement.dataset.density=val("density");resize();};
+$("pickWindow").onclick=()=>{windowPoints=[[1000,1000],[23000,11000]];render();};$("reset").onclick=()=>{apply(defaults(source));windowPoints=null;render();$("notice").textContent="已明确恢复本示例来源的默认参数。";};$("info").onclick=()=>showTask("查看任务");$("export").onclick=()=>showTask("导出 PDF");$("print").onclick=()=>showTask("打印");$("publish").onclick=()=>showTask("批量发布");$("closeTask").onclick=()=>$("taskDialog").close();$("cancel").onclick=()=>{if(window.parent!==window){window.parent.postMessage({source:"uitool-print-candidate",action:"close"},"*");}else $("notice").textContent="独立演示已结束；没有真实打印任务需要释放。";};
+window.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="p"){e.preventDefault();showTask("打印");}if($("taskDialog").open||/INPUT|SELECT|BUTTON/.test(e.target.tagName))return;if(e.key==="PageDown"||e.key==="PageUp"){e.preventDefault();page+=e.key==="PageDown"?1:-1;render();}});new ResizeObserver(resize).observe($("stage"));render();
+</script></body></html>
