@@ -216,7 +216,7 @@ html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .uitool-family-pin:hov
 html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .uitool-family-reset:hover { background:var(--bg-hover); color:var(--text); }
 html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] .uitool-command-family button:focus-visible { outline:1px solid var(--accent); outline-offset:-1px; }
 
-/* Default-page design: every group takes its intrinsic width, including
+/* Designed pages: every group takes its intrinsic width, including
    the layer baseline. Unused width is the host's trailing background.
    No artificial spacer, no changes to command allocation or preferences. */
 html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.toolbar-side) #ribbon-panels:has(> .hy-rib-group > .hy-rib-dense) {
@@ -240,8 +240,8 @@ html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #ribbon-panels > .hy-r
   min-width:220px;
 }
 
-/* Compact the entire horizontal band only when the six design groups
-   actually loaded. A fallback/other tab keeps its original height.
+/* Compact the entire horizontal band only when all expected design groups
+   actually loaded. A fallback/unconfigured tab keeps its original height.
    Override the inherited app grid track as well as the ribbon itself,
    including the old A5 short-window rule. */
 html[data-uitool-layer-design="1"][data-skin="hy-ribbon"] #app:not(.panel-ribbon-off):not(.toolbar-side):not(.ribbon-minimized):has(#ribbon-panels[data-uitool-dense-status="ready"]:has(> .hy-rib-group > .hy-rib-dense) > .hy-rib-group > .hy-rib-dense[data-dense-rows="3"]) {

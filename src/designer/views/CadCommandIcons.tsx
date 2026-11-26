@@ -3,7 +3,7 @@ import pack from "@tpl/icons/hy3d-cad-pack.json";
 import ribbonDesign from "../../../scripts/hy3d-ribbon-design.json";
 
 type Row = { name: string; label: string; category: string; legacy: string; src: string; body: string };
-const ribbonArt = ribbonDesign.art as Record<string, string>;
+const ribbonArt = { ...ribbonDesign.art, ...ribbonDesign.tabArt } as Record<string, string>;
 const rows = Object.entries(pack.commands as Record<string, Row>).map(([id,row]): [string,Row] => [id, ribbonArt[id] ? { ...row, body:ribbonArt[id], src:"ribbon-design" } : row]);
 const categories = [...new Set(rows.map(([, row]) => row.category))];
 const sizes = [16, 20, 24, 32];
