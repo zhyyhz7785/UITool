@@ -68,7 +68,7 @@ export function ProductPreview({ product }: { product: ProductId }) {
   const [stage, setStage] = useState({ w: 800, h: 600 });
   const [reloadKey, setReloadKey] = useState(0);
   const [explorerScene, setExplorerScene] = useState<"sample" | "empty">("sample");
-  const [previewStyle, setPreviewStyle] = useState<"a5" | "original">("a5");
+  const [previewStyle, setPreviewStyle] = useState<"layer" | "a5" | "original">("layer");
   const frameSrc = product === "hy3d" ? `${page.src}&explorer=${explorerScene}&style=${previewStyle}` : page.src;
 
   const show = product === "hy3d" ? up === true : preview;
@@ -205,13 +205,14 @@ export function ProductPreview({ product }: { product: ProductId }) {
           <Segmented
             value={previewStyle}
             options={[
+              { value: "layer", label: "图层设计" },
               { value: "a5", label: "HY Ribbon / A5" },
               { value: "original", label: "原始界面" }
             ]}
             onChange={(v) => {
               setRegions([]);
               setUi(null);
-              setPreviewStyle(v === "original" ? "original" : "a5");
+              setPreviewStyle(v === "original" ? "original" : v === "a5" ? "a5" : "layer");
             }}
           />
         )}
@@ -227,7 +228,7 @@ export function ProductPreview({ product }: { product: ProductId }) {
             <option value="empty">资源：未打开目录</option>
           </select>
         )}
-        {skins.length > 0 && !(product === "hy3d" && previewStyle === "a5") && (
+        {skins.length > 0 && !(product === "hy3d" && previewStyle !== "original") && (
           <select
             className="wb-select"
             value={skin}
