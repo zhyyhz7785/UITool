@@ -16,6 +16,7 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const EXPLORER_FIXTURE = path.join(HERE, "hy3d-explorer-fixture.js");
 const HY3D_APP_ICON = path.resolve(HERE, "..", "public", "hy3d-icons", "11-hy-cad-clear-blue.png");
 const A5_CSS = path.join(HERE, "hy3d-a5-preview.css");
+const THEME_DESIGN_CSS = path.join(HERE, "hy3d-theme-design.css");
 const LAYER_CSS = path.join(HERE, "hy3d-layer-design.css");
 const LAYER_SCENE = path.join(HERE, "hy3d-layer-scene.js");
 const DOCK_DESIGN_CSS = path.join(HERE, "hy3d-dock-design.css");
@@ -196,6 +197,12 @@ function serveHy3d() {
         }
         return;
       }
+      if (raw === "/__uitool-theme-design.css") {
+        res.setHeader("content-type", MIME[".css"]);
+        res.setHeader("cache-control", "no-store");
+        createReadStream(THEME_DESIGN_CSS).pipe(res);
+        return;
+      }
       if (raw === "/__uitool-a5.css") {
         res.setHeader("content-type", MIME[".css"]);
         res.setHeader("cache-control", "no-store");
@@ -327,6 +334,11 @@ function serveHy3d() {
             res.end("UITool A5 预览与当前 HY3D 前端不兼容。切换原始预览，或同步产品前端镜像。\n" + String(error));
             return;
           }
+        }
+        // Theme is independent of the Ribbon layout and density. Load the same
+        // palette for both candidate paths, including native-profile A5.
+        if (["layer", "a5"].includes(url.searchParams.get("style"))) {
+          previewHtml = previewHtml.replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-theme-design.css"><script>document.documentElement.dataset.uitoolThemeDesign="1"</script></head>');
         }
         res.end(withHy3dAppIcon(previewHtml));
         return;
