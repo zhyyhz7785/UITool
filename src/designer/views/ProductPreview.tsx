@@ -45,6 +45,31 @@ type UiState = {
 
 /** 嵌入产品自己的开发页。连不上就停在断开，不画设计器里的另一套壳。 */
 export function ProductPreview({ product }: { product: ProductId }) {
+  const [fontDesign, setFontDesign] = useState(false);
+  if (product === "hy3d" && fontDesign) {
+    return (
+      <div className="ut-preview">
+        <div className="ut-preview-bar">
+          <span className="ut-dim">HY3D · 字体设计</span>
+          <Button onClick={() => setFontDesign(false)}>返回产品预览</Button>
+          <span className="ut-dim">独立交互原型 · 示例数据 · 不写回产品</span>
+          <span className="wb-sp" />
+        </div>
+        <div className="ut-stage ut-product-stage">
+          <iframe
+            className="ut-product-frame"
+            title="HY3D 图纸字体管理设计"
+            src={`${import.meta.env.BASE_URL}hy3d-font-manager/index.html`}
+            sandbox="allow-scripts"
+          />
+        </div>
+      </div>
+    );
+  }
+  return <LiveProductPreview product={product} onFontDesign={() => setFontDesign(true)} />;
+}
+
+function LiveProductPreview({ product, onFontDesign }: { product: ProductId; onFontDesign: () => void }) {
   const page = PAGES[product];
   const frameRef = useRef<HTMLIFrameElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -184,6 +209,7 @@ export function ProductPreview({ product }: { product: ProductId }) {
     <div className="ut-preview">
       <div className="ut-preview-bar">
         <span className="ut-dim">{page.name}</span>
+        {product === "hy3d" && <Button onClick={onFontDesign}>字体设计</Button>}
         <Segmented
           value={selecting ? "select" : "use"}
           options={[
