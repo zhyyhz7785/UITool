@@ -31,33 +31,48 @@ html[data-uitool-theme-design="1"][data-palette="blender-dark"][data-theme="dark
   --sb-thumb-hover: #696969;
 }
 html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] {
+  /* AutoCAD 2026 reference screenshot: dark chrome, slate-blue work panels,
+   * lighter controls. Keep model-space colors under the native CAD palette. */
   color-scheme: dark;
-  --bg-window: #1b2533;
-  --bg-header: #253449;
-  --bg-panel: #253449;
-  --bg-ribbon: #253449;
-  --bg-raised: #304259;
-  --bg-input: #1e2b3b;
-  --bg-ctl: #304259;
-  --bg-hover: #394d65;
-  --bg-active: #405873;
-  --border: #3c4e65;
-  --border-strong: #536b85;
-  --sash: #3c4e65;
-  --sash-hover: #86baff;
-  --text: #e9eff7;
-  --text-2: #b2c0d3;
-  --text-3: #91a4be;
-  --accent: #86baff;
-  --accent-hover: #a2ccff;
-  --accent-press: #679ee7;
-  --accent-soft: #354e70;
-  --selection-bg: #354e70;
-  --selection-text: #e2eeff;
-  --selection-hover: #405c80;
-  --selection-border: #668db9;
-  --sb-thumb: #506780;
-  --sb-thumb-hover: #6b829b;
+  --bg-window: #222933;
+  --bg-header: #222933;
+  --bg-panel: #3b4453;
+  --bg-ribbon: #3b4453;
+  --bg-raised: #2e3440;
+  --bg-input: #4e5a6e;
+  --bg-ctl: #454f61;
+  --bg-hover: #465163;
+  --bg-active: #52637a;
+  --border: #2e3440;
+  --border-strong: #59677b;
+  --sash: #2e3440;
+  --sash-hover: #80b4e8;
+  --text: #d9d9d9;
+  --text-2: #b8c4d3;
+  --text-3: #a0aec0;
+  --accent: #80b4e8;
+  --accent-hover: #a1cbf4;
+  --accent-press: #608fbf;
+  --accent-soft: #4b627e;
+  --selection-bg: #4b627e;
+  --selection-text: #f5f5f5;
+  --selection-hover: #526f91;
+  --selection-border: #80b4e8;
+  --sb-thumb: #59677b;
+  --sb-thumb-hover: #71849c;
+}
+/* The reference separates the darker title/menu/tab strips from the
+ * brighter Ribbon and dock body. Scope these color-only overrides to Blue. */
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"]
+:is(#titlebar-row, #menubar, #filetabs, .ribbon-tabs) {
+  background-color: var(--bg-header);
+}
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"]
+:is(#ribbon, #ribbon-panels) {
+  background-color: var(--bg-ribbon);
+}
+html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="dark"] #statusbar {
+  background-color: var(--bg-panel);
 }
 html[data-uitool-theme-design="1"][data-palette="acad-b"][data-theme="light"] {
   color-scheme: light;
