@@ -1,25 +1,37 @@
 // Browser-side source fragment: read as text by the preview server.
 // Lives inside the real HY Ribbon closure; never bundled or serialized via Function.toString().
-  function reportDense(status, groups, buttons, icons, error) {
+  function reportDense(status, groups, buttons, icons, error, expected, tab) {
     if (root.parent && root.parent !== root) {
       root.parent.postMessage({source:"uitool-product", product:"hy3d", op:"ribbon-design",
-        design:{status:status,groups:groups,buttons:buttons,icons:icons,error:error||""}}, "*");
+        design:{status:status,groups:groups,buttons:buttons,icons:icons,error:error||"",expected:expected == null ? 6 : expected,tab:tab||""}}, "*");
     }
   }
 
+  function isApprovedTab(tab) { return ["常用","默认","绘制"].indexOf(tab) >= 0; }
   function denseProfile(cur, panel, cmds) {
-    if (["常用","默认","绘制"].indexOf(cur.id || cur.name) < 0) return null;
-    var list = UITOOL_RIBBON.groups[panel.name === "绘制" ? "绘图" : panel.name];
+    var tab = cur.id || cur.name;
+    var approved = isApprovedTab(tab);
+    var groups = approved ? UITOOL_RIBBON.groups : UITOOL_RIBBON.tabs[tab];
+    var list = groups && groups[approved && panel.name === "绘制" ? "绘图" : panel.name];
     if (!list) return null;
     var result = [];
     list.forEach(function (item) {
       var cmd = cmds.find(function (c) { return c.id === item[0]; });
       if (!cmd && root.Registry && root.Registry.get) {
+        // Keep a registered command at its existing home on the new tabs.
+        // Explicit cross-page shortcuts are fine, but do not duplicate
+        // another group's command unless it was already in this group.
+        if (!approved && (cur.panels || []).some(function(p) {
+          return p !== panel && (p.cmds || []).some(function(c) { return c.id === item[0]; });
+        })) return;
         cmd = root.Registry.get(item[0]);
         if (cmd && cmd.status === "done") cmds.push(cmd);
       }
       if (cmd && cmd.status === "done") result.push(item);
     });
+    if (!approved && result.length && !result.some(function(item){return item[2] === "big";})) {
+      result[0] = [result[0][0],result[0][1],"big"];
+    }
     return result.length ? result : null;
   }
   function denseOrder(profile, original) {
@@ -29,15 +41,16 @@
   }
   // Face labels are deliberately curated, never blindly truncated. Unknown
   // longer labels use an icon and the full tooltip until a short name is added.
-  function shortFaceLabel(cmd, preferred) {
-    var label = cmd && cmd.macro ? cmd.label : preferred || (cmd && UITOOL_RIBBON.shortLabels[cmd.id]) || (cmd && cmd.label);
+  function shortFaceLabel(cmd, preferred, designTab) {
+    var tabLabel = designTab && cmd && UITOOL_RIBBON.tabShortLabels[cmd.id];
+    var label = cmd && cmd.macro ? cmd.label : preferred || tabLabel || (cmd && UITOOL_RIBBON.shortLabels[cmd.id]) || (cmd && cmd.label);
     label = String(label || "").replace(/…$/, "");
     return /^[\u3400-\u9fff]{1,2}$/.test(label) ? label : "";
   }
   function denseItem(spec, id) {
     var item = spec.dense.find(function (r) { return r[0] === id; });
     var command = spec.byId[id];
-    var label = shortFaceLabel(command,item && item[1]);
+    var label = shortFaceLabel(command,item && item[1],spec.designTab);
     var kind = item ? item[2] : "text";
     return { label:label, kind:kind, width:kind === "big" ? 48 : kind === "icon" ? 26 : 54 };
   }
@@ -66,6 +79,8 @@
     var cmd = spec.byId[id];
     if (!cmd || cmd.status !== "done") return [];
     var configured = UITOOL_RIBBON.families[id];
+    var pageFamilies = spec.designTab && UITOOL_RIBBON.tabFamilies[spec.designTab];
+    if (pageFamilies && pageFamilies[id]) configured = (configured || []).concat(pageFamilies[id]);
     var native = spec.slots && spec.slots[id] && spec.slots[id].rest || [];
     if (!configured && !native.length) return [];
     var result = [], seen = new Set();
@@ -91,9 +106,9 @@
     var choice = readFamilyChoices()[spec.key + "/" + id];
     return members.find(function(c){return familyKey(c)===choice;}) || spec.byId[id];
   }
-  function paintFamilyArt(button,cmd) {
+  function paintFamilyArt(button,cmd,designTab) {
     var glyph = button.querySelector(".btn-glyph");
-    var art = !cmd.macro && UITOOL_RIBBON.art[cmd.id];
+    var art = !cmd.macro && (UITOOL_RIBBON.art[cmd.id] || (designTab && UITOOL_RIBBON.tabArt[cmd.id]));
     if (!glyph || !art) return;
     var svg = root.document.createElementNS("http://www.w3.org/2000/svg","svg");
     svg.setAttribute("class","ic"); svg.setAttribute("viewBox","0 0 24 24");
@@ -150,7 +165,7 @@
       var run=api.makeCmdButton(cmd,{ribbonTip:true,onlyGivenBig:true});
       run.classList.add("uitool-family-run");
       run.setAttribute("aria-label","执行 "+(cmd.label || cmd.id));
-      paintFamilyArt(run,cmd);
+      paintFamilyArt(run,cmd,spec.designTab);
       run.addEventListener("click",function(){closeFamily(false);});
       row.appendChild(run);
       var pin=doc.createElement("button"); pin.type="button"; pin.className="uitool-family-pin";
@@ -258,8 +273,8 @@
       button.setAttribute("aria-label",cmd.label || id);
       button.title = (cmd.label || id) + (cmd.key ? " ("+cmd.key+")" : "");
       var label = button.querySelector(".btn-label");
-      if (label) label.textContent = shortFaceLabel(cmd,familyKey(cmd)===familyKey(spec.byId[id]) ? item.label : null);
-      paintFamilyArt(button,cmd);
+      if (label) label.textContent = shortFaceLabel(cmd,familyKey(cmd)===familyKey(spec.byId[id]) ? item.label : null,spec.designTab);
+      paintFamilyArt(button,cmd,spec.designTab);
     });
   }
   // The baseline (#11 layer design) owns initialization, all groups and menus.
@@ -267,8 +282,15 @@
   function enhanceDense(cur) {
     var host = api && api.ribbonPanels;
     if (!host || !cur) return;
-    if (["常用","默认","绘制"].indexOf(cur.id || cur.name) < 0) { reportDense("other-tab",0,0,0); return; }
+    var tab = cur.id || cur.name;
+    var approved = isApprovedTab(tab);
+    if (!approved && !UITOOL_RIBBON.tabs[tab]) {
+      host.dataset.uitoolDenseStatus = "other-tab";
+      reportDense("other-tab",0,0,0,"",0,tab);
+      return;
+    }
     var boxes = Array.prototype.slice.call(host.querySelectorAll(".hy-rib-group"));
+    var expected = approved ? 6 : (cur.panels || []).filter(function(p){return (p.cmds || []).length;}).length;
     var candidates = [], reserved = 0;
     function occupied(box) {
       // Do not count flex-distributed empty space as necessary width.
@@ -321,7 +343,7 @@
         if (!order.length) { reserved += occupied(box); return; }
         var cap = Math.max(1,Math.min(order.length, pref.cap == null ? profile.length : pref.cap));
         var spec = Object.assign({},original,{
-          byId:byId, order:order, dense:profile, denseRows:prefs.mode === "compact" ? 2 : 3,
+          byId:byId, order:order, dense:profile, designTab:approved ? "" : tab, denseRows:prefs.mode === "compact" ? 2 : 3,
           storedCap:pref.cap, cap:cap, pad:12
         });
         // One primary plus at least one full small-button column; very narrow
@@ -331,7 +353,11 @@
         warn(error,box); reserved += occupied(box);
       }
     });
-    if (!candidates.length) { reportDense("fallback",0,0,0,"没有匹配到候选命令组"); return; }
+    if (!candidates.length) {
+      host.dataset.uitoolDenseStatus = "fallback";
+      reportDense("fallback",0,0,0,"没有匹配到候选命令组",expected,tab);
+      return;
+    }
     var available = Math.max(0,host.clientWidth - 8 - reserved);
     // At desktop design widths show the full candidate by default. The
     // calculated full row is about 1.5k CSS px including the approved layer
@@ -376,6 +402,14 @@
     var buttons = host.querySelectorAll(".hy-rib-dense-btn").length;
     var icons = host.querySelectorAll('.hy-rib-dense-btn[data-dense-kind="icon"]').length;
     var failed = boxes.filter(function(b){return b.dataset.uitoolDenseError;}).map(function(b){return b.dataset.hyKey + ": " + b.dataset.uitoolDenseError;});
-    reportDense(applied === 6 ? "ready" : "partial-fallback", applied, buttons, icons, failed.join("\n"));
-    host.dataset.uitoolDenseStatus = applied === 6 ? "ready" : "partial-fallback";
+    if (!approved && applied !== expected) {
+      boxes.forEach(function(box) {
+        if (!box.querySelector(".hy-rib-dense") && !box.dataset.uitoolDenseError) {
+          failed.push(box.dataset.hyKey + ": 原组保留（无可用候选或尚未适配）");
+        }
+      });
+    }
+    var status = applied === expected ? "ready" : "partial-fallback";
+    reportDense(status, applied, buttons, icons, failed.join("\n"),expected,tab);
+    host.dataset.uitoolDenseStatus = status;
   }
