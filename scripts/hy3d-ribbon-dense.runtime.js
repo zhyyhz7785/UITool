@@ -27,12 +27,19 @@
     var ids = profile.map(function (item) { return item[0]; });
     return ids.concat(original.filter(function (id) { return ids.indexOf(id) < 0; }));
   }
+  // Face labels are deliberately curated, never blindly truncated. Unknown
+  // longer labels use an icon and the full tooltip until a short name is added.
+  function shortFaceLabel(cmd, preferred) {
+    var label = cmd && cmd.macro ? cmd.label : preferred || (cmd && UITOOL_RIBBON.shortLabels[cmd.id]) || (cmd && cmd.label);
+    label = String(label || "").replace(/…$/, "");
+    return /^[\u3400-\u9fff]{1,2}$/.test(label) ? label : "";
+  }
   function denseItem(spec, id) {
     var item = spec.dense.find(function (r) { return r[0] === id; });
     var command = spec.byId[id];
-    var label = String(item ? item[1] : (command && command.label || id));
+    var label = shortFaceLabel(command,item && item[1]);
     var kind = item ? item[2] : "text";
-    return { label:label, kind:kind, width:kind === "big" ? 48 : kind === "icon" ? 26 : Math.min(108, Math.max(52, 28 + label.length * 12)) };
+    return { label:label, kind:kind, width:kind === "big" ? 48 : kind === "icon" ? 26 : 54 };
   }
   function denseRest(spec, id, visible) {
     var slot = spec.slots && spec.slots[id];
@@ -176,13 +183,15 @@
     var doc=root.document, big=item.kind==="big";
     var cmd=familyFace(spec,id,members);
     var wrap=doc.createElement("div");
-    wrap.className="ribbon-split uitool-family-split"+(big?" is-big":"");
+    // Sibling controls, not a nested button. The menu target overlays the
+    // glyph corner without consuming any extra layout width.
+    wrap.className="uitool-family-split"+(big?" is-big":"");
     var button=api.makeCmdButton(cmd,{ribbonTip:true,onlyGivenBig:true,big:big});
     button.dataset.familySlot=spec.key+"/"+id;
     wrap.appendChild(button);
     var arrow=doc.createElement("button"); arrow.type="button";
-    arrow.className="ribbon-split-arrow uitool-family-arrow";
-    arrow.textContent="▾"; arrow.title="展开 "+(spec.byId[id].label || id)+" 命令菜单";
+    arrow.className="uitool-family-arrow";
+    arrow.title="展开 "+(spec.byId[id].label || id)+" 命令菜单";
     arrow.setAttribute("aria-label",arrow.title);
     arrow.setAttribute("aria-haspopup","dialog"); arrow.setAttribute("aria-expanded","false");
     function open(e) { e.preventDefault(); e.stopPropagation(); showFamily(spec,id,members,arrow); }
@@ -202,10 +211,9 @@
     function flush() { if (used) { row += col; columns++; col = 0; used = 0; } }
     visible.forEach(function (id) {
       var item = denseItem(spec,id);
-      var members = familyMembers(spec,id);
       if (item.kind === "big") { flush(); row += item.width; columns++; }
       else {
-        var w = item.width + (members.length || denseRest(spec,id,visible).length ? 12 : 0);
+        var w = item.width;
         col = Math.max(col,w); used++;
         if (used === spec.denseRows) flush();
       }
@@ -237,11 +245,9 @@
       if (members.length) {
         cmd=familyFace(spec,id,members);
         button=appendFamily(target,spec,id,members,item);
-      } else if (typeof api.appendRibbonSlot === "function") {
-        api.appendRibbonSlot(target,{cmd:cmd,big:big,iconOnly:icon,rest:denseRest(spec,id,visible)});
-        var last = target.lastElementChild;
-        button = last && (last.matches("button") ? last : last.querySelector("button[data-cmd-id]"));
       } else {
+        // A slot without an executable alternative has no menu corner.
+        // The native group menu remains available for all registered tools.
         button = api.makeCmdButton(cmd,{ribbonTip:true,onlyGivenBig:true,big:big});
         target.appendChild(button);
       }
@@ -250,9 +256,9 @@
       button.dataset.denseKind = item.kind;
       button.style.setProperty("--dense-w",item.width+"px");
       button.setAttribute("aria-label",cmd.label || id);
-      if (icon) button.title = (cmd.label || id) + (cmd.key ? " ("+cmd.key+")" : "");
+      button.title = (cmd.label || id) + (cmd.key ? " ("+cmd.key+")" : "");
       var label = button.querySelector(".btn-label");
-      if (label) label.textContent = familyKey(cmd)===familyKey(spec.byId[id]) ? item.label : (cmd.label || cmd.id);
+      if (label) label.textContent = shortFaceLabel(cmd,familyKey(cmd)===familyKey(spec.byId[id]) ? item.label : null);
       paintFamilyArt(button,cmd);
     });
   }
@@ -281,7 +287,21 @@
       var key = box.dataset.hyKey, original = model[key];
       var panel = original && (cur.panels || []).find(function (p) { return p.name === original.name; });
       var row = box.querySelector(".hy-rib-cmds");
-      if (!original || !panel || !row || original.name === "图层") {
+      if (original && original.name === "图层" && row) {
+        // Preserve the approved layer layout, artwork, picker and behavior;
+        // only normalize right-hand text to the same two-character measure.
+        Array.prototype.forEach.call(row.querySelectorAll("button[data-cmd-id]"),function(button) {
+          if (button.classList.contains("big") || button.classList.contains("ribbon-icon-only")) return;
+          var cmd = original.byId[button.dataset.cmdId];
+          var label = button.querySelector(".btn-label");
+          if (!cmd || !label) return;
+          label.textContent = shortFaceLabel(cmd);
+          button.title = cmd.label || cmd.id;
+          button.classList.add("uitool-layer-short-label");
+        });
+        reserved += occupied(box); return;
+      }
+      if (!original || !panel || !row) {
         reserved += occupied(box); return;
       }
       try {

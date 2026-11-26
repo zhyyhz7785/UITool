@@ -8,7 +8,7 @@
       ],
       [
         "cad.pline",
-        "多段线",
+        "多段",
         "text"
       ],
       [
@@ -43,7 +43,7 @@
       ],
       [
         "cad.polygon",
-        "多边形",
+        "多边",
         "icon"
       ],
       [
@@ -63,7 +63,7 @@
       ],
       [
         "cad.revcloud",
-        "修订云线",
+        "云线",
         "icon"
       ]
     ],
@@ -130,7 +130,7 @@
       ],
       [
         "cad.matchprop",
-        "特性匹配",
+        "匹配",
         "icon"
       ],
       [
@@ -157,7 +157,7 @@
       ],
       [
         "cad.dimlin",
-        "线性标注",
+        "线标",
         "text"
       ],
       [
@@ -172,54 +172,54 @@
       ],
       [
         "cad.dimali",
-        "对齐标注",
+        "齐标",
         "icon"
       ],
       [
         "cad.dimang",
-        "角度标注",
+        "角标",
         "icon"
       ],
       [
         "cad.dimrad",
-        "半径标注",
+        "半径",
         "icon"
       ],
       [
         "cad.dimdia",
-        "直径标注",
+        "直径",
         "icon"
       ],
       [
         "cad.textedit",
-        "编辑文字",
+        "编字",
         "icon"
       ],
       [
         "cad.mleaderalign",
-        "引线对齐",
+        "线齐",
         "icon"
       ]
     ],
     "块": [
       [
         "cad.block",
-        "插入块",
+        "插块",
         "big"
       ],
       [
         "cad.blockdef",
-        "创建块",
+        "建块",
         "text"
       ],
       [
         "cad.bedit",
-        "编辑块",
+        "编块",
         "text"
       ],
       [
         "cad.attedit",
-        "编辑属性",
+        "属性",
         "text"
       ],
       [
@@ -229,7 +229,7 @@
       ],
       [
         "cad.attdef",
-        "定义属性",
+        "定义",
         "icon"
       ],
       [
@@ -261,12 +261,12 @@
       ],
       [
         "cad.qselect",
-        "快速选择",
+        "快选",
         "icon"
       ],
       [
         "cad.id",
-        "点坐标",
+        "坐标",
         "icon"
       ],
       [
@@ -276,7 +276,7 @@
       ],
       [
         "cad.selectsimilar",
-        "选择相似",
+        "相似",
         "icon"
       ]
     ],
@@ -298,17 +298,17 @@
       ],
       [
         "edit.pastespec",
-        "原位粘贴",
+        "原贴",
         "icon"
       ],
       [
         "edit.copybase",
-        "带基点复制",
+        "基复",
         "icon"
       ],
       [
         "edit.pasteblock",
-        "粘贴为块",
+        "块贴",
         "icon"
       ]
     ]
@@ -471,5 +471,168 @@
     "edit.copy": [
       "edit.copybase"
     ]
+  },
+  "shortLabels": {
+    "cad.pline": "多段",
+    "cad.polygon": "多边",
+    "cad.revcloud": "云线",
+    "cad.matchprop": "匹配",
+    "cad.dimlin": "线标",
+    "cad.dimali": "齐标",
+    "cad.dimang": "角标",
+    "cad.dimrad": "半径",
+    "cad.dimdia": "直径",
+    "cad.textedit": "编字",
+    "cad.mleaderalign": "线齐",
+    "cad.block": "插块",
+    "cad.blockdef": "建块",
+    "cad.bedit": "编块",
+    "cad.attedit": "属性",
+    "cad.attdef": "定义",
+    "cad.qselect": "快选",
+    "cad.id": "坐标",
+    "cad.selectsimilar": "相似",
+    "edit.pastespec": "原贴",
+    "edit.copybase": "基复",
+    "edit.pasteblock": "块贴",
+    "cad.circle.ttt": "三切",
+    "cad.arc.sce": "心端",
+    "cad.arc.sca": "心角",
+    "cad.arc.scl": "心弦",
+    "cad.arc.sea": "端角",
+    "cad.arc.sed": "端向",
+    "cad.arc.ser": "端径",
+    "cad.arc.cse": "心起",
+    "cad.arc.csa": "心转",
+    "cad.arc.csl": "心长",
+    "cad.arc.con": "续弧",
+    "cad.solid": "实填",
+    "cad.donut": "圆环",
+    "cad.gradient": "渐变",
+    "cad.hatchedit": "编填",
+    "cad.breakatpoint": "点断",
+    "cad.arraypolar": "环阵",
+    "cad.arraypath": "径阵",
+    "cad.arrayedit": "编阵",
+    "cad.arraytype": "阵型",
+    "cad.text": "单行",
+    "cad.textstyle": "字样",
+    "cad.dimarc": "弧长",
+    "cad.dimbase": "基线",
+    "cad.dimcont": "连续",
+    "cad.dimord": "坐标",
+    "cad.qdim": "快标",
+    "cad.dim": "智标",
+    "cad.dimedit": "编标",
+    "cad.dimtedit": "标位",
+    "cad.dimreassociate": "关联",
+    "cad.qleader": "快引",
+    "cad.mleaderedit": "编引",
+    "cad.mleadercollect": "合引",
+    "cad.blockpalette": "块板",
+    "cad.attsync": "同步",
+    "cad.attdisp": "显属",
+    "cad.select": "选择",
+    "cad.selall": "全选",
+    "cad.deselect": "取消",
+    "cad.select.box": "框选",
+    "cad.select.circle": "圈选",
+    "cad.select.invert": "反选",
+    "cad.selinvert": "反选",
+    "cad.select.cycle": "循环",
+    "cad.point": "点",
+    "cad.pointm": "多点",
+    "cad.divide": "定数",
+    "cad.measure": "定距",
+    "cad.ray": "射线",
+    "cad.xline": "构线",
+    "cad.xplode": "特解",
+    "cad.setbylayer": "随层",
+    "cad.to-layer": "移层",
+    "cad.overkill": "去重",
+    "cad.lengthen": "拉长",
+    "cad.pedit": "编线",
+    "cad.group": "编组",
+    "cad.ungroup": "解组",
+    "cad.draworder": "次序",
+    "cad.texttofront": "前置",
+    "cad.copytolayer": "复制",
+    "cad.hatchtoback": "置后",
+    "cad.dimupdate": "更新",
+    "cad.dimoverride": "替代",
+    "cad.dimspace": "间距",
+    "cad.dimbreak": "断标",
+    "cad.dimjogged": "折径",
+    "cad.mleaderstyle": "引样",
+    "cad.tablestyle": "表样",
+    "cad.spell": "拼写",
+    "cad.eattedit": "增强",
+    "cad.bsave": "存块",
+    "cad.bclose": "关块",
+    "cad.layer": "图层",
+    "cad.layerstate": "状态",
+    "cad.layiso": "隔离",
+    "cad.layuniso": "解隔",
+    "cad.layoff": "关闭",
+    "cad.layon": "打开",
+    "cad.layfrz": "冻结",
+    "cad.laythw": "解冻",
+    "cad.laylck": "锁定",
+    "cad.laylulk": "解锁",
+    "cad.laycur": "当前",
+    "cad.laymcur": "当前",
+    "cad.laymch": "匹配",
+    "cad.laywalk": "浏览",
+    "cad.dimstyle": "标样",
+    "cad.dimcenter": "圆心",
+    "cad.dimregen": "更新",
+    "cad.dimtol": "公差",
+    "cad.dimlim": "极限",
+    "cad.dimassoc": "关联",
+    "cad.dimdisassociate": "解联",
+    "cad.textalign": "字齐",
+    "cad.textalign.cli": "字齐",
+    "cad.textstyle.cli": "字样",
+    "cad.dimstyle.cli": "标样",
+    "cad.line": "直线",
+    "cad.circle": "圆",
+    "cad.arc": "圆弧",
+    "cad.rect": "矩形",
+    "cad.hatch": "填充",
+    "cad.spline": "样条",
+    "cad.ellipse": "椭圆",
+    "cad.region": "面域",
+    "cad.mline": "多线",
+    "cad.boundary": "边界",
+    "cad.move": "移动",
+    "cad.copy": "复制",
+    "cad.rotate": "旋转",
+    "cad.trim": "修剪",
+    "cad.offset": "偏移",
+    "cad.mirror": "镜像",
+    "cad.fillet": "圆角",
+    "cad.stretch": "拉伸",
+    "cad.scale": "缩放",
+    "cad.array": "阵列",
+    "cad.erase": "删除",
+    "cad.explode": "分解",
+    "cad.extend": "延伸",
+    "cad.align": "对齐",
+    "edit.join": "合并",
+    "cad.mtext": "文字",
+    "cad.leader": "引线",
+    "cad.table": "表格",
+    "cad.wblock": "写块",
+    "cad.base": "基点",
+    "cad.measuregeom": "测量",
+    "cad.dist": "距离",
+    "cad.area": "面积",
+    "cad.props": "特性",
+    "cad.list": "列表",
+    "edit.paste": "粘贴",
+    "edit.copy": "复制",
+    "edit.cut": "剪切",
+    "cad.break": "打断",
+    "cad.chamfer": "倒角"
   }
 }
