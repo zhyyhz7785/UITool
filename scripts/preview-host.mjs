@@ -8,6 +8,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
+const EXPLORER_FIXTURE = path.join(HERE, "hy3d-explorer-fixture.js");
 const MIRROR_UI = path.resolve(HERE, "..", ".product-sources", "hy3d", "ui");
 const MIRROR_HYMD = path.resolve(HERE, "..", ".product-sources", "hymd");
 const WORKTREE_UI = "E:\\Code\\_shared\\worktrees\\hy3d\\cl\\ui";
@@ -82,7 +83,26 @@ function serveHy3d() {
   if (!existsSync(root)) return Promise.resolve(false);
   return new Promise((resolve) => {
     const server = http.createServer((req, res) => {
-      const raw = decodeURIComponent(String(req.url || "/").split("?")[0]);
+      let url, raw;
+      try {
+        url = new URL(req.url || "/", "http://127.0.0.1:1450");
+        raw = decodeURIComponent(url.pathname);
+      } catch {
+        res.statusCode = 400;
+        res.end();
+        return;
+      }
+      if (!local(req)) {
+        res.statusCode = 403;
+        res.end();
+        return;
+      }
+      if (raw === "/__uitool-explorer-fixture.js") {
+        res.setHeader("content-type", MIME[".js"]);
+        res.setHeader("cache-control", "no-store");
+        createReadStream(EXPLORER_FIXTURE).pipe(res);
+        return;
+      }
       const rel = raw === "/" ? "index.html" : raw.replace(/^\/+/, "");
       const file = path.resolve(root, rel);
       const inside = path.relative(root, file);
@@ -103,6 +123,18 @@ function serveHy3d() {
       res.statusCode = 200;
       res.setHeader("content-type", MIME[path.extname(target).toLowerCase()] || "application/octet-stream");
       res.setHeader("cache-control", "no-store");
+      // Only UITool's own preview response is changed. The source tree stays read-only.
+      if (rel === "index.html" && url.searchParams.get("uitool") === "1") {
+        const html = readFileSync(target, "utf8");
+        const hostScript = /<script\b[^>]*\bsrc\s*=\s*["'](?:\.\/)?host\.js["'][^>]*>\s*<\/script\s*>/i;
+        if (!hostScript.test(html)) {
+          res.statusCode = 502;
+          res.end("UITool: HY3D host.js entry not found; preview fixture cannot be installed.");
+          return;
+        }
+        res.end(html.replace(hostScript, (tag) => tag + '\n<script src="/__uitool-explorer-fixture.js"></script>'));
+        return;
+      }
       createReadStream(target).pipe(res);
     });
     server.once("error", () => resolve(false));
