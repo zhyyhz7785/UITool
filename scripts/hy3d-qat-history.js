@@ -26,7 +26,7 @@
   }
   function position() {
     if(!anchor?.isConnected){close();return;}
-    const r=anchor.getBoundingClientRect();
+    const r=(anchor.closest(".uitool-qat-square")||anchor).getBoundingClientRect();
     menu.style.left=Math.max(4,Math.min(r.left,innerWidth-menu.offsetWidth-4))+"px";
     menu.style.top=Math.max(4,Math.min(r.bottom+3,innerHeight-menu.offsetHeight-4))+"px";
   }
@@ -104,16 +104,20 @@
     for(const id of Object.keys(defs)){
       const face=qat.querySelector('button[data-cmd-id="'+id+'"]');
       if(!face)continue;
-      const next=face.nextElementSibling;
-      if(next?.dataset.uitoolQatHistory===id)continue;
+      if(face.parentElement?.classList.contains("uitool-qat-square"))continue;
+      // Two sibling hit targets inside ONE square footprint. Never nest buttons.
+      const square=document.createElement("span");
+      square.className="uitool-qat-square";
       const arrow=document.createElement("button");arrow.type="button";
       arrow.className="uitool-qat-arrow";arrow.dataset.uitoolQatHistory=id;
       arrow.title=defs[id].label+"历史（也可右键主按钮）";
       arrow.setAttribute("aria-label",defs[id].label+"历史");
       arrow.setAttribute("aria-haspopup","menu");arrow.setAttribute("aria-expanded","false");
       arrow.setAttribute("aria-controls",menu.id);
-      arrow.innerHTML='<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5h6L5 7z" fill="currentColor"/></svg>';
-      face.after(arrow);face.classList.add("uitool-qat-face");
+      arrow.innerHTML='<svg viewBox="0 0 6 6" aria-hidden="true"><path d="M0 6h6V0z" fill="currentColor"/></svg>';
+      face.before(square);
+      square.append(face,arrow);
+      face.classList.add("uitool-qat-face");
       arrow.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();open(id,arrow);});
     }
   }
@@ -134,7 +138,7 @@
     e.preventDefault();e.stopImmediatePropagation();open(t.id,t.arrow);
   },true);
   document.addEventListener("pointerdown",e=>{
-    if(!menu.hidden&&!menu.contains(e.target)&&!anchor?.contains(e.target))close();
+    if(!menu.hidden&&!menu.contains(e.target)&&!anchor?.closest(".uitool-qat-square")?.contains(e.target))close();
   },true);
   document.addEventListener("keydown",e=>{
     if(menu.hidden)return;
