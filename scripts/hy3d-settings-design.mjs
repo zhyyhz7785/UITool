@@ -1,5 +1,7 @@
 // Preview-only settings source adaptation.
 export function settingsDesignSource(source) {
+  // Product port already owns this component; do not apply the same rewrite twice.
+  if (/\bsettings-detail-content\b/.test(source) && /\bdetailOpen\b/.test(source) && /\bsettings-detail-toggle\b/.test(source)) return source;
   function replace(s,a,b,label){if(s.split(a).length!==2)throw Error("设置设计适配点不匹配："+label);return s.replace(a,()=>b);}
   var s=replace(source,'  var collapsed = {};',`  var collapsed = { "interface:尺寸": true };
   var detailOpen = new Set();

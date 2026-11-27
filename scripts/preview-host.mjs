@@ -247,18 +247,6 @@ function serveHy3d() {
         createReadStream(DIALOG_LAUNCH_JS).pipe(res);
         return;
       }
-      if (raw === "/__uitool-font-report.js") {
-        res.setHeader("content-type", MIME[".js"]);
-        res.setHeader("cache-control", "no-store");
-        try {
-          const source = readFileSync(path.join(root, "font_report.js"), "utf8");
-          const guard = "if (!button || !global.Host || !Host.hasTauri || !Host.hasTauri()) return;";
-          if (source.split(guard).length !== 2) throw Error("字体报告适配点不匹配");
-          const next = source.replace(guard, 'if (!button || !global.Host || !Host.hasTauri || (!Host.hasTauri() && !(tab && tab.id === "uitool-font-demo" && new URLSearchParams(location.search).get("dialog") === "hy3d-font-report"))) return;');
-          res.end(next);
-        } catch (error) { res.statusCode=502; res.end("// " + JSON.stringify(String(error))); }
-        return;
-      }
       if (raw === "/__uitool-qat-history.js") {
         res.setHeader("content-type", MIME[".js"]);
         res.setHeader("cache-control", "no-store");
@@ -344,6 +332,20 @@ function serveHy3d() {
       }
       // Only UITool's own preview response is changed. The source tree stays read-only.
       if (rel === "index.html" && url.searchParams.get("uitool") === "1") {
+        // The font report is an owned window, not a component of index.html.
+        // Load its real entry and install the isolated fixture before it binds Host events.
+        if (url.searchParams.get("dialog") === "hy3d-font-report") {
+          try {
+            const native = readFileSync(path.join(root, "font_window.html"), "utf8");
+            const script = /<script\b[^>]*\bsrc\s*=\s*["'](?:\.\/)?font_report\.js["'][^>]*>\s*<\/script\s*>/i;
+            if (!script.test(native)) throw Error("缺少独立字体报告入口");
+            res.end(native.replace(script, tag => '<script src="/__uitool-dialog-launch.js"></script>\n' + tag));
+          } catch (error) {
+            res.statusCode = 502;
+            res.end("UITool 独立字体窗口不可用：" + String(error));
+          }
+          return;
+        }
         const html = readFileSync(target, "utf8");
         const hostScript = /<script\b[^>]*\bsrc\s*=\s*["'](?:\.\/)?host\.js["'][^>]*>\s*<\/script\s*>/i;
         if (!hostScript.test(html)) {
@@ -376,12 +378,17 @@ function serveHy3d() {
             hatchDesignSource(readFileSync(path.join(root, "cmds", "hatchedit-dialog.js"), "utf8"), readFileSync(HATCH_SAMPLES, "utf8"));
             previewHtml = previewHtml.replace(hatchScript, '<script src="/__uitool-hatch-design.js"></script>')
               .replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-hatch-design.css"><script>document.documentElement.dataset.uitoolHatchDesign="1"</script></head>');
-            settingsDesignSource(readFileSync(path.join(root, "settings-shell.js"), "utf8"));
-            const settingsShell = /<script\b[^>]*\bsrc\s*=\s*["'](?:\.\/)?settings-shell\.js["'][^>]*>\s*<\/script\s*>/i;
-            if (!settingsShell.test(previewHtml)) throw new Error("缺少设置窗口 settings-shell.js 入口");
-            previewHtml = previewHtml
-              .replace(settingsShell, '<script src="/__uitool-settings-shell.js"></script>')
-              .replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-settings-design.css"><link rel="stylesheet" href="/__uitool-ui-density.css"><script>document.documentElement.dataset.uitoolSettingsDesign="1";document.documentElement.dataset.uitoolDensityDesign="1"</script></head>');
+            const settingsSource = readFileSync(path.join(root, "settings-shell.js"), "utf8");
+            const nativeSettings = /\bsettings-detail-content\b/.test(settingsSource) && /href=["'](?:\.\/)?dialog-design\.css["']/.test(previewHtml);
+            if (!nativeSettings) {
+              settingsDesignSource(settingsSource);
+              const settingsShell = /<script\b[^>]*\bsrc\s*=\s*["'](?:\.\/)?settings-shell\.js["'][^>]*>\s*<\/script\s*>/i;
+              if (!settingsShell.test(previewHtml)) throw new Error("缺少设置窗口 settings-shell.js 入口");
+              previewHtml = previewHtml
+                .replace(settingsShell, '<script src="/__uitool-settings-shell.js"></script>')
+                .replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-settings-design.css"><script>document.documentElement.dataset.uitoolSettingsDesign="1"</script></head>');
+            }
+            previewHtml = previewHtml.replace(/<\/head\s*>/i, '<link rel="stylesheet" href="/__uitool-ui-density.css"><script>document.documentElement.dataset.uitoolDensityDesign="1"</script></head>');
           } catch (error) {
             res.statusCode = 502;
             res.setHeader("content-type", "text/plain; charset=utf-8");
@@ -433,11 +440,6 @@ function serveHy3d() {
         }
         const dialogId = url.searchParams.get("dialog");
         if (dialogId && HY3D_DIALOGS.some(x => x.id === dialogId)) {
-          if (dialogId === "hy3d-font-report") {
-            const fontScript = /<script\b[^>]*\bsrc\s*=\s*["'](?:\.\/)?font_report\.js["'][^>]*>\s*<\/script\s*>/i;
-            if (!fontScript.test(previewHtml)) { res.statusCode=502; res.end("当前镜像缺少原生字体报告入口"); return; }
-            previewHtml = previewHtml.replace(fontScript, '<script src="/__uitool-font-report.js"></script>');
-          }
           previewHtml = previewHtml.replace(/<\/body\s*>/i, '<script src="/__uitool-dialog-launch.js"></script></body>');
         }
         res.end(withHy3dAppIcon(previewHtml));
