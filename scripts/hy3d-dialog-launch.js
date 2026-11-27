@@ -27,30 +27,45 @@
       {key:"demo-big",name:"hzfs.shx",kind:"big",issue:"partial",affected:42,missingCount:8,usedMissingCount:8,state:"unresolved",recommendation:{...recommended,name:"gbcbig.shx",coverage:0.93}},
       {key:"demo-ttf",name:"工程字体.ttf",kind:"ttf",issue:"missing",affected:15,missingCount:5,usedMissingCount:5,state:"unresolved",recommendation:{...recommended,name:"示例替代字体",coverage:1}}
     ];
-    const dto=()=>({docId,status:"ready",outline,fonts:JSON.parse(JSON.stringify(fonts)),restored:[]});
-    Host.fontReport=async()=>dto();
-    Host.fontSetOutline=async v=>{outline=!!v;};
-    Host.fontPreviewReplacement=async()=>({...recommended,name:"自选示例字体"});
-    Host.fontChooseSource=async()=>false;
-    Host.fontSetMappings=async(_doc,changes,scope)=>{
-      for(const change of changes){
-        const row=fonts.find(f=>f.key===change.key);if(!row)continue;
-        if(change.action==="revoke"){delete row.scope;delete row.used;row.state="unresolved";}
-        else{row.scope=scope;row.used=change.identity?.path?.split("/").pop()||row.recommendation.name;row.state="approximate";}
+    // The browser fixture is installed only on the dedicated local preview origin,
+    // before font_report.js registers listeners. No real Tauri bridge or disk access.
+    if(!window.__hy3dFontOwned){report("error","当前镜像没有独立字体窗口");return;}
+    const listeners=new Map();
+    const settings={promptPolicy:"firstMissing",fontAlt:"",budgets:{bodyMib:0,glyphMib:0,layoutMib:0},files:[],directories:[],global:{}};
+    const dto=()=>({docId,status:"ready",outline,fonts:JSON.parse(JSON.stringify(fonts)),restored:[],settings:JSON.parse(JSON.stringify(settings))});
+    Host.hasTauri=()=>true;
+    Host.on=async(name,cb)=>{listeners.set(name,cb);return ()=>listeners.delete(name);};
+    Host.emit=async()=>null;
+    Host.fontWindowReady=async()=>{
+      listeners.get("font-window-open")?.({seq:1,tab:{id:docId,name:"UITool 示例图纸（模拟字体数据）",path:"X:/UITool/demo.dwg"}});
+      report("opened","原生独立字体窗口 · 模拟字体检测与授权，不读写真实字体");
+    };
+    Host.fontWindowDone=async()=>{report("pending","已关闭原生字体窗口，可点击重开");};
+    Host.fontReport=async(_doc,_force,manage)=>{
+      if(manage?.action==="setPromptPolicy")settings.promptPolicy=manage.policy;
+      if(manage?.action==="setCacheBudgets")settings.budgets={...manage.budgets};
+      if(manage?.action==="removeSource"){
+        const key=manage.kind==="directory"?"directories":"files";
+        settings[key]=settings[key].filter(p=>p!==manage.path);
+      }
+      if(manage?.action==="revokeGlobal"){
+        delete settings.global[manage.key];
+        for(const row of fonts){if(row.key===manage.key&&row.scope==="global"){delete row.scope;delete row.used;row.state="unresolved";}}
       }
       return dto();
     };
-    let tries=0;
-    const tick=()=>{
-      if(window.hy3dFontReport&&window.hy3dApp&&document.getElementById("font-report")){
-        hy3dFontReport.bind(()=>{});
-        hy3dFontReport.activate({id:docId,name:"UITool 示例图纸（模拟字体数据）",path:"X:/UITool/demo.dwg"},[{id:docId}]);
-        hy3dFontReport.open();
-        report("opened","原生字体报告 · 模拟字体检测与授权，不读写真实字体");
-      }else if(++tries<100)setTimeout(tick,100);
-      else report("error","当前镜像未加载原生字体报告");
+    Host.fontSetOutline=async v=>{outline=!!v;};
+    Host.fontPreviewReplacement=async()=>({...recommended,name:"自选示例字体"});
+    Host.fontChooseSource=async(_doc,kind)=>{const key=kind==="directory"?"directories":"files";const value=kind==="directory"?"X:/UITool/fonts":"X:/UITool/fonts/example.shx";if(!settings[key].includes(value))settings[key].push(value);return true;};
+    Host.fontSetMappings=async(_doc,changes,scope)=>{
+      for(const change of changes){
+        const row=fonts.find(f=>f.key===change.key);if(!row)continue;
+        if(change.action==="revoke"){delete settings.global[row.key];delete row.scope;delete row.used;row.state="unresolved";}
+        else{row.scope=scope;row.used=change.identity?.path?.split("/").pop()||row.recommendation.name;row.state="approximate";if(scope==="global")settings.global[row.key]={requested:row.name,replacement:change.identity||row.recommendation.identity};}
+      }
+      return dto();
     };
-    tick();return;
+    return;
   }
   const command=commands[id];
   if(!command){report("error","未配置弹窗入口");return;}
