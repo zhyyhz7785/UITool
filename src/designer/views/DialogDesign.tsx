@@ -56,7 +56,7 @@ export function DialogDesignSection(){
     return ()=>{cancelled=true;};
   },[revision]);
   const q=query.trim().toLowerCase();
-  const modeLabel=(e:Entry)=>e.mode==="native"?"原生":e.mode==="prototype"?"候选":"待适配";
+  const modeLabel=(e:Entry)=>e.id==="hy3d-dynamic-prompt"?"同源预览":e.mode==="native"?"原生":e.mode==="prototype"?"候选":"待适配";
   return <Section title="弹窗设计" actions={<Button onClick={()=>setRevision(n=>n+1)}>刷新</Button>}>
     <div className="ut-dialog-design-tools">
       <select className="wb-select" aria-label="弹窗产品" value={product} onChange={e=>setProduct(e.target.value as Product|"all")}>
@@ -108,6 +108,10 @@ export function ProductDialogDesign({entry}:{entry:Entry}){
         const result=await r.json() as {up?:boolean;preview?:boolean;error?:string};
         if(!r.ok||!result.up||(provider==="hy3d"&&!result.preview))throw Error(result.error||"未能连接 UITool 专用前端，请同步产品工作树");
         if(cancelled)return;
+        if(entry.id==="hy3d-dynamic-prompt"){
+          setSrc("http://127.0.0.1:1450/prompt_preview.html?uitool=1");
+          setStatus("HY3D 产品设计令牌 · 浏览器示例，不是 Windows 原生渲染");return;
+        }
         if(entry.id===advancedText.id){
           setSrc("http://127.0.0.1:1461/?dialog="+encodeURIComponent(entry.id));
           setStatus("HyMdTauri 原生编辑器 · 等待组件装载");return;
