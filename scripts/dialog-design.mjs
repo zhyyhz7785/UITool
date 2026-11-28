@@ -31,6 +31,7 @@ const FONT={id:"hy3d-font-v2",title:"字体替换 / V2 设计候选",source:"pub
 export function dialogCatalog(product,root) {
   const print={id:product+"-print-workbench",title:"统一打印工作台 / 设计候选",source:"public/unified-print-workbench/index.html",product,mode:"prototype"};
   const fixed=product==="hy3d"?[print,MTEXT,FONT,...HY3D_DIALOGS]:[print,...HYMD_DIALOGS];
+  if(product==="hy3d"&&existsSync(path.join(root,"prompt_preview.html")))fixed.push({id:"hy3d-dynamic-prompt",title:"动态命令提示 / 同源设计",source:"ui/prompt_preview.html",product:"hy3d",mode:"native"});
   const known=new Set(fixed.map(x=>x.source));
   const rows=[...fixed];
   const errors=[];
